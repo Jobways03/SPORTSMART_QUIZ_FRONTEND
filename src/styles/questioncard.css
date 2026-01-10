@@ -1,0 +1,203 @@
+/* -------------------------------------------------
+   QUESTION CARD
+-------------------------------------------------- */
+
+.question-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px 16px 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  position: relative;
+  animation: fadeUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+/* subtle entrance */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------------------------------------
+   SPORT ICON
+-------------------------------------------------- */
+
+.question-sport-icon {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 24px;
+  opacity: 0.85;
+}
+
+/* -------------------------------------------------
+   QUESTION HEADER
+-------------------------------------------------- */
+
+.question-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.question-number {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.question-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+}
+
+/* -------------------------------------------------
+   OPTIONS
+-------------------------------------------------- */
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* option wrapper */
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* hover */
+.option-item:hover {
+  background: #f9fafb;
+}
+
+/* selected */
+.option-selected {
+  background: #eff6ff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* disabled */
+.option-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------
+   CUSTOM RADIO
+-------------------------------------------------- */
+
+.custom-radio {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.custom-radio input {
+  opacity: 0;
+  position: absolute;
+}
+
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* checked */
+.option-selected .radio-circle {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.option-selected .radio-circle::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* -------------------------------------------------
+   OPTION TEXT
+-------------------------------------------------- */
+
+.option-letter {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-selected .option-letter {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.option-text {
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+/* -------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+
+/* Tablet */
+@media (min-width: 640px) {
+  .question-text {
+    font-size: 16px;
+  }
+
+  .option-text {
+    font-size: 15px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .question-card {
+    padding: 20px 18px 18px;
+  }
+
+  .options-container {
+    gap: 12px;
+  }
+}

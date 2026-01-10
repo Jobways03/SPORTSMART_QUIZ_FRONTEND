@@ -1,0 +1,55 @@
+# ===============================
+# Dependencies
+# ===============================
+node_modules/
+.pnp/
+.pnp.js
+
+# ===============================
+# Build outputs
+# ===============================
+dist/
+build/
+.out/
+.next/
+.vite/
+
+# ===============================
+# Environment files
+# ===============================
+.env
+.env.*
+!.env.example
+
+# ===============================
+# Logs
+# ===============================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+
+# ===============================
+# OS / Editor files
+# ===============================
+.DS_Store
+Thumbs.db
+
+.vscode/
+!.vscode/extensions.json
+
+.idea/
+*.swp
+
+# ===============================
+# Cache
+# ===============================
+.cache/
+.eslintcache
+.turbo/
+
+# ===============================
+# Coverage
+# ===============================
+coverage/

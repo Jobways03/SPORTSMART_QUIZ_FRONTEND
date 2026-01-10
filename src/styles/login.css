@@ -1,0 +1,675 @@
+/* -------------------------------------------------
+   ROOT RESET & BASE
+-------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f4f7fb;
+  color: #1f2937;
+}
+
+/* -------------------------------------------------
+   PAGE LAYOUT
+-------------------------------------------------- */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background elements */
+.sports-decoration {
+  position: absolute;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+
+/* -------------------------------------------------
+   LOGIN CARD
+-------------------------------------------------- */
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px 22px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 2;
+}
+
+/* -------------------------------------------------
+   TITLES
+-------------------------------------------------- */
+
+.login-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* -------------------------------------------------
+   FORM
+-------------------------------------------------- */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+}
+
+.form-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* -------------------------------------------------
+   ERROR MESSAGE
+-------------------------------------------------- */
+
+.error-message {
+  font-size: 13px;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+/* -------------------------------------------------
+   BUTTON
+-------------------------------------------------- */
+
+.login-button {
+  margin-top: 6px;
+  height: 46px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* -------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+-------------------------------------------------- */
+
+/* Tablet */
+@media (min-width: 640px) {
+  .login-card {
+    padding: 34px 28px;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+
+  .login-subtitle {
+    font-size: 15px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .login-page {
+    padding: 24px;
+  }
+
+  .login-card {
+    max-width: 460px;
+    padding: 38px 32px;
+  }
+
+  .login-title {
+    font-size: 26px;
+  }
+}
+.login-main-title {
+  margin: 0 0 20px;
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  color: #2563eb;
+}
+
+.quiz-highlights {
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+/* -------------------------------------------------
+   AUTH LINKS (REGISTER / FORGOT / BACK)
+-------------------------------------------------- */
+
+.auth-links {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+
+/* -------------------------------------------------
+   SECONDARY TITLES (REGISTER / FORGOT)
+-------------------------------------------------- */
+
+.auth-title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+}
+
+.auth-subtitle {
+  margin-bottom: 14px;
+  font-size: 13px;
+  text-align: center;
+  color: #6b7280;
+}
+
+
+/* -------------------------------------------------
+   INFO / SUCCESS MESSAGE
+-------------------------------------------------- */
+
+.info-message {
+  font-size: 13px;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+
+/* -------------------------------------------------
+   PASSWORD INPUT (RESET PAGE)
+-------------------------------------------------- */
+
+.password-hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: -6px;
+}
+
+
+/* -------------------------------------------------
+   FORM SPACING TWEAKS
+-------------------------------------------------- */
+
+.login-form input + input {
+  margin-top: 2px;
+}
+
+
+/* -------------------------------------------------
+   RESPONSIVE – MOBILE FIRST
+-------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 22px 18px;
+    border-radius: 12px;
+  }
+
+  .login-main-title {
+    font-size: 24px;
+  }
+
+  .auth-title {
+    font-size: 18px;
+  }
+
+  .login-button {
+    height: 44px;
+    font-size: 14px;
+  }
+}
+
+
+/* -------------------------------------------------
+   RESPONSIVE – TABLET
+-------------------------------------------------- */
+
+@media (min-width: 640px) {
+  .auth-links {
+    flex-direction: row;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .link-btn {
+    font-size: 14px;
+  }
+}
+
+
+/* -------------------------------------------------
+   RESPONSIVE – DESKTOP
+-------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  .login-card {
+    max-width: 480px;
+  }
+
+  .login-main-title {
+    font-size: 28px;
+  }
+}
+/* -------------------------------------------------
+   ROOT RESET & BASE
+-------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f4f7fb;
+  color: #1f2937;
+}
+
+/* -------------------------------------------------
+   PAGE LAYOUT
+-------------------------------------------------- */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* -------------------------------------------------
+   CARD
+-------------------------------------------------- */
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px 22px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* -------------------------------------------------
+   TITLES
+-------------------------------------------------- */
+
+.login-main-title {
+  margin-bottom: 18px;
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  color: #2563eb;
+}
+
+.auth-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.auth-subtitle {
+  margin: 6px 0 18px;
+  font-size: 13px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* -------------------------------------------------
+   FORM
+-------------------------------------------------- */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-input {
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* -------------------------------------------------
+   BUTTON
+-------------------------------------------------- */
+
+.login-button {
+  height: 46px;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------
+   MESSAGES
+-------------------------------------------------- */
+
+.error-message {
+  font-size: 13px;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.info-message {
+  font-size: 13px;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+/* -------------------------------------------------
+   AUTH LINKS
+-------------------------------------------------- */
+
+.auth-links {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+
+@media (min-width: 640px) {
+  .login-card {
+    padding: 34px 28px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .login-card {
+    max-width: 460px;
+  }
+}
+
+/* -------------------------------------------------
+   AUTH TITLES (FORGOT / RESET)
+-------------------------------------------------- */
+
+.auth-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+}
+
+.auth-subtitle {
+  margin: 6px 0 18px;
+  font-size: 13px;
+  text-align: center;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* -------------------------------------------------
+   INFO MESSAGE (SUCCESS)
+-------------------------------------------------- */
+
+.info-message {
+  font-size: 13px;
+  color: #065f46;
+  background-color: #d1fae5;
+  padding: 8px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* -------------------------------------------------
+   AUTH LINKS
+-------------------------------------------------- */
+
+.auth-links {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* -------------------------------------------------
+   FORM GROUPING (FORGOT / RESET)
+-------------------------------------------------- */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* -------------------------------------------------
+   RESPONSIVE ADJUSTMENTS
+-------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .auth-title {
+    font-size: 20px;
+  }
+
+  .auth-subtitle {
+    font-size: 12px;
+  }
+
+  .login-button {
+    height: 44px;
+    font-size: 14px;
+  }
+}
+
+/* -------------------------------------------------
+   PASSWORD FIELD
+-------------------------------------------------- */
+
+.password-field {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------
+   PASSWORD STRENGTH
+-------------------------------------------------- */
+
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -4px;
+}
+
+.strength-bar {
+  height: 6px;
+  width: 100%;
+  max-width: 120px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.strength-bar::after {
+  content: "";
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+  width: 0%;
+  background: #dc2626;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* LEVELS */
+.strength-1::after {
+  width: 25%;
+  background: #dc2626;
+}
+
+.strength-2::after {
+  width: 50%;
+  background: #f59e0b;
+}
+
+.strength-3::after {
+  width: 75%;
+  background: #10b981;
+}
+
+.strength-4::after {
+  width: 100%;
+  background: #059669;
+}
+
+.strength-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.strength-label.strength-1 {
+  color: #dc2626;
+}
+
+.strength-label.strength-2 {
+  color: #f59e0b;
+}
+
+.strength-label.strength-3,
+.strength-label.strength-4 {
+  color: #059669;
+}
