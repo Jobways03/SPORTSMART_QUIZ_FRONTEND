@@ -145,3 +145,38 @@
     font-size: 24px;
   }
 }
+.admin-password-field {
+  position: relative;
+  width: 100%;
+}
+
+.admin-password-field input {
+  width: 100%;
+  padding: 12px 44px 12px 12px; /* space for toggle */
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.admin-password-field input:focus {
+  border-color: #1e3c72;
+}
+
+/* SHOW / HIDE */
+.admin-password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e3c72;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-password-toggle:hover {
+  opacity: 0.8;
+}

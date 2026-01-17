@@ -10,40 +10,60 @@ export default function Register() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
+    phone: "", // stores only 10 digits
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [phoneFocused, setPhoneFocused] = useState(false);
 
   const strength = getPasswordStrength(form.password);
 
+  /* ---------------- VALIDATION HELPERS ---------------- */
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const isValidPhone = (phone) => /^[6-9]\d{9}$/.test(phone);
+
+  const isStrongPassword = (password) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password);
+
+  /* ---------------- SUBMIT ---------------- */
   const submit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // ✅ Basic validation
-    if (!form.name.trim()) {
-      return setError("Name is required");
-    }
+    // NAME
+    if (!form.name.trim()) return setError("Name is required");
+    if (form.name.trim().length < 2)
+      return setError("Name must be at least 2 characters");
+    if (!/^[a-zA-Z\s]+$/.test(form.name))
+      return setError("Name can contain only letters");
 
-    if (!form.password) {
-      return setError("Password is required");
-    }
+    // EMAIL
+    if (!form.email.trim()) return setError("Email is required");
+    if (!isValidEmail(form.email)) return setError("Invalid email address");
 
-    if (strength.level < 2) {
-      return setError("Password is too weak");
-    }
+    // PHONE
+    if (!form.phone) return setError("Phone number is required");
+    if (!isValidPhone(form.phone)) return setError("Invalid phone number");
+
+    // PASSWORD
+    if (!form.password) return setError("Password is required");
+    if (!isStrongPassword(form.password))
+      return setError(
+        "Password must include uppercase, lowercase, number & special character",
+      );
+    if (strength.level < 2) return setError("Password is too weak");
 
     try {
       setLoading(true);
-      await registerUser(form);
+      await registerUser(form); // phone = 10 digits only
       navigate("/login");
     } catch (err) {
       setError(
-        err?.response?.data?.message || "Registration failed. Try again."
+        err?.response?.data?.message || "Registration failed. Try again.",
       );
     } finally {
       setLoading(false);
@@ -57,6 +77,7 @@ export default function Register() {
         <p className="auth-subtitle">Register to participate in live quizzes</p>
 
         <form className="login-form" onSubmit={submit}>
+          {/* NAME */}
           <input
             className="form-input"
             placeholder="Name"
@@ -64,21 +85,42 @@ export default function Register() {
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
 
+          {/* EMAIL */}
           <input
             className="form-input"
-            placeholder="Email (optional)"
+            placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
 
+          {/* PHONE */}
           <input
             className="form-input"
-            placeholder="Phone (optional)"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            placeholder="Phone"
+            value={phoneFocused ? `+91 ${form.phone}` : ""}
+            onFocus={() => setPhoneFocused(true)}
+            onBlur={() => {
+              if (!form.phone) setPhoneFocused(false);
+            }}
+            onChange={(e) => {
+              const digits = e.target.value.replace(/\D/g, "");
+              const phone = digits.startsWith("91") ? digits.slice(2) : digits;
+
+              if (phone.length <= 10) {
+                setForm({ ...form, phone });
+              }
+            }}
+            onKeyDown={(e) => {
+              if (
+                (e.key === "Backspace" || e.key === "Delete") &&
+                e.target.selectionStart <= 4
+              ) {
+                e.preventDefault();
+              }
+            }}
           />
 
-          {/* PASSWORD FIELD */}
+          {/* PASSWORD */}
           <div className="password-field">
             <input
               className="form-input"
@@ -113,7 +155,6 @@ export default function Register() {
           </button>
         </form>
 
-        {/* ✅ ROUTE TO LOGIN */}
         <div className="auth-links">
           <button className="link-btn" onClick={() => navigate("/login")}>
             Already have an account? Login

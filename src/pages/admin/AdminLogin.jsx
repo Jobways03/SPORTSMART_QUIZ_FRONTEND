@@ -8,10 +8,10 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const { isAdminAuthed, login } = useAdminAuth();
 
-  // ❌ Removed predefined credentials
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -68,13 +68,21 @@ export default function AdminLogin() {
           />
 
           <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter Admin Password"
-            autoComplete="current-password"
-          />
+          <div className="admin-password-field">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter Admin Password"
+              autoComplete="current-password"
+            />
+            <span
+              className="admin-password-toggle"
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </span>
+          </div>
 
           {error && <div className="admin-login-error">{error}</div>}
 
