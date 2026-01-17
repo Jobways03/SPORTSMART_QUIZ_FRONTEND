@@ -8,6 +8,7 @@ import {
 } from "../../services/adminMatch.service";
 import "../../styles/admin-matches.css";
 
+/* Convert datetime-local → ISO */
 function toISOFromDateTimeLocal(value) {
   return new Date(value).toISOString();
 }
@@ -15,23 +16,28 @@ function toISOFromDateTimeLocal(value) {
 export default function AdminMatches() {
   const navigate = useNavigate();
 
+  /* LIST STATE */
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  /* CREATE FORM STATE */
   const [title, setTitle] = useState("");
   const [tournament, setTournament] = useState("");
   const [startTimeLocal, setStartTimeLocal] = useState("");
+  const [coverImage, setCoverImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [creating, setCreating] = useState(false);
+
+  /* UI STATE */
   const [openMenu, setOpenMenu] = useState(null);
 
+  /* LOAD MATCHES */
   const load = async () => {
     setLoading(true);
     setError("");
     try {
       const data = await adminFetchMatches();
-      console.log(data);
-      
       setMatches(Array.isArray(data) ? data : data.matches || []);
     } catch (e) {
       setError(e?.response?.data?.message || "Failed to load matches");
@@ -44,6 +50,7 @@ export default function AdminMatches() {
     load();
   }, []);
 
+  /* CREATE MATCH */
   const onCreate = async (e) => {
     e.preventDefault();
     setError("");
@@ -53,14 +60,25 @@ export default function AdminMatches() {
 
     try {
       setCreating(true);
-      await adminCreateMatch({
-        title: title.trim(),
-        tournament: tournament.trim(),
-        startTime: toISOFromDateTimeLocal(startTimeLocal),
-      });
+
+      const formData = new FormData();
+      formData.append("title", title.trim());
+      formData.append("tournament", tournament.trim());
+      formData.append("startTime", toISOFromDateTimeLocal(startTimeLocal));
+
+      if (coverImage) {
+        formData.append("coverImage", coverImage);
+      }
+
+      await adminCreateMatch(formData);
+
+      /* RESET FORM */
       setTitle("");
       setTournament("");
       setStartTimeLocal("");
+      setCoverImage(null);
+      setPreview(null);
+
       await load();
     } catch (e) {
       setError(e?.response?.data?.message || "Create failed");
@@ -69,11 +87,13 @@ export default function AdminMatches() {
     }
   };
 
+  /* UPDATE STATUS */
   const onStatusChange = async (id, status) => {
     await adminUpdateMatchStatus(id, status);
     await load();
   };
 
+  /* DELETE MATCH */
   const deleteMatch = async (id) => {
     await adminDeleteMatchStatus(id);
     await load();
@@ -85,10 +105,11 @@ export default function AdminMatches() {
         <Link to="/admin/dashboard" className="back-link">
           ← Back to Dashboard
         </Link>
+
         <h1 className="admin-title">Match Management</h1>
 
         {/* CREATE MATCH */}
-        <form className="create-card" onSubmit={onCreate}>
+        <form onSubmit={onCreate} className="create-card">
           <h2>Create Match</h2>
 
           {error && <div className="admin-error">{error}</div>}
@@ -111,6 +132,22 @@ export default function AdminMatches() {
             onChange={(e) => setStartTimeLocal(e.target.value)}
           />
 
+          <input
+            key={preview || "empty"}
+            type="file"
+            accept="image/*"
+            style={{padding:"10px"}}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setCoverImage(file);
+                setPreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+
+          {preview && <img src={preview} alt="Preview" className="preview" />}
+
           <button className="primary-btn" disabled={creating}>
             {creating ? "Creating…" : "Create Match"}
           </button>
@@ -132,8 +169,17 @@ export default function AdminMatches() {
           ) : (
             matches.map((m) => {
               const id = m._id || m.id;
+
               return (
                 <div key={id} className="match-card">
+                  {m.coverImage && (
+                    <img
+                      src={m.coverImage}
+                      alt={m.title}
+                      className="match-cover"
+                    />
+                  )}
+
                   <div className="match-left">
                     <div className="match-title">{m.title}</div>
                     <div className="match-meta">
@@ -162,12 +208,11 @@ export default function AdminMatches() {
                     >
                       Manage Quiz
                     </button>
+
                     <button
-                      style={{ background: "red" }}
                       className="primary-btn small"
-                      onClick={() => {
-                        deleteMatch(id);
-                      }}
+                      style={{ background: "red" }}
+                      onClick={() => deleteMatch(id)}
                     >
                       Delete
                     </button>

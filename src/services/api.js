@@ -9,36 +9,38 @@ export const api = axios.create({
   },
 });
 
-api.interceptors.request.use(
-  (config) => {
-    // 1. Handle Admin Token
-    const token = localStorage.getItem("cricketquiz_admin_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    // 2. Handle User Data (shiva@gmail.com, etc.)
-    const userData = localStorage.getItem("cricketquiz_user");
-
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-
-        // Sending specific fields to the backend via custom headers
-        if (user.userId) {
-          config.headers["X-User-Id"] = user.userId;
-        }
-        if (user.email) {
-          config.headers["X-User-Email"] = user.email;
-        }
-      } catch (error) {
-        console.error("Error parsing user data from localStorage", error);
+//  "https://sportsmart-quiz-backend.onrender.com",
+// "http://localhost:8000",
+  api.interceptors.request.use(
+    (config) => {
+      // 1. Handle Admin Token
+      const token = localStorage.getItem("cricketquiz_admin_token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-    }
 
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+      // 2. Handle User Data (shiva@gmail.com, etc.)
+      const userData = localStorage.getItem("cricketquiz_user");
+
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+
+          // Sending specific fields to the backend via custom headers
+          if (user.userId) {
+            config.headers["X-User-Id"] = user.userId;
+          }
+          if (user.email) {
+            config.headers["X-User-Email"] = user.email;
+          }
+        } catch (error) {
+          console.error("Error parsing user data from localStorage", error);
+        }
+      }
+
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );

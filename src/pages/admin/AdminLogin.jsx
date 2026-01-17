@@ -8,13 +8,17 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const { isAdminAuthed, login } = useAdminAuth();
 
-  const [email, setEmail] = useState("admin@cricketquiz.com");
-  const [password, setPassword] = useState("Admin@12345");
+  // ❌ Removed predefined credentials
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (isAdminAuthed) navigate("/admin/dashboard", { replace: true });
+    if (isAdminAuthed) {
+      navigate("/admin/dashboard", { replace: true });
+    }
   }, [isAdminAuthed, navigate]);
 
   const onSubmit = async (e) => {
@@ -26,14 +30,20 @@ export default function AdminLogin() {
 
     try {
       setLoading(true);
-      const data = await adminLogin({ email: email.trim(), password });
-      if (!data?.token) throw new Error("Token not received from server.");
+      const data = await adminLogin({
+        email: email.trim(),
+        password,
+      });
+
+      if (!data?.token) {
+        throw new Error("Token not received from server.");
+      }
 
       login({ token: data.token, admin: data.admin });
       navigate("/admin/dashboard", { replace: true });
     } catch (err) {
       setError(
-        err?.response?.data?.message || err?.message || "Admin login failed."
+        err?.response?.data?.message || err?.message || "Admin login failed.",
       );
     } finally {
       setLoading(false);
@@ -53,16 +63,16 @@ export default function AdminLogin() {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@cricketquiz.com"
+            placeholder="Enter Admin Email"
             autoComplete="email"
           />
 
           <label>Password</label>
           <input
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Admin@12345"
-            type="password"
+            placeholder="Enter Admin Password"
             autoComplete="current-password"
           />
 

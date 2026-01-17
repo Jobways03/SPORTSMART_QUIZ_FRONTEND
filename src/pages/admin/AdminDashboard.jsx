@@ -80,9 +80,9 @@ export default function AdminDashboard() {
                 Usage and performance overview.
               </p>
             </div>
-            <Link to="/admin/analytics" className="secondary-action-btn">
+            {/* <Link to="/admin/analytics" className="secondary-action-btn">
               Detailed Analytics →
-            </Link>
+            </Link> */}
           </div>
 
           {loading && <div className="admin-loading">Loading…</div>}

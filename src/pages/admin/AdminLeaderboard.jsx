@@ -68,7 +68,10 @@ export default function AdminLeaderboard() {
               style={{ animationDelay: `${index * 0.05}s` }}
             >
               <div className="rank-col">{getMedal(u.rank)}</div>
-              <div className="name-col">{u.name}</div>
+              <div className="name-col">
+                {u.name} - {u.phone}
+              </div>
+
               <div className="score-col">{u.score}</div>
             </div>
           ))}

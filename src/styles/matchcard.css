@@ -5,6 +5,7 @@
 .match-card {
   border-radius: 16px;
   padding: 18px 16px 16px;
+  background: #ffffff;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
   position: relative;
   display: flex;
@@ -15,7 +16,37 @@
 
 .match-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* -------------------------------------------------
+   COVER IMAGE (IMPROVED – UNIVERSAL)
+-------------------------------------------------- */
+
+.match-cover-wrapper {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  background: #0f172a; /* fallback */
+}
+
+.match-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: scale(1.03);
+  filter: contrast(1.05) saturate(1.12);
+}
+
+/* Optional hover polish */
+.match-card:hover .match-cover-image {
+  transform: scale(1.08);
+  transition: transform 0.4s ease;
 }
 
 /* -------------------------------------------------
@@ -24,8 +55,8 @@
 
 .match-sport-icon {
   position: absolute;
-  top: 14px;
-  right: 4px;
+  top: 12px;
+  right: 12px;
   font-size: 26px;
   opacity: 0.85;
 }
@@ -47,6 +78,7 @@
   font-weight: 700;
   color: #111827;
   line-height: 1.3;
+  text-transform: uppercase;
 }
 
 /* -------------------------------------------------
@@ -80,7 +112,8 @@
   color: #166534;
 }
 
-/* DEFAULT / UNKNOWN */
+/* CANCELLED / UNKNOWN */
+.match-badge-cancelled,
 .match-badge-unknown {
   background: #f3f4f6;
   color: #374151;
@@ -121,20 +154,22 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.view-quiz-btn:hover {
+.view-quiz-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
 }
 
-.view-quiz-btn:active {
-  transform: translateY(0);
+.view-quiz-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #9ca3af;
+  box-shadow: none;
 }
 
 /* -------------------------------------------------
-   RESPONSIVE TWEAKS
+   RESPONSIVE
 -------------------------------------------------- */
 
-/* Tablet */
 @media (min-width: 640px) {
   .match-title {
     font-size: 17px;
@@ -145,7 +180,6 @@
   }
 }
 
-/* Desktop */
 @media (min-width: 1024px) {
   .match-card {
     padding: 20px 18px 18px;
@@ -158,65 +192,4 @@
   .match-meta {
     font-size: 14px;
   }
-}
-/* =================================================
-   MOBILE HEADER FIX (MOST IMPORTANT)
-================================================= */
-
-@media (max-width: 639px) {
-  .matches-header {
-    padding: 14px;
-  }
-
-  .matches-header-top {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  /* Title section centered */
-  .matches-title-section {
-    text-align: center;
-  }
-
-  .matches-title-section h2 {
-    font-size: 22px;
-  }
-
-  .matches-subtitle {
-    font-size: 13px;
-  }
-
-  /* Actions row */
-  .matches-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* Refresh button smaller */
-  .refresh-btn {
-    height: 36px;
-    padding: 0 12px;
-    font-size: 13px;
-  }
-
-  /* Avatar stays on right */
-  .user-avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 15px;
-  }
-
-  /* Dropdown full-width feel */
-  .user-dropdown {
-    right: 0;
-    width: 220px;
-  }
-}
-
-.view-quiz-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }

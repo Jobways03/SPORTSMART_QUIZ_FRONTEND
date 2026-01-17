@@ -5,12 +5,15 @@ export async function adminFetchMatches() {
   return res.data; // [] or { matches: [] }
 }
 
-export async function adminCreateMatch(payload) {
-  // { title, tournament, startTime }
-  const res = await api.post("/api/admin/matches", payload);
+export async function adminCreateMatch(formData) {
+  const res = await api.post("/api/admin/matches", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return res.data;
 }
-
 export async function adminUpdateMatchStatus(matchId, status) {
   const res = await api.patch(`/api/admin/matches/${matchId}`, { status });
   return res.data;

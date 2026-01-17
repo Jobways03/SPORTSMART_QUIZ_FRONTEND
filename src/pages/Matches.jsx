@@ -144,5 +144,6 @@ function normalizeMatch(m) {
     tournament: m.tournament,
     startTime: m.startTime,
     status: m.status,
+    coverImage: m.coverImage,
   };
 }

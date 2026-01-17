@@ -7,7 +7,6 @@ export default function MatchCard({ match, onViewQuiz }) {
 
   const isDisabled = status === "UPCOMING" || status === "CANCELLED";
 
-  // Get sport icon based on title
   const getSportIcon = (title) => {
     if (title.toLowerCase().includes("cricket")) return "🏏";
     if (
@@ -22,8 +21,18 @@ export default function MatchCard({ match, onViewQuiz }) {
 
   return (
     <div className="match-card">
-      <div className="match-sport-icon">{getSportIcon(match.title)}</div>
+      {/* ✅ COVER IMAGE */}
+      {match.coverImage && (
+        <div className="match-cover-wrapper">
+          <img
+            src={match.coverImage}
+            alt={match.title}
+            className="match-cover-image"
+          />
+        </div>
+      )}
 
+      {/* CARD TOP */}
       <div className="match-card-top">
         <h3 className="match-title">{match.title}</h3>
         <span className={`match-badge match-badge-${status.toLowerCase()}`}>
@@ -33,10 +42,10 @@ export default function MatchCard({ match, onViewQuiz }) {
 
       <div className="match-meta">
         <div className="meta-item meta-tournament">
-          <b>Tournament</b> {match.tournament || "-"}
+          <b>Tournament :</b> {match.tournament || "-"}
         </div>
         <div className="meta-item meta-start">
-          <b>Start Time</b> {formatDateTime(match.startTime)}
+          <b>Start Time :</b> {formatDateTime(match.startTime)}
         </div>
       </div>
 
