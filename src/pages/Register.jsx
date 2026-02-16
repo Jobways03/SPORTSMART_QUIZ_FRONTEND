@@ -19,10 +19,14 @@ export default function Register() {
   const [error, setError] = useState("");
   const [phoneFocused, setPhoneFocused] = useState(false);
 
-  const strength = useMemo(
-    () => getPasswordStrength(form.password),
-    [form.password],
-  );
+ const strength = useMemo(
+   () => getPasswordStrength(form.password),
+   [form.password],
+ );
+
+ const pwLevel = Math.max(0, Math.min(3, Number(strength.level || 0)));
+ const pwLabel = strength.label || "";
+
 
   /* ---------------- VALIDATION HELPERS ---------------- */
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -246,10 +250,10 @@ export default function Register() {
                 {form.password && (
                   <div className="pwStrength">
                     <div className="pwTrack">
-                      <div className={`pwFill pwFill--${strength.level}`} />
+                      <div className={`pwFill pwFill--${pwLevel}`} />
                     </div>
-                    <span className={`pwLabel pwLabel--${strength.level}`}>
-                      {strength.label}
+                    <span className={`pwLabel pwLabel--${pwLevel}`}>
+                      {pwLabel}
                     </span>
                   </div>
                 )}
