@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   fetchLeaderboard,
   fetchUserRank,
@@ -17,6 +17,7 @@ const getMedalStyle = (rank) => {
 export default function Leaderboard() {
   const { quizId } = useParams();
   const { user } = useUser();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
@@ -47,101 +48,187 @@ export default function Leaderboard() {
     // eslint-disable-next-line
   }, [quizId, user?.userId]);
 
-  // Get top 3 for podium
-  const topThree = list.slice(0, 3);
+  const topThree = useMemo(() => list.slice(0, 3), [list]);
 
   return (
-    <div className="leaderboard-page">
-      <Link to="/matches" className="leaderboard-back-link">
-        ← Back to Matches
-      </Link>
+    <div className="l-page">
+      {/* Background */}
+      <div className="l-bg-pattern" aria-hidden="true" />
+      <div className="l-glow l-glow--tl" aria-hidden="true" />
+      <div className="l-glow l-glow--br" aria-hidden="true" />
 
-      <div className="leaderboard-header">
-        <h2>Leaderboard</h2>
-        <div className="trophy-icon">🏆</div>
-      </div>
+      <div className="l-shell">
+        {/* Topbar */}
+        <header className="l-topbar">
+          <button
+            type="button"
+            className="l-back"
+            onClick={() => navigate("/matches")}
+            aria-label="Back to Matches"
+            title="Back"
+          >
+            <span className="l-mi" aria-hidden="true">
+              arrow_back
+            </span>
+            Back
+          </button>
 
-      {loading && (
-        <div className="leaderboard-loading">
-          <div className="loading-spinner"></div>
-          Loading leaderboard…
-        </div>
-      )}
+          <div className="l-topmeta">
+            <div className="l-top-title">Leaderboard</div>
+            <div className="l-top-sub">
+              {loading ? "Loading…" : `${list.length} players`}
+            </div>
+          </div>
 
-      {!loading && error && <div className="leaderboard-error">{error}</div>}
+          <button
+            type="button"
+            className="l-icon-btn"
+            onClick={load}
+            disabled={loading}
+            aria-label="Refresh leaderboard"
+            title="Refresh"
+          >
+            <span className="l-mi" aria-hidden="true">
+              refresh
+            </span>
+          </button>
+        </header>
 
-      {!loading && !error && rank !== null && (
-        <div className="rank-card">
-          Your Rank <b>#{rank ?? "-"}</b>
-        </div>
-      )}
+        {/* Loading */}
+        {loading && (
+          <div className="l-alert l-alert--info">
+            <div className="l-alert-title">Loading</div>
+            <div className="l-alert-text">
+              <span className="l-spinner" aria-hidden="true" />
+              Loading leaderboard…
+            </div>
+          </div>
+        )}
 
-      {/* Podium for top 3 */}
-      {!loading && !error && topThree.length > 0 && (
-        <div className="podium-container">
-          {topThree.map((u, index) => {
-            const podiumClass = `podium-item podium-${index + 1}`;
-            const medal = getMedalStyle(u.rank);
+        {/* Error */}
+        {!loading && error && (
+          <div className="l-alert l-alert--error">
+            <div className="l-alert-title">Error</div>
+            <div className="l-alert-text">{error}</div>
+          </div>
+        )}
 
-            return (
-              <div key={u.rank} className={podiumClass}>
-                <div className="podium-content">
-                  <div className="podium-rank">{medal.emoji}</div>
-                  <div className="podium-name">{u.name}</div>
-                  <div className="podium-score">{u.score} pts</div>
-                </div>
+        {/* Your rank */}
+        {!loading && !error && rank !== null && (
+          <div className="l-rankCard">
+            <div className="l-rankLeft">
+              <div className="l-rankLabel">Your Rank</div>
+              <div className="l-rankValue">#{rank ?? "-"}</div>
+            </div>
+            <div className="l-rankChip">
+              <span className="l-mi" aria-hidden="true">
+                emoji_events
+              </span>
+              {rank === 1
+                ? "Top 1"
+                : rank === 2
+                  ? "Top 2"
+                  : rank === 3
+                    ? "Top 3"
+                    : "Player"}
+            </div>
+          </div>
+        )}
+
+        {/* Podium */}
+        {!loading && !error && topThree.length > 0 && (
+          <section className="l-podium">
+            <div className="l-podiumHead">
+              <div className="l-podiumTitle">
+                <span className="l-trophy" aria-hidden="true">
+                  🏆
+                </span>
+                Top Players
               </div>
-            );
-          })}
-        </div>
-      )}
+              <div className="l-podiumSub">Podium (Top 3)</div>
+            </div>
 
-      {/* Full Leaderboard Table */}
-      {!loading && !error && list.length > 0 && (
-        <div className="leaderboard-table">
-          <div className="table-header1">
-            <div className="table-header-rank">Rank</div>
-            <div className="table-header-user">Player</div>
-            <div className="table-header-score">Score</div>
-          </div>
-
-          <div className="table-body">
-            {list.map((u, index) => {
-              const isMe = u.phone === user.phone;
-              const rowClass = `leaderboard-row ${isMe ? "user-row" : ""}`;
-              const medal = getMedalStyle(u.rank);
-
-              return (
-                <div
-                  key={u.rank || index}
-                  className={rowClass}
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <div className={`rank-column ${medal.className}`}>
-                    {medal.emoji}
+            <div className="l-podiumGrid">
+              {topThree.map((u, idx) => {
+                const medal = getMedalStyle(u.rank);
+                return (
+                  <div
+                    key={u.rank || idx}
+                    className={`l-podiumCard p-${idx + 1}`}
+                  >
+                    <div className="l-podiumBadge">{medal.emoji}</div>
+                    <div className="l-podiumName" title={u.name}>
+                      {u.name}
+                    </div>
+                    <div className="l-podiumScore">{u.score} pts</div>
                   </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
-                  <div className="user-column">
-                    <div className="user-name">{u.name}</div>
-                    {/* <div className="user-phone">{u.phone}</div> */}
+        {/* Table */}
+        {!loading && !error && list.length > 0 && (
+          <section className="l-table">
+            <div className="l-th">
+              <div>Rank</div>
+              <div>Player</div>
+              <div className="l-right">Score</div>
+            </div>
+
+            <div className="l-tb">
+              {list.map((u, index) => {
+                const isMe = u.phone === user.phone;
+                const medal = getMedalStyle(u.rank);
+
+                return (
+                  <div
+                    key={u.rank || index}
+                    className={`l-tr ${isMe ? "is-me" : ""}`}
+                    style={{ animationDelay: `${index * 0.04}s` }}
+                  >
+                    <div className={`l-td l-rank ${medal.className}`}>
+                      {medal.emoji}
+                    </div>
+
+                    <div className="l-td l-user">
+                      <div className="l-name">
+                        {u.name}
+                        {isMe && <span className="l-meTag">You</span>}
+                      </div>
+                    </div>
+
+                    <div className="l-td l-score l-right">{u.score}</div>
                   </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
-                  <div className="score-column">{u.score}</div>
-                </div>
-              );
-            })}
+        {/* Empty */}
+        {!loading && !error && list.length === 0 && (
+          <div className="l-state">
+            <div className="l-stateCard">
+              <div className="l-stateIcon" aria-hidden="true">
+                📊
+              </div>
+              <h3 className="l-stateTitle">No Leaderboard Data</h3>
+              <p className="l-stateText">
+                Be the first to participate in the quiz!
+              </p>
+
+              <Link to="/matches" className="l-btn">
+                <span className="l-btn-mi" aria-hidden="true">
+                  sports_cricket
+                </span>
+                Browse Matches
+              </Link>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!loading && !error && list.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-icon">📊</div>
-          <h3>No Leaderboard Data</h3>
-          <p>Be the first to participate in the quiz!</p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

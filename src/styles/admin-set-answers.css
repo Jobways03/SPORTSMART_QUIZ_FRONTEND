@@ -2,11 +2,6 @@
    ADMIN SET ANSWERS – DARK THEME
 ================================================= */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
 
 /* PAGE */
 .adm-sa-page {

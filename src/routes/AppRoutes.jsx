@@ -112,14 +112,7 @@ export default function AppRoutes() {
         }
       />
 
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/home" element={<HomePage />} />
 
       {/* ================= ADMIN AUTH ================= */}
       <Route path="/admin/login" element={<AdminLogin />} />

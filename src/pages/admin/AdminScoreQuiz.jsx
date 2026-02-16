@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { adminFetchMatches } from "../../services/adminMatch.service";
 import { adminScoreQuiz } from "../../services/adminScore.service";
 import "../../styles/admin-score-quiz.css";
 
 export default function AdminScoreQuiz() {
   const { matchId } = useParams();
+  const navigate = useNavigate();
 
   const [quizId, setQuizId] = useState(null);
   const [match, setMatch] = useState(null);
@@ -59,57 +60,154 @@ export default function AdminScoreQuiz() {
     }
   };
 
+  const status = match?.status || "UNKNOWN";
+  const canScore = quizId && status === "COMPLETED" && !scoring;
+
   return (
-    <div className="adm-sq-page">
-      <div className="adm-sq-wrap">
-        <Link to="/admin/matches" className="adm-sq-back">
-          ← Back to Matches
-        </Link>
+    <div className="asq-page">
+      <div className="asq-container">
+        {/* TOP BAR */}
+        <div className="asq-topbar">
+          <div className="asq-topbar-left">
+            <Link to="/admin/matches" className="asq-back-link">
+              ← Back to Matches
+            </Link>
 
-        <header className="adm-sq-header">
-          <h1 className="adm-sq-title">Score Quiz Responses</h1>
-          <p className="adm-sq-subtitle">
-            Calculate final scores after correct answers are set
-          </p>
-        </header>
+            <div className="asq-title-wrap">
+              <h1 className="asq-title">Score Quiz Responses</h1>
+              <p className="asq-subtitle">
+                Calculate final scores after correct answers are set.
+              </p>
+            </div>
+          </div>
 
-        {loading && <div className="adm-sq-info">Loading…</div>}
+          <div className="asq-topbar-actions">
+            <button
+              type="button"
+              className="asq-btn asq-btn-ghost"
+              onClick={loadData}
+              disabled={loading || scoring}
+            >
+              Refresh
+            </button>
 
-        {!loading && (
-          <>
-            <div className="adm-sq-meta">
-              <div className="adm-sq-chip">
-                Status: <b>{match?.status || "UNKNOWN"}</b>
+            <button
+              type="button"
+              className="asq-btn asq-btn-secondary"
+              onClick={() => navigate(`/admin/matches/${matchId}/answers`)}
+              disabled={loading || scoring}
+              title="Set correct answers before scoring"
+            >
+              Go to Set Answers
+            </button>
+          </div>
+        </div>
+
+        {/* MAIN CARD */}
+        <div className="asq-card">
+          <div className="asq-card-head">
+            <div>
+              <h2 className="asq-card-title">Scoring Checklist</h2>
+              <p className="asq-card-desc">
+                Ensure answers are finalized. Scoring will compute points for
+                all submitted responses.
+              </p>
+            </div>
+
+            <div className="asq-chips">
+              <div className={`asq-chip asq-chip-${status.toLowerCase()}`}>
+                Status: <b>{status}</b>
               </div>
-              <div className="adm-sq-chip">
+              <div className={`asq-chip ${quizId ? "ok" : "bad"}`}>
                 Quiz: <b>{quizId ? "FOUND" : "NOT FOUND"}</b>
               </div>
             </div>
+          </div>
 
-            {errorMsg && <div className="adm-sq-error">{errorMsg}</div>}
-
-            {result && (
-              <div className="adm-sq-success">
-                <b>{result.message}</b>
-                <div>Responses scored: {result.scoredCount}</div>
-              </div>
-            )}
-
-            <div className="adm-sq-action">
-              <button
-                className="adm-sq-btn"
-                disabled={match?.status !== "COMPLETED" || scoring}
-                onClick={handleScore}
-              >
-                {scoring ? "Scoring…" : "Score Responses"}
-              </button>
-
-              <p className="adm-sq-note">
-                ⚠️ Ensure correct answers are set before scoring.
-              </p>
+          {loading ? (
+            <div className="asq-state">
+              <div className="asq-spinner" />
+              Loading match…
             </div>
-          </>
-        )}
+          ) : (
+            <div className="asq-body">
+              {/* Alerts */}
+              <div className="asq-messages">
+                {errorMsg && (
+                  <div className="asq-alert asq-alert-error">{errorMsg}</div>
+                )}
+
+                {result && (
+                  <div className="asq-alert asq-alert-success">
+                    <b>{result.message}</b>
+                    <div className="asq-success-sub">
+                      Responses scored: <b>{result.scoredCount}</b>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Meta */}
+              <div className="asq-meta-grid">
+                <div className="asq-meta-item">
+                  <div className="asq-meta-label">Match</div>
+                  <div className="asq-meta-value">{match?.title || "-"}</div>
+                </div>
+
+                <div className="asq-meta-item">
+                  <div className="asq-meta-label">Tournament</div>
+                  <div className="asq-meta-value">
+                    {match?.tournament || "-"}
+                  </div>
+                </div>
+
+                <div className="asq-meta-item">
+                  <div className="asq-meta-label">Match ID</div>
+                  <div className="asq-meta-value asq-mono">{matchId}</div>
+                </div>
+
+                <div className="asq-meta-item">
+                  <div className="asq-meta-label">Quiz ID</div>
+                  <div className="asq-meta-value asq-mono">{quizId || "-"}</div>
+                </div>
+              </div>
+
+              <div className="asq-divider" />
+
+              {/* Action */}
+              <div className="asq-action-row">
+                <div className="asq-warning">
+                  <div className="asq-warning-title">Before you score</div>
+                  <ul className="asq-warning-list">
+                    <li>Match status must be COMPLETED</li>
+                    <li>Correct answers must be set for all questions</li>
+                    <li>Do scoring once after finalizing answers</li>
+                  </ul>
+                </div>
+
+                <div className="asq-action">
+                  <button
+                    type="button"
+                    className="asq-btn asq-btn-primary asq-btn-wide"
+                    disabled={!canScore}
+                    onClick={handleScore}
+                  >
+                    {scoring ? "Scoring…" : "Score Responses"}
+                  </button>
+
+                  <div className="asq-note">
+                    ⚠️ Ensure correct answers are set before scoring.
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="asq-foot">
+          Tip: After scoring, go to <b>Publish Results</b> to make results
+          visible to users.
+        </div>
       </div>
     </div>
   );

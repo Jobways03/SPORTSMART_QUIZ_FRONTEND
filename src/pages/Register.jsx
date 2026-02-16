@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/auth.service";
 import { getPasswordStrength } from "../utils/passwordStrength";
@@ -19,19 +19,38 @@ export default function Register() {
   const [error, setError] = useState("");
   const [phoneFocused, setPhoneFocused] = useState(false);
 
-  const strength = getPasswordStrength(form.password);
+  const strength = useMemo(
+    () => getPasswordStrength(form.password),
+    [form.password],
+  );
 
   /* ---------------- VALIDATION HELPERS ---------------- */
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   const isValidPhone = (phone) => /^[6-9]\d{9}$/.test(phone);
-
   const isStrongPassword = (password) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password);
+
+  /* ---------------- FIELD HELPERS ---------------- */
+  const onChangeField = (key) => (e) =>
+    setForm((prev) => ({ ...prev, [key]: e.target.value }));
+
+  const onChangePhone = (e) => {
+    const digits = e.target.value.replace(/\D/g, "");
+    const phone = digits.startsWith("91") ? digits.slice(2) : digits;
+    if (phone.length <= 10) setForm((prev) => ({ ...prev, phone }));
+  };
+
+  const phoneDisplayValue = phoneFocused
+    ? `+91 ${form.phone}`
+    : form.phone
+      ? `+91 ${form.phone}`
+      : "";
 
   /* ---------------- SUBMIT ---------------- */
   const submit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+
     setError("");
 
     // NAME
@@ -70,154 +89,205 @@ export default function Register() {
     }
   };
 
- return (
-   <div className="login-page">
-     <div className="auth-shell">
-       {/* LEFT: professional info panel */}
-       <div className="auth-info">
-         <div className="brand">
-           <div className="brand-mark">SP</div>
-           <div>
-             <div className="brand-name">Sports Prediction</div>
-             <span className="brand-tag">
-               Create your account in under a minute
-             </span>
-           </div>
-         </div>
+  return (
+    <div className="sleek-login">
+      <div className="bg-pattern" aria-hidden="true" />
+      <div className="glow glow--tl" aria-hidden="true" />
+      <div className="glow glow--br" aria-hidden="true" />
 
-         <h2 className="info-title">
-           Create your account and start predicting.
-         </h2>
+      <div className="container">
+        <div className="card">
+          {/* Header */}
+          <div className="header">
+            <div className="iconBox" aria-hidden="true">
+              <span className="mat-icon">person_add</span>
+            </div>
 
-         <p className="info-subtitle">
-           Register with email or phone number. You can participate in quizzes
-           and predictions before the match starts.
-         </p>
+            <div className="titleWrap">
+              <h1 className="title">Create Account</h1>
+              <p className="subtitle">Register to continue</p>
+            </div>
+          </div>
 
-         <div className="info-list">
-           <div className="info-item">
-             <span className="dot" />
-             <div>
-               <p className="info-item-title">Fast signup</p>
-               <p className="info-item-desc">
-                 Simple registration with secure password rules.
-               </p>
-             </div>
-           </div>
+          {/* Form */}
+          <form className="form" onSubmit={submit}>
+            <div className="fields">
+              {/* Name */}
+              <div className="field">
+                <label className="label" htmlFor="name">
+                  Full Name
+                </label>
 
-           <div className="info-item">
-             <span className="dot" />
-             <div>
-               <p className="info-item-title">Play before match begins</p>
-               <p className="info-item-desc">
-                 Predictions close on match start time for fairness.
-               </p>
-             </div>
-           </div>
+                <div className="inputWrap">
+                  <span className="leftIcon mat-icon" aria-hidden="true">
+                    person_outline
+                  </span>
 
-           <div className="info-item">
-             <span className="dot" />
-             <div>
-               <p className="info-item-title">Rank & results</p>
-               <p className="info-item-desc">
-                 View your score and leaderboard after match completion.
-               </p>
-             </div>
-           </div>
-         </div>
+                  <input
+                    id="name"
+                    className="input"
+                    placeholder="Enter your name"
+                    value={form.name}
+                    onChange={onChangeField("name")}
+                    autoComplete="name"
+                    disabled={loading}
+                  />
+                </div>
+              </div>
 
-         <div className="note">
-           Tip: Use a unique password to keep your account protected.
-         </div>
-       </div>
+              {/* Email */}
+              <div className="field">
+                <label className="label" htmlFor="email">
+                  Email Address
+                </label>
 
-       {/* RIGHT: register form */}
-       <div className="login-card">
-         <h2 className="auth-title">Create Account</h2>
-         <p className="auth-subtitle">
-           Register to participate in live quizzes.
-         </p>
+                <div className="inputWrap">
+                  <span className="leftIcon mat-icon" aria-hidden="true">
+                    mail_outline
+                  </span>
 
-         <form className="login-form" onSubmit={submit}>
-           <input
-             className="form-input"
-             placeholder="Name"
-             value={form.name}
-             onChange={(e) => setForm({ ...form, name: e.target.value })}
-           />
+                  <input
+                    id="email"
+                    className="input"
+                    placeholder="Enter your email"
+                    value={form.email}
+                    onChange={onChangeField("email")}
+                    autoComplete="email"
+                    inputMode="email"
+                    disabled={loading}
+                  />
+                </div>
+              </div>
 
-           <input
-             className="form-input"
-             placeholder="Email"
-             value={form.email}
-             onChange={(e) => setForm({ ...form, email: e.target.value })}
-           />
+              {/* Phone (+91 lock) */}
+              <div className="field">
+                <label className="label" htmlFor="phone">
+                  Phone Number
+                </label>
 
-           <input
-             className="form-input"
-             placeholder="Phone"
-             value={phoneFocused ? `+91 ${form.phone}` : ""}
-             onFocus={() => setPhoneFocused(true)}
-             onBlur={() => {
-               if (!form.phone) setPhoneFocused(false);
-             }}
-             onChange={(e) => {
-               const digits = e.target.value.replace(/\D/g, "");
-               const phone = digits.startsWith("91") ? digits.slice(2) : digits;
+                <div className="inputWrap">
+                  <span className="leftIcon mat-icon" aria-hidden="true">
+                    call
+                  </span>
 
-               if (phone.length <= 10) setForm({ ...form, phone });
-             }}
-             onKeyDown={(e) => {
-               if (
-                 (e.key === "Backspace" || e.key === "Delete") &&
-                 e.target.selectionStart <= 4
-               ) {
-                 e.preventDefault();
-               }
-             }}
-           />
+                  <input
+                    id="phone"
+                    className="input"
+                    placeholder="Enter your phone"
+                    value={phoneDisplayValue}
+                    onFocus={() => setPhoneFocused(true)}
+                    onBlur={() => {
+                      if (!form.phone) setPhoneFocused(false);
+                    }}
+                    onChange={onChangePhone}
+                    onKeyDown={(e) => {
+                      // prevent deleting the "+91 " prefix area
+                      if (
+                        (e.key === "Backspace" || e.key === "Delete") &&
+                        e.currentTarget.selectionStart <= 4
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    disabled={loading}
+                  />
+                </div>
+              </div>
 
-           <div className="password-field">
-             <input
-               className="form-input"
-               type={showPassword ? "text" : "password"}
-               placeholder="Password"
-               value={form.password}
-               onChange={(e) => setForm({ ...form, password: e.target.value })}
-             />
-             <button
-               type="button"
-               className="password-toggle"
-               onClick={() => setShowPassword((v) => !v)}
-             >
-               {showPassword ? "Hide" : "Show"}
-             </button>
-           </div>
+              {/* Password */}
+              <div className="field">
+                <div className="labelRow">
+                  <label className="label" htmlFor="password">
+                    Password
+                  </label>
+                  <button
+                    type="button"
+                    className="link"
+                    onClick={() => navigate("/login")}
+                    disabled={loading}
+                    title="Already have an account?"
+                  >
+                    Login instead
+                  </button>
+                </div>
 
-           {form.password && (
-             <div className="password-strength">
-               <div className={`strength-bar strength-${strength.level}`} />
-               <span className={`strength-label strength-${strength.level}`}>
-                 {strength.label}
-               </span>
-             </div>
-           )}
+                <div className="inputWrap">
+                  <span className="leftIcon mat-icon" aria-hidden="true">
+                    lock_outline
+                  </span>
 
-           {error && <div className="error-message">{error}</div>}
+                  <input
+                    id="password"
+                    className="input input--withRight"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={form.password}
+                    onChange={onChangeField("password")}
+                    autoComplete="new-password"
+                    disabled={loading}
+                  />
 
-           <button className="login-button" disabled={loading}>
-             {loading ? "Creating account..." : "Create account"}
-           </button>
-         </form>
+                  <button
+                    type="button"
+                    className="rightBtn"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label="Toggle password visibility"
+                    disabled={loading}
+                  >
+                    <span className="mat-icon" aria-hidden="true">
+                      {showPassword ? "visibility" : "visibility_off"}
+                    </span>
+                  </button>
+                </div>
 
-         <div className="auth-links">
-           <button className="link-btn" onClick={() => navigate("/login")}>
-             Already have an account? Login
-           </button>
-         </div>
-       </div>
-     </div>
-   </div>
- );
+                {/* Strength indicator */}
+                {form.password && (
+                  <div className="pwStrength">
+                    <div className="pwTrack">
+                      <div className={`pwFill pwFill--${strength.level}`} />
+                    </div>
+                    <span className={`pwLabel pwLabel--${strength.level}`}>
+                      {strength.label}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
 
+            {error && <div className="error">{error}</div>}
+
+            <button className="submit" type="submit" disabled={loading}>
+              {loading ? (
+                <span className="loadingRow">
+                  <span className="spinner" aria-hidden="true" />
+                  Creating account...
+                </span>
+              ) : (
+                "Create account"
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="footer">
+            <p className="footerText">
+              Already have an account?
+              <button
+                type="button"
+                className="footerLink"
+                onClick={() => navigate("/login")}
+                disabled={loading}
+              >
+                Login
+              </button>
+            </p>
+          </div>
+        </div>
+
+        <div className="homeIndicator" aria-hidden="true" />
+      </div>
+    </div>
+  );
 }

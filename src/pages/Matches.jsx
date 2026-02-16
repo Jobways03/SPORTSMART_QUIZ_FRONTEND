@@ -101,105 +101,156 @@ export default function Matches() {
   };
 
   return (
-    <div className="m-page">
-      {/* Top App Bar */}
-      <header className="m-appbar">
-        <div className="m-appbar-left">
-          <div className="m-title">Matches</div>
-          <div className="m-subtitle">
-            {loading ? "Loading…" : `${matches.length} available`}
-          </div>
-        </div>
+    <div className="sm-matches">
+      {/* Background */}
+      <div className="sm-bg-pattern" aria-hidden="true" />
+      <div className="sm-glow sm-glow--tl" aria-hidden="true" />
+      <div className="sm-glow sm-glow--br" aria-hidden="true" />
 
-        <button
-          className="m-profile-btn"
-          onClick={() => setProfileOpen(true)}
-          aria-label="Open profile"
-        >
-          <span className="m-avatar">{getInitials(user?.name)}</span>
-        </button>
-      </header>
-
-      {/* Error */}
-      {error && (
-        <div className="m-alert m-alert-error">
-          <div className="m-alert-title">Error</div>
-          <div className="m-alert-text">{error}</div>
-        </div>
-      )}
-
-      {/* Body */}
-      {loading ? (
-        <div className="m-skeleton-wrap">
-          <div className="m-skeleton-card" />
-          <div className="m-skeleton-card" />
-          <div className="m-skeleton-card" />
-        </div>
-      ) : matches.length === 0 ? (
-        <div className="m-empty">
-          <div className="m-empty-card">
-            <div className="m-empty-icon">🏏</div>
-            <div className="m-empty-title">No matches available</div>
-            <div className="m-empty-text">
-              Matches will appear here when available. Try refreshing.
+      {/* App Shell */}
+      <div className="sm-shell">
+        {/* Top Bar */}
+        <header className="sm-topbar">
+          <div className="sm-topbar-left">
+            <div className="sm-topbar-title">Matches</div>
+            <div className="sm-topbar-sub">
+              {loading ? "Loading…" : `${matches.length} available`}
             </div>
+          </div>
 
-            <button className="m-btn m-btn-primary" onClick={load}>
-              Refresh
+          <div className="sm-topbar-right">
+            <button
+              type="button"
+              className="sm-icon-btn"
+              onClick={load}
+              disabled={loading}
+              aria-label="Refresh matches"
+              title="Refresh"
+            >
+              <span className="sm-mi" aria-hidden="true">
+                refresh
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className="sm-avatar-btn"
+              onClick={() => setProfileOpen(true)}
+              aria-label="Open profile"
+            >
+              <span className="sm-avatar">{getInitials(user?.name)}</span>
             </button>
           </div>
-        </div>
-      ) : (
-        <div className="m-grid">
-          {matches.map((m) => (
-            <MatchCard
-              key={m.id}
-              match={m}
-              onViewQuiz={() => navigate(`/quiz/${m.id}`)}
-            />
-          ))}
-        </div>
-      )}
+        </header>
 
-      {/* Overlay */}
-      {profileOpen && (
-        <div className="m-overlay" onClick={() => setProfileOpen(false)} />
-      )}
+        {/* Error */}
+        {error && (
+          <div className="sm-alert sm-alert--error" role="alert">
+            <div className="sm-alert-title">Error</div>
+            <div className="sm-alert-text">{error}</div>
+          </div>
+        )}
 
-      {/* Bottom Sheet Profile */}
-      <div className={`m-sheet ${profileOpen ? "open" : ""}`} ref={sheetRef}>
-        <div className="m-sheet-handle" />
+        {/* Content */}
+        <main className="sm-content">
+          {loading ? (
+            <div className="sm-skeleton-wrap">
+              <div className="sm-skeleton-card" />
+              <div className="sm-skeleton-card" />
+              <div className="sm-skeleton-card" />
+            </div>
+          ) : matches.length === 0 ? (
+            <div className="sm-empty">
+              <div className="sm-empty-card">
+                <div className="sm-empty-icon" aria-hidden="true">
+                  🏏
+                </div>
+                <div className="sm-empty-title">No matches available</div>
+                <div className="sm-empty-text">
+                  Matches will appear here when available. Try refreshing.
+                </div>
 
-        <div className="m-sheet-head">
-          <div className="m-sheet-avatar">{getInitials(user?.name)}</div>
-          <div className="m-sheet-meta">
-            <div className="m-sheet-name">{user?.name || "User"}</div>
-            <div className="m-sheet-email">{user?.email || "-"}</div>
+                <button
+                  type="button"
+                  className="sm-btn sm-btn--primary"
+                  onClick={load}
+                >
+                  <span className="sm-btn-mi" aria-hidden="true">
+                    refresh
+                  </span>
+                  Refresh
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="sm-grid">
+              {matches.map((m) => (
+                <MatchCard
+                  key={m.id}
+                  match={m}
+                  onViewQuiz={() => navigate(`/quiz/${m.id}`)}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+
+        {/* Overlay */}
+        {profileOpen && (
+          <div
+            className="sm-overlay"
+            onClick={() => setProfileOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Bottom Sheet */}
+        <div className={`sm-sheet ${profileOpen ? "open" : ""}`} ref={sheetRef}>
+          <div className="sm-sheet-handle" />
+
+          <div className="sm-sheet-head">
+            <div className="sm-sheet-avatar">{getInitials(user?.name)}</div>
+
+            <div className="sm-sheet-meta">
+              <div className="sm-sheet-name">{user?.name || "User"}</div>
+              <div className="sm-sheet-email">{user?.email || "-"}</div>
+            </div>
+
+            <button
+              type="button"
+              className="sm-sheet-close"
+              onClick={() => setProfileOpen(false)}
+              aria-label="Close"
+              title="Close"
+            >
+              <span className="sm-mi" aria-hidden="true">
+                close
+              </span>
+            </button>
+          </div>
+
+          <div className="sm-sheet-info">
+            <div className="sm-row">
+              <span className="sm-row-k">Phone</span>
+              <b className="sm-row-v">{user?.phone || "-"}</b>
+            </div>
+            <div className="sm-row">
+              <span className="sm-row-k">User ID</span>
+              <b className="sm-row-v sm-mono">{user?.userId || "-"}</b>
+            </div>
           </div>
 
           <button
-            className="m-sheet-close"
-            onClick={() => setProfileOpen(false)}
-            aria-label="Close"
+            type="button"
+            className="sm-btn sm-btn--danger"
+            onClick={onLogout}
           >
-            ✕
+            <span className="sm-btn-mi" aria-hidden="true">
+              logout
+            </span>
+            Logout
           </button>
         </div>
-
-        <div className="m-sheet-info">
-          <div className="m-sheet-row">
-            <span>Phone</span>
-            <b>{user?.phone || "-"}</b>
-          </div>
-          <div className="m-sheet-row">
-            <span>User ID</span>
-            <b className="m-mono">{user?.userId || "-"}</b>
-          </div>
-        </div>
-
-        <button className="m-btn m-btn-danger" onClick={onLogout}>
-          Logout
-        </button>
       </div>
     </div>
   );

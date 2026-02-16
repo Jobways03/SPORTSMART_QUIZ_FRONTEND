@@ -47,124 +47,105 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="auth-shell">
-        {/* LEFT: sports-themed info panel */}
-        <div className="auth-info">
-          <div className="brand">
-            <div className="brand-mark" aria-hidden="true">
-              SP
+    <div className="sleek-login">
+      <div className="bg-pattern" aria-hidden="true" />
+      <div className="glow glow--tl" aria-hidden="true" />
+      <div className="glow glow--br" aria-hidden="true" />
+
+      <div className="container">
+        <div className="card">
+          {/* Header */}
+          <div className="header">
+            <div className="iconBox" aria-hidden="true">
+              <span className="mat-icon">insights</span>
             </div>
-            <div>
-              <div className="brand-name">Sports Prediction</div>
-              <span className="brand-tag">
-                Pre-match predictions • Leaderboard • Results
-              </span>
+
+            <div className="titleWrap">
+              <h1 className="title">Welcome Back</h1>
+              <p className="subtitle">Enter your credentials to continue</p>
             </div>
           </div>
 
-          <h2 className="info-title">
-            Make predictions, earn points, and climb the leaderboard.
-          </h2>
+          {/* Form */}
+          <form className="form" onSubmit={onSubmit}>
+            <div className="fields">
+              {/* Identifier */}
+              <div className="field">
+                <label className="label" htmlFor="identifier">
+                  Email Address / Phone
+                </label>
 
-          <p className="info-subtitle">
-            Login to submit predictions before match start. Once the match ends,
-            your score updates automatically.
-          </p>
+                <div className="inputWrap">
+                  <span className="leftIcon mat-icon" aria-hidden="true">
+                    mail_outline
+                  </span>
 
-          <div className="info-list">
-            <div className="info-item">
-              <span className="dot" />
-              <div>
-                <p className="info-item-title">Entry closes before kickoff</p>
-                <p className="info-item-desc">
-                  Predictions lock before match time to keep it fair.
-                </p>
+                  <input
+                    id="identifier"
+                    className="input"
+                    placeholder="Enter your email or phone"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    autoComplete="username"
+                    inputMode="email"
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="field">
+                <div className="labelRow">
+                  <label className="label" htmlFor="password">
+                    Password
+                  </label>
+
+                  <button
+                    type="button"
+                    className="link"
+                    onClick={() => navigate("/forgot-password")}
+                    disabled={loading}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+
+                <div className="inputWrap">
+                  <span className="leftIcon mat-icon" aria-hidden="true">
+                    lock_outline
+                  </span>
+
+                  <input
+                    id="password"
+                    className="input input--withRight"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    disabled={loading}
+                  />
+
+                  <button
+                    type="button"
+                    className="rightBtn"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label="Toggle password visibility"
+                    disabled={loading}
+                  >
+                    <span className="mat-icon" aria-hidden="true">
+                      {showPassword ? "visibility" : "visibility_off"}
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="info-item">
-              <span className="dot" />
-              <div>
-                <p className="info-item-title">Auto scoring</p>
-                <p className="info-item-desc">
-                  Scores are calculated after results — no manual effort.
-                </p>
-              </div>
-            </div>
+            {error && <div className="error">{error}</div>}
 
-            <div className="info-item">
-              <span className="dot" />
-              <div>
-                <p className="info-item-title">Season leaderboard</p>
-                <p className="info-item-desc">
-                  Track your form across matches and improve your rank.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="note">
-            Tip: Use your email or phone number to login. Keep your password
-            secure.
-          </div>
-        </div>
-
-        {/* RIGHT: login form */}
-        <div className="login-card">
-          <div className="login-head">
-            <h1 className="login-main-title">Login</h1>
-            <p className="auth-subtitle">
-              Access your account to start playing.
-            </p>
-          </div>
-
-          <form className="login-form" onSubmit={onSubmit}>
-            <label className="form-label" htmlFor="identifier">
-              Email or Phone
-            </label>
-            <input
-              id="identifier"
-              className="form-input"
-              placeholder="Email or Phone number"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              autoComplete="username"
-              inputMode="email"
-              disabled={loading}
-            />
-
-            <label className="form-label" htmlFor="password">
-              Password
-            </label>
-
-            <div className="password-field">
-              <input
-                id="password"
-                className="form-input"
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                disabled={loading}
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label="Toggle password visibility"
-                disabled={loading}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-
-            {error && <div className="error-message">{error}</div>}
-
-            <button className="login-button" disabled={loading}>
+            <button className="submit" type="submit" disabled={loading}>
               {loading ? (
-                <span className="btn-loading">
+                <span className="loadingRow">
                   <span className="spinner" aria-hidden="true" />
                   Logging in...
                 </span>
@@ -174,30 +155,24 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="auth-links">
-            <button
-              type="button"
-              className="link-btn"
-              onClick={() => navigate("/register")}
-              disabled={loading}
-            >
-              Don’t have an account? Register
-            </button>
-
-            <button
-              type="button"
-              className="link-btn"
-              onClick={() => navigate("/forgot-password")}
-              disabled={loading}
-            >
-              Forgot Password?
-            </button>
-          </div>
-
-          <div className="auth-foot">
-            By continuing, you agree to fair play and platform rules.
+          {/* Footer */}
+          <div className="footer">
+            <p className="footerText">
+              Don't have an account?
+              <button
+                type="button"
+                className="footerLink"
+                onClick={() => navigate("/register")}
+                disabled={loading}
+              >
+                Sign Up
+              </button>
+            </p>
           </div>
         </div>
+
+        {/* iOS indicator look (optional) */}
+        <div className="homeIndicator" aria-hidden="true" />
       </div>
     </div>
   );

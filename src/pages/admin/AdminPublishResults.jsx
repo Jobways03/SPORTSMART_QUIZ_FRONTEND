@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { adminFetchMatches } from "../../services/adminMatch.service";
 import { adminPublishResults } from "../../services/adminPublish.service";
 import "../../styles/admin-publish-results.css";
 
 export default function AdminPublishResults() {
   const { matchId } = useParams();
+  const navigate = useNavigate();
 
   const [quizId, setQuizId] = useState(null);
   const [match, setMatch] = useState(null);
@@ -62,51 +63,155 @@ export default function AdminPublishResults() {
     }
   };
 
+  const status = match?.status || "UNKNOWN";
+  const canPublish = quizId && status === "COMPLETED" && !publishing;
+
   return (
-    <div className="adm-pr-page">
-      <div className="adm-pr-wrap">
-        <Link to="/admin/matches" className="adm-pr-back">
-          ← Back to Matches
-        </Link>
+    <div className="appr-page">
+      <div className="appr-container">
+        {/* TOP BAR */}
+        <div className="appr-topbar">
+          <div className="appr-topbar-left">
+            <Link to="/admin/matches" className="appr-back-link">
+              ← Back to Matches
+            </Link>
+            <div className="appr-title-wrap">
+              <h1 className="appr-title">Publish Results</h1>
+              <p className="appr-subtitle">
+                Make final scores visible to users & leaderboard.
+              </p>
+            </div>
+          </div>
 
-        <header className="adm-pr-header">
-          <h1 className="adm-pr-title">Publish Quiz Results</h1>
-          <p className="adm-pr-subtitle">
-            Make final scores visible to users and leaderboard.
-          </p>
-        </header>
+          <div className="appr-topbar-actions">
+            <button
+              type="button"
+              className="appr-btn appr-btn-ghost"
+              onClick={loadData}
+              disabled={loading || publishing}
+            >
+              Refresh
+            </button>
 
-        {loading && <div className="adm-pr-info">Loading…</div>}
+            <button
+              type="button"
+              className="appr-btn appr-btn-secondary"
+              onClick={() => navigate(`/admin/matches/${matchId}/score`)}
+              disabled={loading || publishing}
+              title="Score responses before publishing"
+            >
+              Go to Scoring
+            </button>
+          </div>
+        </div>
 
-        {!loading && (
-          <>
-            <div className="adm-pr-meta">
-              <div className="adm-pr-chip">
-                Status: <b>{match?.status || "UNKNOWN"}</b>
+        {/* CONTENT CARD */}
+        <div className="appr-card">
+          <div className="appr-card-head">
+            <div className="appr-card-head-left">
+              <h2 className="appr-card-title">Publishing Checklist</h2>
+              <p className="appr-card-desc">
+                Publish only after answers are set and quiz scoring is
+                completed.
+              </p>
+            </div>
+
+            <div className="appr-chips">
+              <div className={`appr-chip appr-chip-${status.toLowerCase()}`}>
+                Status: <b>{status}</b>
               </div>
-              <div className="adm-pr-chip">
+              <div className={`appr-chip ${quizId ? "ok" : "bad"}`}>
                 Quiz: <b>{quizId ? "FOUND" : "NOT FOUND"}</b>
               </div>
             </div>
+          </div>
 
-            {errorMsg && <div className="adm-pr-error">{errorMsg}</div>}
-            {successMsg && <div className="adm-pr-success">{successMsg}</div>}
-
-            <div className="adm-pr-action">
-              <button
-                className="adm-pr-btn adm-pr-btn-danger"
-                disabled={match?.status !== "COMPLETED" || publishing}
-                onClick={handlePublish}
-              >
-                {publishing ? "Publishing…" : "Publish Results"}
-              </button>
-
-              <p className="adm-pr-note">
-                ⚠️ Publish only after scoring responses is completed.
-              </p>
+          {loading ? (
+            <div className="appr-state">
+              <div className="appr-spinner" />
+              Loading match…
             </div>
-          </>
-        )}
+          ) : (
+            <>
+              {(errorMsg || successMsg) && (
+                <div className="appr-messages">
+                  {errorMsg && (
+                    <div className="appr-alert appr-alert-error">
+                      {errorMsg}
+                    </div>
+                  )}
+                  {successMsg && (
+                    <div className="appr-alert appr-alert-success">
+                      {successMsg}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="appr-body">
+                <div className="appr-meta-grid">
+                  <div className="appr-meta-item">
+                    <div className="appr-meta-label">Match</div>
+                    <div className="appr-meta-value">{match?.title || "-"}</div>
+                  </div>
+
+                  <div className="appr-meta-item">
+                    <div className="appr-meta-label">Tournament</div>
+                    <div className="appr-meta-value">
+                      {match?.tournament || "-"}
+                    </div>
+                  </div>
+
+                  <div className="appr-meta-item">
+                    <div className="appr-meta-label">Match ID</div>
+                    <div className="appr-meta-value appr-mono">{matchId}</div>
+                  </div>
+
+                  <div className="appr-meta-item">
+                    <div className="appr-meta-label">Quiz ID</div>
+                    <div className="appr-meta-value appr-mono">
+                      {quizId || "-"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="appr-divider" />
+
+                <div className="appr-action-row">
+                  <div className="appr-warning">
+                    <div className="appr-warning-title">Before you publish</div>
+                    <ul className="appr-warning-list">
+                      <li>Set correct answers for all questions</li>
+                      <li>Score all submissions</li>
+                      <li>Confirm match status is COMPLETED</li>
+                    </ul>
+                  </div>
+
+                  <div className="appr-action">
+                    <button
+                      type="button"
+                      className="appr-btn appr-btn-danger appr-btn-wide"
+                      disabled={!canPublish}
+                      onClick={handlePublish}
+                    >
+                      {publishing ? "Publishing…" : "Publish Results"}
+                    </button>
+
+                    <div className="appr-note">
+                      ⚠️ This will make results visible to all users.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* FOOT NOTE */}
+        <div className="appr-foot">
+          Tip: If Quiz shows “NOT FOUND”, create/manage quiz from{" "}
+          <b>Manage Quiz</b> and ensure quizId is stored.
+        </div>
       </div>
     </div>
   );

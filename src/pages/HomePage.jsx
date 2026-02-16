@@ -4,50 +4,109 @@ import "../styles/home.css";
 
 export default function HomePage() {
   return (
-    <div className="home-page">
-      {/* HERO SECTION */}
-      <section className="hero-section">
-        <div className="hero-container">
-          <div className="hero-content">
-            <div className="hero-badge">Test Your Sports IQ</div>
-            <h1 className="hero-title">
-              Predict Matches.
-              <br />
-              <span className="highlight">Win Exciting Prizes.</span>
-            </h1>
-            <p className="hero-subtitle">
-              Make predictions on upcoming sports matches, compete with other
-              fans, and get rewarded for your accuracy.
-            </p>
+    <div className="h-page">
+      {/* Background */}
+      <div className="h-bg-pattern" aria-hidden="true" />
+      <div className="h-glow h-glow--tl" aria-hidden="true" />
+      <div className="h-glow h-glow--br" aria-hidden="true" />
 
-            <div className="hero-cta">
-              <Link to="/login" className="cta-button primary">
-                Start Predicting Now
-              </Link>
-              <a href="#how-it-works" className="cta-button secondary">
-                How It Works
-              </a>
+      {/* Top Nav */}
+      <header className="h-nav">
+        <div className="h-nav-left">
+          <div className="h-brand">
+            <div className="h-brand-mark" aria-hidden="true">
+              SP
+            </div>
+            <div className="h-brand-text">
+              <div className="h-brand-name">Sports Prediction</div>
+              <div className="h-brand-tag">Predict • Score • Rank</div>
             </div>
           </div>
+        </div>
 
-          <div className="hero-visual">
-            <div className="prediction-preview">
-              <div className="preview-header">
-                <div className="sport-badge">⚽ Football</div>
-                <div className="time-badge">Starts in 2h</div>
+        <div className="h-nav-right">
+          <Link to="/login" className="h-nav-btn h-nav-btn--ghost">
+            Login
+          </Link>
+          <Link to="/register" className="h-nav-btn h-nav-btn--primary">
+            Register
+          </Link>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section className="h-hero">
+        <div className="h-shell">
+          <div className="h-hero-grid">
+            {/* Left */}
+            <div className="h-hero-content">
+              <div className="h-badge">Test Your Sports IQ</div>
+
+              <h1 className="h-title">
+                Predict Matches.
+                <br />
+                <span className="h-highlight">Win Exciting Prizes.</span>
+              </h1>
+
+              <p className="h-subtitle">
+                Make predictions on upcoming sports matches, compete with other
+                fans, and get rewarded for your accuracy.
+              </p>
+
+              <div className="h-cta">
+                <Link to="/login" className="h-btn h-btn--primary">
+                  Start Predicting Now
+                </Link>
+
+                <a href="#how-it-works" className="h-btn h-btn--ghost">
+                  How It Works
+                </a>
               </div>
-              <div className="match-teams">
-                <div className="team">Manchester City</div>
-                <div className="vs">vs</div>
-                <div className="team">Liverpool</div>
+
+              <div className="h-trust">
+                <div className="h-trust-item">
+                  <span className="h-dot" />
+                  Fast signup
+                </div>
+                <div className="h-trust-item">
+                  <span className="h-dot" />
+                  Auto scoring
+                </div>
+                <div className="h-trust-item">
+                  <span className="h-dot" />
+                  Leaderboard
+                </div>
               </div>
-              <div className="preview-questions">
-                <div className="question">Who will win?</div>
-                <div className="question">Total goals?</div>
-                <div className="question">First scorer?</div>
-              </div>
-              <div className="preview-footer">
-                <span className="login-note">Login to predict →</span>
+            </div>
+
+            {/* Right Preview */}
+            <div className="h-hero-visual">
+              <div className="h-preview">
+                <div className="h-preview-top">
+                  <div className="h-pill">⚽ Football</div>
+                  <div className="h-pill h-pill--muted">Starts in 2h</div>
+                </div>
+
+                <div className="h-preview-match">
+                  <div className="h-team">Manchester City</div>
+                  <div className="h-vs">vs</div>
+                  <div className="h-team">Liverpool</div>
+                </div>
+
+                <div className="h-preview-qs">
+                  <div className="h-q">Who will win?</div>
+                  <div className="h-q">Total goals?</div>
+                  <div className="h-q">First scorer?</div>
+                </div>
+
+                <div className="h-preview-foot">
+                  <span className="h-note">Login to predict →</span>
+                  <Link to="/login" className="h-mini-btn">
+                    Open
+                  </Link>
+                </div>
+
+                <div className="h-preview-glow" aria-hidden="true" />
               </div>
             </div>
           </div>
@@ -55,85 +114,121 @@ export default function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="steps-section">
-        <div className="section-header">
-          <h2>How It Works</h2>
-          <p className="section-subtitle">Simple steps to start predicting</p>
-        </div>
-        <div className="steps-container">
-          <div className="step">
-            <div className="step-circle">1</div>
-            <h3>Sign In</h3>
-            <p>Create your account or login to get started</p>
+      <section id="how-it-works" className="h-section">
+        <div className="h-shell">
+          <div className="h-section-head">
+            <h2 className="h-h2">How It Works</h2>
+            <p className="h-sub">Simple steps to start predicting</p>
           </div>
 
-          <div className="step-connector"></div>
+          <div className="h-steps">
+            <div className="h-step">
+              <div className="h-step-no">1</div>
+              <div className="h-step-title">Sign In</div>
+              <div className="h-step-text">Create your account or login.</div>
+            </div>
 
-          <div className="step">
-            <div className="step-circle">2</div>
-            <h3>Predict</h3>
-            <p>Choose upcoming matches and make your predictions</p>
-          </div>
+            <div className="h-step">
+              <div className="h-step-no">2</div>
+              <div className="h-step-title">Predict</div>
+              <div className="h-step-text">
+                Choose upcoming matches and answer questions.
+              </div>
+            </div>
 
-          <div className="step-connector"></div>
-
-          <div className="step">
-            <div className="step-circle">3</div>
-            <h3>Win</h3>
-            <p>Earn points for accuracy and win exciting rewards</p>
+            <div className="h-step">
+              <div className="h-step-no">3</div>
+              <div className="h-step-title">Win</div>
+              <div className="h-step-text">
+                Earn points for accuracy and climb the ranks.
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* FEATURES */}
-      <section className="features-section">
-        <div className="section-header">
-          <h2>Why Choose Us</h2>
-          <p className="section-subtitle">Designed for true sports fans</p>
-        </div>
-        <div className="features-grid">
-          <div className="feature">
-            <div className="feature-icon">🏆</div>
-            <h3>Win Prizes</h3>
-            <p>Top predictors win exclusive rewards and recognition</p>
+      <section className="h-section">
+        <div className="h-shell">
+          <div className="h-section-head">
+            <h2 className="h-h2">Why Choose Us</h2>
+            <p className="h-sub">Designed for true sports fans</p>
           </div>
 
-          <div className="feature">
-            <div className="feature-icon">⚡</div>
-            <h3>Real-time</h3>
-            <p>Predict on live and upcoming matches across multiple sports</p>
-          </div>
+          <div className="h-features">
+            <div className="h-card">
+              <div className="h-icon">🏆</div>
+              <div className="h-card-title">Win Prizes</div>
+              <div className="h-card-text">
+                Top predictors win exclusive rewards and recognition.
+              </div>
+            </div>
 
-          <div className="feature">
-            <div className="feature-icon">📊</div>
-            <h3>Track Progress</h3>
-            <p>Detailed insights into your prediction performance</p>
-          </div>
+            <div className="h-card">
+              <div className="h-icon">⚡</div>
+              <div className="h-card-title">Real-time</div>
+              <div className="h-card-text">
+                Predict on live and upcoming matches across multiple sports.
+              </div>
+            </div>
 
-          <div className="feature">
-            <div className="feature-icon">🤝</div>
-            <h3>Compete</h3>
-            <p>Challenge friends and climb the prediction rankings</p>
+            <div className="h-card">
+              <div className="h-icon">📊</div>
+              <div className="h-card-title">Track Progress</div>
+              <div className="h-card-text">
+                Detailed insights into your prediction performance.
+              </div>
+            </div>
+
+            <div className="h-card">
+              <div className="h-icon">🤝</div>
+              <div className="h-card-title">Compete</div>
+              <div className="h-card-text">
+                Challenge friends and climb the prediction rankings.
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* FINAL CTA */}
-      <section className="final-cta">
-        <div className="cta-container">
-          <h2>Ready to Prove Your Sports Knowledge?</h2>
-          <p className="cta-subtitle">
-            Join thousands of sports enthusiasts making predictions and winning
-            prizes
-          </p>
-          <Link to="/login" className="cta-button primary large">
-            Start Predicting Today
-          </Link>
-          <p className="cta-note">
-            New users get bonus points on their first prediction
-          </p>
+      <section className="h-final">
+        <div className="h-shell">
+          <div className="h-final-card">
+            <h2 className="h-final-title">
+              Ready to Prove Your Sports Knowledge?
+            </h2>
+            <p className="h-final-sub">
+              Join thousands of sports enthusiasts making predictions and
+              winning prizes.
+            </p>
+
+            <Link to="/login" className="h-btn h-btn--primary h-btn--lg">
+              Start Predicting Today
+            </Link>
+
+            <div className="h-final-note">
+              New users get bonus points on their first prediction
+            </div>
+          </div>
         </div>
       </section>
+
+      <footer className="h-footer">
+        <div className="h-shell h-footer-inner">
+          <div className="h-footer-left">
+            © {new Date().getFullYear()} Sports Prediction
+          </div>
+          <div className="h-footer-right">
+            <Link to="/login" className="h-footer-link">
+              Login
+            </Link>
+            <Link to="/register" className="h-footer-link">
+              Register
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

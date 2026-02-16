@@ -7,66 +7,98 @@ export default function MatchCard({ match, onViewQuiz }) {
 
   const isDisabled = status === "UPCOMING" || status === "CANCELLED";
 
-  const getSportIcon = (title) => {
-    if (title.toLowerCase().includes("cricket")) return "🏏";
-    if (
-      title.toLowerCase().includes("football") ||
-      title.toLowerCase().includes("soccer")
-    )
-      return "⚽";
-    if (title.toLowerCase().includes("basketball")) return "🏀";
-    if (title.toLowerCase().includes("tennis")) return "🎾";
+  const getSportIcon = (title = "") => {
+    const t = title.toLowerCase();
+    if (t.includes("cricket")) return "🏏";
+    if (t.includes("football") || t.includes("soccer")) return "⚽";
+    if (t.includes("basketball")) return "🏀";
+    if (t.includes("tennis")) return "🎾";
     return "🏅";
   };
 
   return (
-    <div className="match-card">
-      {/* ✅ COVER IMAGE */}
-      {match.coverImage && (
-        <div className="match-cover-wrapper">
+    <article className="mc-card">
+      {/* Cover */}
+      {/* Cover */}
+      {match.coverImage ? (
+        <div className="mc-cover">
           <img
             src={match.coverImage}
             alt={match.title}
-            className="match-cover-image"
+            className="mc-cover-img"
+            loading="lazy"
           />
+          <div className="mc-cover-overlay" aria-hidden="true" />
+        </div>
+      ) : (
+        <div className="mc-cover mc-cover--fallback" aria-hidden="true">
+          <div className="mc-fallback-pattern" />
+          {/* <div className="mc-fallback-content">
+            <div className="mc-fallback-emoji">{getSportIcon(match.title)}</div>
+            <div className="mc-fallback-title">
+              {(match.title || "Match").slice(0, 28)}
+            </div>
+            <div className="mc-fallback-sub">
+              {match.tournament || "Tournament"}
+            </div>
+          </div> */}
         </div>
       )}
 
-      {/* CARD TOP */}
-      <div className="match-card-top">
-        <h3 className="match-title">{match.title}</h3>
-        <span className={`match-badge match-badge-${status.toLowerCase()}`}>
-          {status}
-        </span>
-      </div>
+      {/* Body */}
+      <div className="mc-body">
+        <div className="mc-top">
+          <div className="mc-titleWrap">
+            <h3 className="mc-title" title={match.title}>
+              {match.title}
+            </h3>
+            <div className="mc-sub">
+              <span className="mc-mi" aria-hidden="true">
+                emoji_events
+              </span>
+              <span className="mc-tournament">{match.tournament || "-"}</span>
+            </div>
+          </div>
 
-      <div className="match-meta">
-        <div className="meta-item meta-tournament">
-          <b>Tournament :</b> {match.tournament || "-"}
+          <span className={`mc-badge mc-badge--${status.toLowerCase()}`}>
+            {status}
+          </span>
         </div>
-        <div className="meta-item meta-start">
-          <b>Start Time :</b> {formatDateTime(match.startTime)}
-        </div>
-      </div>
 
-      <button
-        className="view-quiz-btn"
-        onClick={onViewQuiz}
-        disabled={isDisabled}
-        title={
-          status === "CANCELLED"
-            ? "Quiz cancelled"
+        <div className="mc-meta">
+          <div className="mc-row">
+            <span className="mc-k">Start Time</span>
+            <span className="mc-v">{formatDateTime(match.startTime)}</span>
+          </div>
+        </div>
+
+        <button
+          className={`mc-btn ${isDisabled ? "is-disabled" : ""}`}
+          onClick={onViewQuiz}
+          disabled={isDisabled}
+          title={
+            status === "CANCELLED"
+              ? "Quiz cancelled"
+              : status === "UPCOMING"
+                ? "Quiz available after match starts"
+                : ""
+          }
+        >
+          <span className="mc-btn-mi" aria-hidden="true">
+            {status === "LIVE"
+              ? "play_arrow"
+              : status === "COMPLETED"
+                ? "fact_check"
+                : "lock"}
+          </span>
+
+          {status === "CANCELLED"
+            ? "Quiz Cancelled"
             : status === "UPCOMING"
-            ? "Quiz available after match starts"
-            : ""
-        }
-      >
-        {status === "CANCELLED"
-          ? "Quiz Cancelled"
-          : status === "UPCOMING"
-          ? "Quiz Not Started"
-          : "View Quiz"}
-      </button>
-    </div>
+              ? "Quiz Not Started"
+              : "View Quiz"}
+        </button>
+      </div>
+    </article>
   );
 }

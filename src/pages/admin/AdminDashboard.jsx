@@ -47,11 +47,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard-page">
+      {/* TOP BAR */}
       <div className="admin-dashboard-header">
         <div>
           <h2 className="dashboard-title">Admin Dashboard</h2>
           <div className="dashboard-subtitle">
-            Logged in as <b>{admin?.email}</b> · Role: <b>{admin?.role}</b>
+            Logged in as <b>{admin?.email || "-"}</b> · Role:{" "}
+            <b>{admin?.role || "-"}</b>
           </div>
         </div>
 
@@ -60,18 +62,30 @@ export default function AdminDashboard() {
         </button>
       </div>
 
+      {/* BODY GRID */}
       <div className="dashboard-content">
+        {/* LEFT: ACTIONS */}
         <div className="dashboard-card">
           <h3>Match & Quiz Management</h3>
           <p className="card-description">
             Create and manage matches, quizzes, and questions.
           </p>
 
-          <Link to="/admin/matches" className="primary-action-btn">
-            Manage Matches
-          </Link>
+          <div className="dashboard-actions">
+            <Link to="/admin/matches" className="primary-action-btn">
+              Manage Matches
+            </Link>
+
+            {/* Keep for future modules */}
+            {/* <Link to="/admin/users" className="secondary-action-btn">Manage Users</Link> */}
+          </div>
+
+          <div className="dashboard-note">
+            Tip: Publish results only after verification to avoid disputes.
+          </div>
         </div>
 
+        {/* RIGHT: ANALYTICS */}
         <div className="dashboard-card analytics-card">
           <div className="analytics-head">
             <div>
@@ -80,9 +94,6 @@ export default function AdminDashboard() {
                 Usage and performance overview.
               </p>
             </div>
-            {/* <Link to="/admin/analytics" className="secondary-action-btn">
-              Detailed Analytics →
-            </Link> */}
           </div>
 
           {loading && <div className="admin-loading">Loading…</div>}
@@ -97,7 +108,11 @@ export default function AdminDashboard() {
                 <StatCard label="Attempts" value={stats.totals.attempts} />
               </div>
 
-              {series && <LineChartBlock data={series} />}
+              {series && (
+                <div className="chart-wrap">
+                  <LineChartBlock data={series} />
+                </div>
+              )}
             </>
           )}
         </div>

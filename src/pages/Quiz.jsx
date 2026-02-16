@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { fetchActiveQuiz } from "../services/quiz.service";
 import {
   checkSubmissionStatus,
@@ -12,6 +12,7 @@ import "../styles/quiz.css";
 export default function Quiz() {
   const { matchId } = useParams();
   const { user } = useUser();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -30,13 +31,10 @@ export default function Quiz() {
 
     try {
       const data = await fetchActiveQuiz(matchId);
-      console.log("QUIZ DATA:", data);
 
       const matchStatus = data?.match?.status;
 
-      /* --------------------------------------------------
-         1️⃣ MATCH COMPLETED → ALWAYS ALLOW RESULTS
-      -------------------------------------------------- */
+      // 1) MATCH COMPLETED → ALWAYS ALLOW RESULTS
       if (matchStatus === "COMPLETED") {
         setQuiz({
           quizId: data.quizId,
@@ -53,21 +51,16 @@ export default function Quiz() {
           });
           setSubmitted(Boolean(status?.submitted));
         }
-
         return;
       }
 
-      /* --------------------------------------------------
-         2️⃣ QUIZ LOCKED (MATCH NOT COMPLETED)
-      -------------------------------------------------- */
+      // 2) QUIZ LOCKED (MATCH NOT COMPLETED)
       if (data?.isLocked === true) {
         setQuiz({ isLocked: true });
         return;
       }
 
-      /* --------------------------------------------------
-         3️⃣ ACTIVE QUIZ
-      -------------------------------------------------- */
+      // 3) ACTIVE QUIZ
       const quizData = {
         quizId: data.quizId,
         isLocked: false,
@@ -148,7 +141,7 @@ export default function Quiz() {
 
   const answeredCount = useMemo(
     () => Object.keys(answersMap).length,
-    [answersMap]
+    [answersMap],
   );
 
   const progressPercentage = useMemo(() => {
@@ -157,121 +150,227 @@ export default function Quiz() {
   }, [questions.length, answeredCount]);
 
   return (
-    <div className="quiz-page">
-      <Link to="/matches" className="back-link">
-        ← Back to Matches
-      </Link>
+    <div className="q-page">
+      {/* Background */}
+      <div className="q-bg-pattern" aria-hidden="true" />
+      <div className="q-glow q-glow--tl" aria-hidden="true" />
+      <div className="q-glow q-glow--br" aria-hidden="true" />
 
-      {loading && <div className="loading-message">Loading quiz...</div>}
+      <div className="q-shell">
+        {/* Topbar */}
+        <header className="q-topbar">
+          <button
+            type="button"
+            className="q-back"
+            onClick={() => navigate("/matches")}
+            aria-label="Back to Matches"
+            title="Back"
+          >
+            <span className="q-mi" aria-hidden="true">
+              arrow_back
+            </span>
+            Back
+          </button>
 
-      {error && (
-        <div className="error-box">
-          <b>Error</b>
-          <div>{error}</div>
-        </div>
-      )}
+          <div className="q-topmeta">
+            <div className="q-top-title">
+              {quiz?.match?.title || "Match Quiz"}
+            </div>
+            <div className="q-top-sub">
+              {loading
+                ? "Loading…"
+                : quiz?.completed
+                  ? "Completed"
+                  : quiz?.isLocked
+                    ? "Locked"
+                    : "Active"}
+            </div>
+          </div>
 
-      {/* 🏁 MATCH COMPLETED */}
-      {!loading && !error && quiz?.completed && (
-        <div className="submitted-box">
-          <h3>Match Completed 🏁</h3>
+          <div className="q-top-actions">
+            <button
+              type="button"
+              className="q-icon-btn"
+              onClick={loadQuiz}
+              disabled={loading || submitting}
+              aria-label="Refresh"
+              title="Refresh"
+            >
+              <span className="q-mi" aria-hidden="true">
+                refresh
+              </span>
+            </button>
+          </div>
+        </header>
 
-          <Link to={`/results/${quiz.quizId}`} className="view-result-btn">
-            View Results
-          </Link>
-        </div>
-      )}
-
-      {/* 🔒 QUIZ LOCKED */}
-      {!loading && !error && quiz?.isLocked && (
-        <div className="locked-box">
-          <h3>Quiz Locked 🔒</h3>
-          <p>Submissions are closed.</p>
-        </div>
-      )}
-
-      {/* ✅ ALREADY SUBMITTED */}
-      {!loading &&
-        !error &&
-        quiz &&
-        !quiz.isLocked &&
-        !quiz.completed &&
-        submitted && (
-          <div className="submitted-box">
-            <h3>Quiz Submitted ✅</h3>
-
-            {successMsg && <div className="success-message">{successMsg}</div>}
-
-            <Link to={`/results/${quiz.quizId}`} className="view-result-btn">
-              View Result
-            </Link>
-
-            <p className="results-note">
-              Results will be visible once published by admin
-            </p>
+        {/* Alerts */}
+        {loading && (
+          <div className="q-alert q-alert--info">
+            <div className="q-alert-title">Loading</div>
+            <div className="q-alert-text">Loading quiz…</div>
           </div>
         )}
 
-      {/* 🟢 ACTIVE QUIZ */}
-      {!loading &&
-        !error &&
-        quiz &&
-        !quiz.isLocked &&
-        !quiz.completed &&
-        !submitted && (
-          <>
-            <div className="quiz-header">
-              <h2 className="quiz-title">
-                {quiz.match?.title || "Match Quiz"}
-              </h2>
-              <p className="quiz-subtitle">
-                Answer before the first ball is bowled.
+        {error && (
+          <div className="q-alert q-alert--error">
+            <div className="q-alert-title">Error</div>
+            <div className="q-alert-text">{error}</div>
+          </div>
+        )}
+
+        {/* MATCH COMPLETED */}
+        {!loading && !error && quiz?.completed && (
+          <div className="q-state">
+            <div className="q-state-card">
+              <div className="q-state-icon" aria-hidden="true">
+                🏁
+              </div>
+              <h3 className="q-state-title">Match Completed</h3>
+              <p className="q-state-text">
+                Results are available for this match.
               </p>
 
+              <Link to={`/results/${quiz.quizId}`} className="q-link-btn">
+                <span className="q-btn-mi" aria-hidden="true">
+                  bar_chart
+                </span>
+                View Results
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* QUIZ LOCKED */}
+        {!loading && !error && quiz?.isLocked && (
+          <div className="q-state">
+            <div className="q-state-card">
+              <div className="q-state-icon" aria-hidden="true">
+                🔒
+              </div>
+              <h3 className="q-state-title">Quiz Locked</h3>
+              <p className="q-state-text">Submissions are closed.</p>
+            </div>
+          </div>
+        )}
+
+        {/* ALREADY SUBMITTED */}
+        {!loading &&
+          !error &&
+          quiz &&
+          !quiz.isLocked &&
+          !quiz.completed &&
+          submitted && (
+            <div className="q-state">
+              <div className="q-state-card">
+                <div className="q-state-icon" aria-hidden="true">
+                  ✅
+                </div>
+                <h3 className="q-state-title">Quiz Submitted</h3>
+
+                {successMsg && <div className="q-success">{successMsg}</div>}
+
+                <Link to={`/results/${quiz.quizId}`} className="q-link-btn">
+                  <span className="q-btn-mi" aria-hidden="true">
+                    fact_check
+                  </span>
+                  View Result
+                </Link>
+
+                <p className="q-note">
+                  Results will be visible once published by admin
+                </p>
+              </div>
+            </div>
+          )}
+
+        {/* ACTIVE QUIZ */}
+        {!loading &&
+          !error &&
+          quiz &&
+          !quiz.isLocked &&
+          !quiz.completed &&
+          !submitted && (
+            <>
+              <section className="q-header">
+                <h2 className="q-title">{quiz.match?.title || "Match Quiz"}</h2>
+                <p className="q-subtitle">
+                  Answer before the first ball is bowled.
+                </p>
+
+                {questions.length > 0 && (
+                  <div className="q-progress">
+                    <div className="q-progress-top">
+                      <span className="q-progress-text">
+                        {answeredCount} of {questions.length} answered
+                      </span>
+                      <span className="q-progress-text">
+                        {progressPercentage}%
+                      </span>
+                    </div>
+
+                    <div className="q-bar">
+                      <div
+                        className="q-fill"
+                        style={{ width: `${progressPercentage}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              <section className="q-questions">
+                {questions.length === 0 ? (
+                  <div className="q-alert q-alert--info">
+                    <div className="q-alert-title">Info</div>
+                    <div className="q-alert-text">No questions added yet.</div>
+                  </div>
+                ) : (
+                  questions.map((q, i) => (
+                    <div className="q-qwrap" key={q._id || q.id}>
+                      <QuestionCard
+                        question={q}
+                        index={i}
+                        value={answersMap[q._id || q.id]}
+                        onChange={(optIdx) => onSelect(q._id || q.id, optIdx)}
+                        disabled={submitting}
+                      />
+                    </div>
+                  ))
+                )}
+              </section>
+
               {questions.length > 0 && (
-                <div className="quiz-progress">
-                  <div className="progress-text">
-                    {answeredCount} of {questions.length} answered
-                  </div>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${progressPercentage}%` }}
-                    />
-                  </div>
-                  <div className="progress-text">{progressPercentage}%</div>
+                <div className="q-submitbar">
+                  <button
+                    className="q-submit"
+                    disabled={!allAnswered || submitting}
+                    onClick={onSubmit}
+                  >
+                    {submitting ? (
+                      <span className="q-loadingRow">
+                        <span className="q-spinner" aria-hidden="true" />
+                        Submitting...
+                      </span>
+                    ) : (
+                      <>
+                        <span className="q-btn-mi" aria-hidden="true">
+                          send
+                        </span>
+                        Submit Answers
+                      </>
+                    )}
+                  </button>
+
+                  {!allAnswered && (
+                    <div className="q-hint">
+                      Answer all questions to enable submit.
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
-
-            <div className="questions-container">
-              {questions.length === 0 ? (
-                <div className="info-message">No questions added yet.</div>
-              ) : (
-                questions.map((q, i) => (
-                  <QuestionCard
-                    key={q._id || q.id}
-                    question={q}
-                    index={i}
-                    value={answersMap[q._id || q.id]}
-                    onChange={(optIdx) => onSelect(q._id || q.id, optIdx)}
-                    disabled={submitting}
-                  />
-                ))
-              )}
-            </div>
-
-            {questions.length > 0 && (
-              <button
-                className="submit-btn"
-                disabled={!allAnswered || submitting}
-                onClick={onSubmit}
-              >
-                {submitting ? "Submitting..." : "Submit Answers"}
-              </button>
-            )}
-          </>
-        )}
+            </>
+          )}
+      </div>
     </div>
   );
 }
