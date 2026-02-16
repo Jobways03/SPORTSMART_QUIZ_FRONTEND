@@ -1,106 +1,150 @@
-.admin-page {
+/* =================================================
+   ADMIN SCORE QUIZ – DARK THEME
+================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* PAGE */
+.adm-sq-page {
   min-height: 100vh;
-  background: #f4f6f9;
-  display: flex;
-  justify-content: center;
-  padding: 32px 16px;
+  background: #0b0f1a;
+  padding: 28px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  color: #d1d5db;
 }
 
-.admin-container {
-  width: 100%;
-  max-width: 720px;
+.adm-sq-wrap {
+  max-width: 760px;
+  margin: 0 auto;
 }
 
-.admin-header h1 {
-  font-size: 26px;
-  font-weight: 700;
-}
-
-.subtitle {
+/* BACK */
+.adm-sq-back {
+  display: inline-block;
+  margin-bottom: 14px;
   font-size: 14px;
-  color: #555;
-  margin-top: 4px;
+  font-weight: 600;
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.adm-sq-back:hover {
+  text-decoration: underline;
+}
+
+/* HEADER */
+.adm-sq-header {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.adm-sq-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f9fafb;
+}
+
+.adm-sq-subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #9ca3af;
 }
 
 /* META */
-.meta-card {
-  margin-top: 16px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 14px;
-  display: grid;
-  gap: 8px;
+.adm-sq-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.adm-sq-chip {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  padding: 10px 14px;
+  border-radius: 999px;
   font-size: 13px;
+  color: #cbd5e1;
 }
 
-.meta-card span {
-  color: #6b7280;
-  margin-right: 6px;
+/* STATES */
+.adm-sq-info {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  color: #9ca3af;
 }
 
-/* INFO */
-.info-box,
-.error-box,
-.success-box {
-  margin-top: 14px;
+.adm-sq-error {
+  background: #1f2937;
+  border: 1px solid #ef4444;
+  color: #fca5a5;
   padding: 12px;
   border-radius: 12px;
+  margin-bottom: 14px;
   font-size: 14px;
 }
 
-.info-box {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-}
-
-.error-box {
-  background: #fee2e2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-}
-
-.success-box {
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
+.adm-sq-success {
+  background: #0f172a;
+  border: 1px solid #22c55e;
+  color: #86efac;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-size: 14px;
 }
 
 /* ACTION */
-.action-card {
-  margin-top: 20px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 20px;
+.adm-sq-action {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 18px;
+  padding: 22px;
   text-align: center;
 }
 
-.primary-btn {
+.adm-sq-btn {
   height: 46px;
-  padding: 0 26px;
+  padding: 0 28px;
   border-radius: 12px;
   border: none;
-  background: #2563eb;
-  color: #fff;
-  font-weight: 700;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  font-weight: 800;
   font-size: 14px;
   cursor: pointer;
 }
 
-.primary-btn:disabled {
+.adm-sq-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.note {
+.adm-sq-note {
   margin-top: 12px;
   font-size: 13px;
-  color: #6b7280;
+  color: #9ca3af;
 }
 
+/* MOBILE */
 @media (max-width: 640px) {
-  .admin-header h1 {
+  .adm-sq-title {
     font-size: 22px;
+  }
+
+  .adm-sq-action {
+    padding: 18px;
   }
 }

@@ -19,7 +19,7 @@ export default function AdminMatches() {
   /* LIST STATE */
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   /* CREATE FORM STATE */
   const [title, setTitle] = useState("");
@@ -30,33 +30,33 @@ export default function AdminMatches() {
   const [creating, setCreating] = useState(false);
 
   /* UI STATE */
-  const [openMenu, setOpenMenu] = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   /* LOAD MATCHES */
-  const load = async () => {
+  const loadMatches = async () => {
     setLoading(true);
-    setError("");
+    setErrorMsg("");
     try {
       const data = await adminFetchMatches();
       setMatches(Array.isArray(data) ? data : data.matches || []);
     } catch (e) {
-      setError(e?.response?.data?.message || "Failed to load matches");
+      setErrorMsg(e?.response?.data?.message || "Failed to load matches");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    load();
+    loadMatches();
   }, []);
 
   /* CREATE MATCH */
-  const onCreate = async (e) => {
+  const handleCreateMatch = async (e) => {
     e.preventDefault();
-    setError("");
+    setErrorMsg("");
 
-    if (!title.trim()) return setError("Match title is required");
-    if (!startTimeLocal) return setError("Start time is required");
+    if (!title.trim()) return setErrorMsg("Match title is required");
+    if (!startTimeLocal) return setErrorMsg("Start time is required");
 
     try {
       setCreating(true);
@@ -65,78 +65,76 @@ export default function AdminMatches() {
       formData.append("title", title.trim());
       formData.append("tournament", tournament.trim());
       formData.append("startTime", toISOFromDateTimeLocal(startTimeLocal));
-
-      if (coverImage) {
-        formData.append("coverImage", coverImage);
-      }
+      if (coverImage) formData.append("coverImage", coverImage);
 
       await adminCreateMatch(formData);
 
-      /* RESET FORM */
       setTitle("");
       setTournament("");
       setStartTimeLocal("");
       setCoverImage(null);
       setPreview(null);
 
-      await load();
+      await loadMatches();
     } catch (e) {
-      setError(e?.response?.data?.message || "Create failed");
+      setErrorMsg(e?.response?.data?.message || "Create failed");
     } finally {
       setCreating(false);
     }
   };
 
   /* UPDATE STATUS */
-  const onStatusChange = async (id, status) => {
+  const handleStatusChange = async (id, status) => {
     await adminUpdateMatchStatus(id, status);
-    await load();
+    await loadMatches();
   };
 
   /* DELETE MATCH */
-  const deleteMatch = async (id) => {
+  const handleDeleteMatch = async (id) => {
     await adminDeleteMatchStatus(id);
-    await load();
+    await loadMatches();
   };
 
   return (
-    <div className="admin-page-wrapper">
-      <div className="admin-content">
-        <Link to="/admin/dashboard" className="back-link">
+    <div className="admin-matches-page">
+      <div className="admin-matches-container">
+        <Link to="/admin/dashboard" className="admin-back-link">
           ← Back to Dashboard
         </Link>
 
-        <h1 className="admin-title">Match Management</h1>
+        <h1 className="admin-page-title">Match Management</h1>
 
         {/* CREATE MATCH */}
-        <form onSubmit={onCreate} className="create-card">
-          <h2>Create Match</h2>
+        <form className="admin-create-card" onSubmit={handleCreateMatch}>
+          <h2 className="admin-section-title">Create Match</h2>
 
-          {error && <div className="admin-error">{error}</div>}
+          {errorMsg && <div className="admin-alert-error">{errorMsg}</div>}
 
           <input
+            className="admin-input"
             placeholder="Match title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
 
           <input
+            className="admin-input"
             placeholder="Tournament"
             value={tournament}
             onChange={(e) => setTournament(e.target.value)}
           />
 
           <input
+            className="admin-input"
             type="datetime-local"
             value={startTimeLocal}
             onChange={(e) => setStartTimeLocal(e.target.value)}
           />
 
           <input
-            key={preview || "empty"}
+            className="admin-input-file"
             type="file"
             accept="image/*"
-            style={{padding:"10px"}}
             onChange={(e) => {
               const file = e.target.files[0];
               if (file) {
@@ -146,55 +144,58 @@ export default function AdminMatches() {
             }}
           />
 
-          {preview && <img src={preview} alt="Preview" className="preview" />}
+          {preview && (
+            <img src={preview} alt="Preview" className="admin-image-preview" />
+          )}
 
-          <button className="primary-btn" disabled={creating}>
+          <button className="admin-btn-primary" disabled={creating}>
             {creating ? "Creating…" : "Create Match"}
           </button>
         </form>
 
         {/* MATCH LIST */}
-        <div className="list-section">
-          <div className="list-header">
-            <h2>All Matches</h2>
-            <button className="primary-btn" onClick={load}>
+        <div className="admin-list-section">
+          <div className="admin-list-header">
+            <h2 className="admin-section-title">All Matches</h2>
+            <button className="admin-btn-primary" onClick={loadMatches}>
               Refresh
             </button>
           </div>
 
           {loading ? (
-            <div className="info-box">Loading matches…</div>
+            <div className="admin-info-box">Loading matches…</div>
           ) : matches.length === 0 ? (
-            <div className="info-box">No matches found</div>
+            <div className="admin-info-box">No matches found</div>
           ) : (
             matches.map((m) => {
               const id = m._id || m.id;
 
               return (
-                <div key={id} className="match-card">
+                <div key={id} className="admin-match-card">
                   {m.coverImage && (
                     <img
                       src={m.coverImage}
                       alt={m.title}
-                      className="match-cover"
+                      className="admin-match-cover"
                     />
                   )}
 
-                  <div className="match-left">
-                    <div className="match-title">{m.title}</div>
-                    <div className="match-meta">
+                  <div className="admin-match-details">
+                    <div className="admin-match-title">{m.title}</div>
+                    <div className="admin-match-meta">
                       {new Date(m.startTime).toLocaleString()}
                       {m.tournament && ` • ${m.tournament}`}
                     </div>
-                    <div className="match-status">
-                      Status: <span>{m.status}</span>
+                    <div className="admin-match-status">
+                      Status: <b>{m.status}</b>
                     </div>
                   </div>
 
-                  <div className="match-right">
+                  <div className="admin-match-actions">
                     <select
+                      className="admin-select"
                       value={m.status}
-                      onChange={(e) => onStatusChange(id, e.target.value)}
+                      onChange={(e) => handleStatusChange(id, e.target.value)}
                     >
                       <option value="UPCOMING">UPCOMING</option>
                       <option value="LIVE">LIVE</option>
@@ -203,30 +204,31 @@ export default function AdminMatches() {
                     </select>
 
                     <button
-                      className="primary-btn small"
+                      className="admin-btn-secondary"
                       onClick={() => navigate(`/admin/quizzes/${id}`)}
                     >
                       Manage Quiz
                     </button>
 
                     <button
-                      className="primary-btn small"
-                      style={{ background: "red" }}
-                      onClick={() => deleteMatch(id)}
+                      className="admin-btn-danger"
+                      onClick={() => handleDeleteMatch(id)}
                     >
                       Delete
                     </button>
 
-                    <div className="action-menu">
+                    <div className="admin-action-menu">
                       <button
-                        className="kebab-btn"
-                        onClick={() => setOpenMenu(openMenu === id ? null : id)}
+                        className="admin-kebab-btn"
+                        onClick={() =>
+                          setOpenMenuId(openMenuId === id ? null : id)
+                        }
                       >
                         ⋮
                       </button>
 
-                      {openMenu === id && (
-                        <div className="menu-dropdown">
+                      {openMenuId === id && (
+                        <div className="admin-dropdown">
                           <button
                             onClick={() =>
                               navigate(`/admin/matches/${id}/answers`)

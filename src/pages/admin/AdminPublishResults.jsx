@@ -12,46 +12,50 @@ export default function AdminPublishResults() {
 
   const [loading, setLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    load();
-    // eslint-disable-next-line
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchId]);
 
-  const load = async () => {
+  const loadData = async () => {
+    setLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
     try {
       const data = await adminFetchMatches();
-      const list = Array.isArray(data) ? data : data.matches || [];
+      const list = Array.isArray(data) ? data : data?.matches || [];
       const found = list.find((m) => (m._id || m.id) === matchId);
 
       setMatch(found || null);
       setQuizId(sessionStorage.getItem(`quiz_${matchId}`));
     } catch {
-      setError("Failed to load match data");
+      setErrorMsg("Failed to load match data.");
     } finally {
       setLoading(false);
     }
   };
 
-  const onPublish = async () => {
-    setError("");
-    setSuccess("");
+  const handlePublish = async () => {
+    setErrorMsg("");
+    setSuccessMsg("");
 
-    if (!quizId) return setError("Quiz not found for this match");
+    if (!quizId) return setErrorMsg("Quiz not found for this match.");
     if (match?.status !== "COMPLETED") {
-      return setError("Match must be COMPLETED before publishing results");
+      return setErrorMsg("Match must be COMPLETED before publishing results.");
     }
 
     try {
       setPublishing(true);
       const res = await adminPublishResults(quizId);
-      setSuccess(res?.message || "Results published successfully");
+      setSuccessMsg(res?.message || "Results published successfully.");
     } catch (e) {
-      setError(
+      setErrorMsg(
         e?.response?.data?.message ||
-          "Results already published or cannot publish"
+          "Results already published or cannot publish.",
       );
     } finally {
       setPublishing(false);
@@ -59,51 +63,45 @@ export default function AdminPublishResults() {
   };
 
   return (
-    <div className="admin-page">
-      <div className="admin-container">
-        <Link to="/admin/matches" className="back-link">
+    <div className="adm-pr-page">
+      <div className="adm-pr-wrap">
+        <Link to="/admin/matches" className="adm-pr-back">
           ← Back to Matches
         </Link>
-        <header className="admin-header">
-          <h1>Publish Quiz Results</h1>
-          <p className="subtitle">
-            Make final scores visible to users & leaderboard
+
+        <header className="adm-pr-header">
+          <h1 className="adm-pr-title">Publish Quiz Results</h1>
+          <p className="adm-pr-subtitle">
+            Make final scores visible to users and leaderboard.
           </p>
         </header>
 
-        {loading && <div className="info-box">Loading…</div>}
+        {loading && <div className="adm-pr-info">Loading…</div>}
 
         {!loading && (
           <>
-            <div className="meta-card">
-              {/* <div>
-                <span>Match ID</span>
-                <code>{matchId}</code>
-              </div> */}
-              <div>
-                <span>Status</span>
-                <b>{match?.status || "UNKNOWN"}</b>
+            <div className="adm-pr-meta">
+              <div className="adm-pr-chip">
+                Status: <b>{match?.status || "UNKNOWN"}</b>
               </div>
-              {/* <div>
-                <span>Quiz ID</span>
-                <code>{quizId || "NOT FOUND"}</code>
-              </div> */}
+              <div className="adm-pr-chip">
+                Quiz: <b>{quizId ? "FOUND" : "NOT FOUND"}</b>
+              </div>
             </div>
 
-            {error && <div className="error-box">{error}</div>}
+            {errorMsg && <div className="adm-pr-error">{errorMsg}</div>}
+            {successMsg && <div className="adm-pr-success">{successMsg}</div>}
 
-            {success && <div className="success-box">{success}</div>}
-
-            <div className="action-card">
+            <div className="adm-pr-action">
               <button
-                className="primary-btn danger"
+                className="adm-pr-btn adm-pr-btn-danger"
                 disabled={match?.status !== "COMPLETED" || publishing}
-                onClick={onPublish}
+                onClick={handlePublish}
               >
                 {publishing ? "Publishing…" : "Publish Results"}
               </button>
 
-              <p className="note">
+              <p className="adm-pr-note">
                 ⚠️ Publish only after scoring responses is completed.
               </p>
             </div>

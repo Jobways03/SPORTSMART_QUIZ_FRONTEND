@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchLeaderboard } from "../../services/leaderboard.service";
+import "../../styles/admin-leaderboard.css";
 
-const getMedal = (rank) => {
+const getRankLabel = (rank) => {
   if (rank === 1) return "🥇";
   if (rank === 2) return "🥈";
   if (rank === 3) return "🥉";
@@ -14,69 +15,74 @@ export default function AdminLeaderboard() {
 
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
-  const [error, setError] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const load = async () => {
+  useEffect(() => {
+    loadLeaderboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizId]);
+
+  const loadLeaderboard = async () => {
     setLoading(true);
-    setError("");
+    setErrorMsg("");
 
     try {
       const res = await fetchLeaderboard(quizId);
-      setList(res.leaderboard || []);
-    } catch (e) {
-      setError("Leaderboard not available yet");
+      setList(res?.leaderboard || []);
+    } catch {
+      setErrorMsg("Leaderboard not available yet.");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    load();
-  }, [quizId]);
-
   return (
-    <div className="admin-leaderboard-page">
-      <Link to="/admin/matches" className="back-link">
-        ← Back to Matches
-      </Link>
+    <div className="adm-lb-page">
+      <div className="adm-lb-wrap">
+        <Link to="/admin/matches" className="adm-lb-back">
+          ← Back to Matches
+        </Link>
 
-      <div className="admin-leaderboard-header">
-        <h1>Leaderboard</h1>
-        <span className="trophy">🏆</span>
-      </div>
+        <header className="adm-lb-header">
+          <h1 className="adm-lb-title">Leaderboard</h1>
+          <span className="adm-lb-trophy">🏆</span>
+        </header>
 
-      {loading && <div className="info-box">Loading leaderboard…</div>}
+        {loading && <div className="adm-lb-info">Loading leaderboard…</div>}
 
-      {!loading && error && <div className="error-box">{error}</div>}
+        {!loading && errorMsg && <div className="adm-lb-error">{errorMsg}</div>}
 
-      {!loading && !error && list.length === 0 && (
-        <div className="info-box">No leaderboard data found</div>
-      )}
+        {!loading && !errorMsg && list.length === 0 && (
+          <div className="adm-lb-info">No leaderboard data found.</div>
+        )}
 
-      {!loading && !error && list.length > 0 && (
-        <div className="leaderboard-table">
-          <div className="table-header">
-            <div>Rank</div>
-            <div>Player</div>
-            <div>Score</div>
-          </div>
-
-          {list.map((u, index) => (
-            <div
-              key={u.rank || index}
-              className="table-row"
-              style={{ animationDelay: `${index * 0.05}s` }}
-            >
-              <div className="rank-col">{getMedal(u.rank)}</div>
-              <div className="name-col">
-                {u.name} - {u.phone}
-              </div>
-
-              <div className="score-col">{u.score}</div>
+        {!loading && !errorMsg && list.length > 0 && (
+          <div className="adm-lb-table">
+            <div className="adm-lb-row adm-lb-row-head">
+              <div>Rank</div>
+              <div>Player</div>
+              <div className="align-right">Score</div>
             </div>
-          ))}
-        </div>
-      )}
+
+            {list.map((u, index) => (
+              <div
+                key={u.rank || index}
+                className="adm-lb-row"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="adm-lb-rank">{getRankLabel(u.rank)}</div>
+
+                <div className="adm-lb-player">
+                  <div className="adm-lb-name">{u.name}</div>
+                  <div className="adm-lb-phone">{u.phone}</div>
+                </div>
+
+                <div className="adm-lb-score align-right">{u.score}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

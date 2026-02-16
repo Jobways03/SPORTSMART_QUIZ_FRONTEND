@@ -70,97 +70,154 @@ export default function Register() {
     }
   };
 
-  return (
-    <div className="login-page">
-      <div className="login-card">
-        <h2 className="auth-title">Create Account</h2>
-        <p className="auth-subtitle">Register to participate in live quizzes</p>
+ return (
+   <div className="login-page">
+     <div className="auth-shell">
+       {/* LEFT: professional info panel */}
+       <div className="auth-info">
+         <div className="brand">
+           <div className="brand-mark">SP</div>
+           <div>
+             <div className="brand-name">Sports Prediction</div>
+             <span className="brand-tag">
+               Create your account in under a minute
+             </span>
+           </div>
+         </div>
 
-        <form className="login-form" onSubmit={submit}>
-          {/* NAME */}
-          <input
-            className="form-input"
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
+         <h2 className="info-title">
+           Create your account and start predicting.
+         </h2>
 
-          {/* EMAIL */}
-          <input
-            className="form-input"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
+         <p className="info-subtitle">
+           Register with email or phone number. You can participate in quizzes
+           and predictions before the match starts.
+         </p>
 
-          {/* PHONE */}
-          <input
-            className="form-input"
-            placeholder="Phone"
-            value={phoneFocused ? `+91 ${form.phone}` : ""}
-            onFocus={() => setPhoneFocused(true)}
-            onBlur={() => {
-              if (!form.phone) setPhoneFocused(false);
-            }}
-            onChange={(e) => {
-              const digits = e.target.value.replace(/\D/g, "");
-              const phone = digits.startsWith("91") ? digits.slice(2) : digits;
+         <div className="info-list">
+           <div className="info-item">
+             <span className="dot" />
+             <div>
+               <p className="info-item-title">Fast signup</p>
+               <p className="info-item-desc">
+                 Simple registration with secure password rules.
+               </p>
+             </div>
+           </div>
 
-              if (phone.length <= 10) {
-                setForm({ ...form, phone });
-              }
-            }}
-            onKeyDown={(e) => {
-              if (
-                (e.key === "Backspace" || e.key === "Delete") &&
-                e.target.selectionStart <= 4
-              ) {
-                e.preventDefault();
-              }
-            }}
-          />
+           <div className="info-item">
+             <span className="dot" />
+             <div>
+               <p className="info-item-title">Play before match begins</p>
+               <p className="info-item-desc">
+                 Predictions close on match start time for fairness.
+               </p>
+             </div>
+           </div>
 
-          {/* PASSWORD */}
-          <div className="password-field">
-            <input
-              className="form-input"
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-            <button
-              type="button"
-              className="password-toggle"
-              onClick={() => setShowPassword((v) => !v)}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
+           <div className="info-item">
+             <span className="dot" />
+             <div>
+               <p className="info-item-title">Rank & results</p>
+               <p className="info-item-desc">
+                 View your score and leaderboard after match completion.
+               </p>
+             </div>
+           </div>
+         </div>
 
-          {/* PASSWORD STRENGTH */}
-          {form.password && (
-            <div className="password-strength">
-              <div className={`strength-bar strength-${strength.level}`} />
-              <span className={`strength-label strength-${strength.level}`}>
-                {strength.label}
-              </span>
-            </div>
-          )}
+         <div className="note">
+           Tip: Use a unique password to keep your account protected.
+         </div>
+       </div>
 
-          {error && <div className="error-message">{error}</div>}
+       {/* RIGHT: register form */}
+       <div className="login-card">
+         <h2 className="auth-title">Create Account</h2>
+         <p className="auth-subtitle">
+           Register to participate in live quizzes.
+         </p>
 
-          <button className="login-button" disabled={loading}>
-            {loading ? "Creating account..." : "Register"}
-          </button>
-        </form>
+         <form className="login-form" onSubmit={submit}>
+           <input
+             className="form-input"
+             placeholder="Name"
+             value={form.name}
+             onChange={(e) => setForm({ ...form, name: e.target.value })}
+           />
 
-        <div className="auth-links">
-          <button className="link-btn" onClick={() => navigate("/login")}>
-            Already have an account? Login
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+           <input
+             className="form-input"
+             placeholder="Email"
+             value={form.email}
+             onChange={(e) => setForm({ ...form, email: e.target.value })}
+           />
+
+           <input
+             className="form-input"
+             placeholder="Phone"
+             value={phoneFocused ? `+91 ${form.phone}` : ""}
+             onFocus={() => setPhoneFocused(true)}
+             onBlur={() => {
+               if (!form.phone) setPhoneFocused(false);
+             }}
+             onChange={(e) => {
+               const digits = e.target.value.replace(/\D/g, "");
+               const phone = digits.startsWith("91") ? digits.slice(2) : digits;
+
+               if (phone.length <= 10) setForm({ ...form, phone });
+             }}
+             onKeyDown={(e) => {
+               if (
+                 (e.key === "Backspace" || e.key === "Delete") &&
+                 e.target.selectionStart <= 4
+               ) {
+                 e.preventDefault();
+               }
+             }}
+           />
+
+           <div className="password-field">
+             <input
+               className="form-input"
+               type={showPassword ? "text" : "password"}
+               placeholder="Password"
+               value={form.password}
+               onChange={(e) => setForm({ ...form, password: e.target.value })}
+             />
+             <button
+               type="button"
+               className="password-toggle"
+               onClick={() => setShowPassword((v) => !v)}
+             >
+               {showPassword ? "Hide" : "Show"}
+             </button>
+           </div>
+
+           {form.password && (
+             <div className="password-strength">
+               <div className={`strength-bar strength-${strength.level}`} />
+               <span className={`strength-label strength-${strength.level}`}>
+                 {strength.label}
+               </span>
+             </div>
+           )}
+
+           {error && <div className="error-message">{error}</div>}
+
+           <button className="login-button" disabled={loading}>
+             {loading ? "Creating account..." : "Create account"}
+           </button>
+         </form>
+
+         <div className="auth-links">
+           <button className="link-btn" onClick={() => navigate("/login")}>
+             Already have an account? Login
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>
+ );
+
 }

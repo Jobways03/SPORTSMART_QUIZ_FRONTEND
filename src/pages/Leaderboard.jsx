@@ -99,7 +99,7 @@ export default function Leaderboard() {
       {/* Full Leaderboard Table */}
       {!loading && !error && list.length > 0 && (
         <div className="leaderboard-table">
-          <div className="table-header">
+          <div className="table-header1">
             <div className="table-header-rank">Rank</div>
             <div className="table-header-user">Player</div>
             <div className="table-header-score">Score</div>

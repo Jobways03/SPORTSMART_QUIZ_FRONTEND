@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { fetchMatches } from "../services/match.service";
 import { fetchUserResults } from "../services/result.service";
 import MatchCard from "../components/MatchCard";
@@ -15,6 +15,10 @@ export default function Matches() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Profile sheet
+  const [profileOpen, setProfileOpen] = useState(false);
+  const sheetRef = useRef(null);
+
   const load = async () => {
     setLoading(true);
     setError("");
@@ -29,45 +33,32 @@ export default function Matches() {
         const match = normalizeMatch(raw);
         const status = getMatchStatus(match);
 
-        // ❌ Never show cancelled
         if (status === "CANCELLED") continue;
 
-        // ✅ Always show UPCOMING & LIVE
         if (status === "UPCOMING" || status === "LIVE") {
           visible.push(match);
           continue;
         }
 
-        // ✅ COMPLETED → show if user participated
         if (status === "COMPLETED") {
           if (!match.quizId) {
-            // SAFETY FALLBACK (do not hide silently)
             console.warn("Missing quizId for match", match.id);
             visible.push(match);
             continue;
           }
 
           try {
-            const res = await fetchUserResults({
+            await fetchUserResults({
               quizId: match.quizId,
               userId: user.userId,
             });
-
-            // Results published → participated
             visible.push(match);
           } catch (e) {
             const msg = e?.response?.data?.message;
             const published = e?.response?.data?.published;
 
-            // ❌ User truly did not participate
-            if (msg === "You did not participate in this quiz") {
-              continue;
-            }
-
-            // ✅ Participated but results not published
-            if (published === false) {
-              visible.push(match);
-            }
+            if (msg === "You did not participate in this quiz") continue;
+            if (published === false) visible.push(match);
           }
         }
       }
@@ -77,7 +68,7 @@ export default function Matches() {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Failed to load matches."
+          "Failed to load matches.",
       );
     } finally {
       setLoading(false);
@@ -89,37 +80,77 @@ export default function Matches() {
     // eslint-disable-next-line
   }, [user?.userId]);
 
+  // Close on ESC
+  useEffect(() => {
+    const onEsc = (e) => e.key === "Escape" && setProfileOpen(false);
+    document.addEventListener("keydown", onEsc);
+    return () => document.removeEventListener("keydown", onEsc);
+  }, []);
+
+  const onLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const getInitials = (name = "") => {
+    const parts = name.trim().split(" ").filter(Boolean);
+    if (!parts.length) return "U";
+    const first = parts[0]?.[0] || "";
+    const last = parts.length > 1 ? parts[parts.length - 1]?.[0] : "";
+    return (first + last).toUpperCase();
+  };
+
   return (
-    <div className="matches-page">
-      <header className="matches-header">
-        <h3 className="matches-title">Matches</h3>
+    <div className="m-page">
+      {/* Top App Bar */}
+      <header className="m-appbar">
+        <div className="m-appbar-left">
+          <div className="m-title">Matches</div>
+          <div className="m-subtitle">
+            {loading ? "Loading…" : `${matches.length} available`}
+          </div>
+        </div>
 
         <button
-          className="logout-btn"
-          onClick={() => {
-            logout();
-            navigate("/login");
-          }}
+          className="m-profile-btn"
+          onClick={() => setProfileOpen(true)}
+          aria-label="Open profile"
         >
-          Logout
+          <span className="m-avatar">{getInitials(user?.name)}</span>
         </button>
       </header>
 
+      {/* Error */}
       {error && (
-        <div className="error-box">
-          <div>Error</div>
-          <div>{error}</div>
+        <div className="m-alert m-alert-error">
+          <div className="m-alert-title">Error</div>
+          <div className="m-alert-text">{error}</div>
         </div>
       )}
 
+      {/* Body */}
       {loading ? (
-        <div className="info-message">Loading matches...</div>
+        <div className="m-skeleton-wrap">
+          <div className="m-skeleton-card" />
+          <div className="m-skeleton-card" />
+          <div className="m-skeleton-card" />
+        </div>
       ) : matches.length === 0 ? (
-        <div className="info-message no-matches">
-          No matches available for you.
+        <div className="m-empty">
+          <div className="m-empty-card">
+            <div className="m-empty-icon">🏏</div>
+            <div className="m-empty-title">No matches available</div>
+            <div className="m-empty-text">
+              Matches will appear here when available. Try refreshing.
+            </div>
+
+            <button className="m-btn m-btn-primary" onClick={load}>
+              Refresh
+            </button>
+          </div>
         </div>
       ) : (
-        <div className="matches-grid">
+        <div className="m-grid">
           {matches.map((m) => (
             <MatchCard
               key={m.id}
@@ -129,17 +160,55 @@ export default function Matches() {
           ))}
         </div>
       )}
+
+      {/* Overlay */}
+      {profileOpen && (
+        <div className="m-overlay" onClick={() => setProfileOpen(false)} />
+      )}
+
+      {/* Bottom Sheet Profile */}
+      <div className={`m-sheet ${profileOpen ? "open" : ""}`} ref={sheetRef}>
+        <div className="m-sheet-handle" />
+
+        <div className="m-sheet-head">
+          <div className="m-sheet-avatar">{getInitials(user?.name)}</div>
+          <div className="m-sheet-meta">
+            <div className="m-sheet-name">{user?.name || "User"}</div>
+            <div className="m-sheet-email">{user?.email || "-"}</div>
+          </div>
+
+          <button
+            className="m-sheet-close"
+            onClick={() => setProfileOpen(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="m-sheet-info">
+          <div className="m-sheet-row">
+            <span>Phone</span>
+            <b>{user?.phone || "-"}</b>
+          </div>
+          <div className="m-sheet-row">
+            <span>User ID</span>
+            <b className="m-mono">{user?.userId || "-"}</b>
+          </div>
+        </div>
+
+        <button className="m-btn m-btn-danger" onClick={onLogout}>
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
 
-/* ===========================
-   NORMALIZE BACKEND RESPONSE
-=========================== */
 function normalizeMatch(m) {
   return {
     id: m.id || m._id,
-    quizId: m.quizId, // MUST exist for completed filtering
+    quizId: m.quizId,
     title: m.title,
     tournament: m.tournament,
     startTime: m.startTime,

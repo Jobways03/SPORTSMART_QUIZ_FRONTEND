@@ -1,272 +1,308 @@
-/* -------------------------------------------------
-   BASE
--------------------------------------------------- */
+/* ======================================================
+   QUIZ PAGE (Mobile First)
+   Premium dark UI • Single accent • Consistent with Login/Matches
+====================================================== */
+
+/* ---------- THEME ---------- */
+:root {
+  --bg: #0e1117;
+  --panel: #151a21;
+  --panel-2: #1b2230;
+  --stroke: #232b3b;
+
+  --text: #f5f7fb;
+  --muted: #b6c0d1;
+  --muted-2: #9aa6bd;
+
+  --accent: #2f80ff;
+  --accent-hover: #256ee8;
+
+  --success: #2ecc71;
+  --danger: #ff5a5a;
+
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- RESET ---------- */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/* ---------- PAGE ---------- */
 .quiz-page {
   min-height: 100vh;
-  background: #f5f7fb;
-  padding: 16px;
-  position: relative;
+  background: linear-gradient(180deg, #0b0e14, #0e1117);
+  padding: 16px 12px 26px;
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
-  color: #1f2937;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
 }
 
-/* -------------------------------------------------
-   BACKGROUND DECORATION
--------------------------------------------------- */
-
-.quiz-decoration {
-  position: absolute;
-  opacity: 0.05;
-  pointer-events: none;
+/* Keep content centered like Matches */
+.quiz-page > * {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.quiz-decoration.whistle {
-  width: 200px;
-  height: 200px;
-  background: url("/assets/whistle.svg") no-repeat center;
-  background-size: contain;
-  top: -40px;
-  left: -40px;
-}
-
-.quiz-decoration.flag {
-  width: 260px;
-  height: 260px;
-  background: url("/assets/flag.svg") no-repeat center;
-  background-size: contain;
-  bottom: -70px;
-  right: -70px;
-}
-
-/* -------------------------------------------------
-   BACK LINK
--------------------------------------------------- */
-
+/* ---------- BACK LINK ---------- */
 .back-link {
   display: inline-block;
   margin-bottom: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
   text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.03);
+  transition: background 160ms ease, border-color 160ms ease;
 }
 
 .back-link:hover {
-  text-decoration: underline;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-/* -------------------------------------------------
-   STATES (LOADING / ERROR / INFO)
--------------------------------------------------- */
-
+/* ---------- STATES ---------- */
 .loading-message,
 .info-message {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  padding: 14px;
   text-align: center;
-  font-size: 14px;
-  color: #6b7280;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
 }
 
 .error-box {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(255, 90, 90, 0.10);
+  border: 1px solid rgba(255, 90, 90, 0.30);
+  border-radius: var(--radius-lg);
   padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  font-size: 14px;
+  color: #ffdede;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
 }
 
-/* -------------------------------------------------
-   LOCKED / SUBMITTED STATES
--------------------------------------------------- */
+.error-box b {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
 
+/* ---------- LOCKED / SUBMITTED BOX ---------- */
 .locked-box,
 .submitted-box {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 22px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
   text-align: center;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow);
+}
+
+.locked-box h3,
+.submitted-box h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
 }
 
 .locked-box h3 {
-  margin: 0 0 8px;
-  font-size: 20px;
-  color: #374151;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .submitted-box h3 {
-  margin: 0 0 10px;
-  font-size: 20px;
-  color: #065f46;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.locked-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .success-message {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #047857;
-}
-
-.view-result-btn {
-  display: inline-block;
-  margin-top: 14px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: #2563eb;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.view-result-btn:hover {
-  background: #1e40af;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.28);
+  color: #dff7ea;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .results-note {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #6b7280;
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
 }
 
-/* -------------------------------------------------
-   QUIZ HEADER
--------------------------------------------------- */
-
-.quiz-header {
-  background: #ffffff;
+/* ---------- VIEW RESULT CTA ---------- */
+.view-result-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 12px 14px;
   border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 18px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+  border: none;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.view-result-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* ---------- QUIZ HEADER ---------- */
+.quiz-header {
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-lg);
+  padding: 16px 14px;
+  margin-top: 12px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
 }
 
 .quiz-title {
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: #111827;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
 }
 
 .quiz-subtitle {
-  margin: 6px 0 14px;
-  font-size: 14px;
-  color: #6b7280;
+  margin: 6px 0 12px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
-/* -------------------------------------------------
-   PROGRESS BAR
--------------------------------------------------- */
-
+/* ---------- PROGRESS ---------- */
 .quiz-progress {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 10px;
+  align-items: center;
 }
 
 .progress-text {
-  font-size: 13px;
-  color: #374151;
-  min-width: 70px;
-  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.progress-text:last-child {
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .progress-bar {
-  flex: 1;
-  height: 8px;
-  background: #e5e7eb;
-  border-radius: 6px;
+  grid-column: 1 / -1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 999px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2563eb, #1e40af);
-  transition: width 0.25s ease;
+  width: 0%;
+  background: var(--accent);
+  transition: width 220ms ease;
 }
 
-/* -------------------------------------------------
-   QUESTIONS
--------------------------------------------------- */
-
+/* ---------- QUESTIONS ---------- */
 .questions-container {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
-/* -------------------------------------------------
-   SUBMIT BUTTON
--------------------------------------------------- */
-
+/* ---------- SUBMIT ---------- */
 .submit-btn {
   width: 100%;
-  height: 48px;
-  border-radius: 12px;
+  height: 46px;
+  border-radius: 14px;
   border: none;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 900;
   cursor: pointer;
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: var(--accent);
   color: #ffffff;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background 160ms ease, transform 160ms ease, opacity 160ms ease;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
 }
 
 .submit-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.60);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* -------------------------------------------------
-   RESPONSIVE BREAKPOINTS
--------------------------------------------------- */
-
-/* Tablet */
+/* ---------- RESPONSIVE ---------- */
 @media (min-width: 640px) {
   .quiz-page {
-    padding: 20px;
+    padding: 18px 16px 30px;
   }
 
   .quiz-header {
-    padding: 22px;
+    padding: 18px 16px;
   }
 
   .quiz-title {
-    font-size: 24px;
+    font-size: 20px;
+  }
+
+  .quiz-progress {
+    grid-template-columns: 1fr auto auto;
+  }
+
+  .progress-bar {
+    grid-column: 1 / 2;
+    height: 10px;
   }
 }
 
-/* Desktop */
 @media (min-width: 1024px) {
   .quiz-page {
-    padding: 24px 32px;
+    padding: 22px 18px 34px;
   }
 
-  .quiz-header {
-    padding: 26px;
+  .quiz-page > * {
+    max-width: 980px;
   }
 
   .quiz-title {
-    font-size: 26px;
+    font-size: 22px;
   }
 
   .questions-container {

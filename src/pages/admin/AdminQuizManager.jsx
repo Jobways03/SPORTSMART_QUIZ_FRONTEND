@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams,Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   adminCreateQuiz,
   adminFetchQuestionsByQuiz,
   adminCreateQuestion,
 } from "../../services/adminQuiz.service";
 import "../../styles/admin-quiz.css";
+
+const DEFAULT_POINTS = 5;
+const DEFAULT_OPTIONS_COUNT = 4;
 
 export default function AdminQuizManager() {
   const { matchId } = useParams();
@@ -17,10 +20,11 @@ export default function AdminQuizManager() {
   const [error, setError] = useState("");
 
   const [questionText, setQuestionText] = useState("");
-  const [options, setOptions] = useState(["", ""]);
-  const [points, setPoints] = useState(5);
+  const [options, setOptions] = useState(Array(DEFAULT_OPTIONS_COUNT).fill(""));
+  const [points, setPoints] = useState(DEFAULT_POINTS);
   const [order, setOrder] = useState(1);
 
+  /* ---------------- LOAD EXISTING QUIZ ---------------- */
   useEffect(() => {
     const storedQuizId = sessionStorage.getItem(`quiz_${matchId}`);
     if (storedQuizId) {
@@ -34,7 +38,8 @@ export default function AdminQuizManager() {
     setQuestions(Array.isArray(data) ? data : data.questions || []);
   };
 
-  const onCreateQuiz = async (e) => {
+  /* ---------------- CREATE QUIZ ---------------- */
+  const handleCreateQuiz = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -52,17 +57,20 @@ export default function AdminQuizManager() {
       sessionStorage.setItem(`quiz_${matchId}`, id);
       setQuizTitle("");
       setQuizDesc("");
-    } catch (e) {
+    } catch {
       setError("Quiz already exists for this match");
     }
   };
 
-  const onAddQuestion = async (e) => {
+  /* ---------------- ADD QUESTION ---------------- */
+  const handleAddQuestion = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!questionText.trim()) return setError("Question is required");
-    if (options.some((o) => !o.trim())) return setError("Fill all options");
+    if (!questionText.trim()) return setError("Question text is required");
+
+    if (options.some((o) => !o.trim()))
+      return setError("All 4 options are required");
 
     await adminCreateQuestion({
       quizId,
@@ -73,116 +81,119 @@ export default function AdminQuizManager() {
     });
 
     setQuestionText("");
-    setOptions(["", ""]);
+    setOptions(Array(DEFAULT_OPTIONS_COUNT).fill(""));
+    setPoints(DEFAULT_POINTS);
     setOrder(order + 1);
-    setPoints(5);
+
     await loadQuestions(quizId);
   };
 
   return (
-    <div className="admin-page">
-      <div className="admin-container">
-        <Link
-          to="/admin/matches"
-          className="back-link"
-          style={{ marginBottom: "30px" }}
-        >
+    <div className="admin-quiz-page">
+      <div className="admin-quiz-container">
+        <Link to="/admin/matches" className="admin-back-link">
           ← Back to Matches
         </Link>
-        <header className="admin-header">
+
+        <header className="admin-quiz-header">
           <h1>Quiz Management</h1>
           <span>
             Match ID: <code>{matchId}</code>
           </span>
         </header>
 
-        {error && <div className="admin-error">{error}</div>}
+        {error && <div className="admin-error-box">{error}</div>}
 
+        {/* ================= CREATE QUIZ ================= */}
         {!quizId && (
           <section className="admin-card">
             <h2>Create Quiz</h2>
-            <form onSubmit={onCreateQuiz} className="form-stack">
+            <form className="admin-form-stack" onSubmit={handleCreateQuiz}>
               <input
                 placeholder="Quiz title"
                 value={quizTitle}
                 onChange={(e) => setQuizTitle(e.target.value)}
               />
               <textarea
-                placeholder="Description (optional)"
+                placeholder="Quiz description (optional)"
                 value={quizDesc}
                 onChange={(e) => setQuizDesc(e.target.value)}
               />
-              <button className="primary-btn">Create Quiz</button>
+              <button className="admin-btn-primary">Create Quiz</button>
             </form>
           </section>
         )}
 
+        {/* ================= ADD QUESTIONS ================= */}
         {quizId && (
           <>
             <section className="admin-card">
               <h2>Add Question</h2>
-              <form onSubmit={onAddQuestion} className="form-stack">
+
+              <form className="admin-form-stack" onSubmit={handleAddQuestion}>
                 <input
                   placeholder="Question text"
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
                 />
 
-                {options.map((opt, i) => (
-                  <input
-                    key={i}
-                    placeholder={`Option ${i + 1}`}
-                    value={opt}
-                    onChange={(e) => {
-                      const copy = [...options];
-                      copy[i] = e.target.value;
-                      setOptions(copy);
-                    }}
-                  />
-                ))}
-
-                <button
-                  type="button"
-                  className="secondary-btn"
-                  onClick={() => setOptions([...options, ""])}
-                >
-                  + Add Option
-                </button>
-
-                <div className="inline-row">
-                  <input
-                    type="number"
-                    placeholder="Points"
-                    value={points}
-                    onChange={(e) => setPoints(e.target.value)}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Order"
-                    value={order}
-                    onChange={(e) => setOrder(e.target.value)}
-                  />
+                <div className="admin-options-grid">
+                  {options.map((opt, i) => (
+                    <input
+                      key={i}
+                      placeholder={`Option ${i + 1}`}
+                      value={opt}
+                      onChange={(e) => {
+                        const copy = [...options];
+                        copy[i] = e.target.value;
+                        setOptions(copy);
+                      }}
+                    />
+                  ))}
                 </div>
 
-                <button className="primary-btn">Add Question</button>
+                <div className="admin-inline-fields">
+                  <div className="admin-field">
+                    <label>Points</label>
+                    <input
+                      type="number"
+                      value={points}
+                      onChange={(e) => setPoints(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="admin-field">
+                    <label>Order</label>
+                    <input
+                      type="number"
+                      value={order}
+                      onChange={(e) => setOrder(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <button className="admin-btn-primary">Add Question</button>
               </form>
             </section>
 
+            {/* ================= QUESTIONS LIST ================= */}
             <section className="admin-card">
               <h2>Questions</h2>
 
               {questions.length === 0 ? (
-                <div className="info-box">No questions added</div>
+                <div className="admin-info-box">No questions added</div>
               ) : (
                 questions
                   .sort((a, b) => a.order - b.order)
                   .map((q) => (
-                    <div key={q._id || q.id} className="question-row">
-                      <div className="q-title">
+                    <div key={q._id || q.id} className="admin-question-row">
+                      <div className="admin-q-title">
                         {q.order}. {q.questionText}
                       </div>
-                      <div className="q-options">{q.options.join(" • ")}</div>
-                      <div className="q-points">Points: {q.points}</div>
+                      <div className="admin-q-options">
+                        {q.options.join(" • ")}
+                      </div>
+                      <div className="admin-q-points">Points: {q.points}</div>
                     </div>
                   ))
               )}

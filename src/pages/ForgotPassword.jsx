@@ -15,31 +15,31 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-card">
-        <h2 className="auth-title">Forgot Password</h2>
-        <p className="auth-subtitle">
-          Enter your registered email to receive reset link
+    <div className="fp-page">
+      <div className="fp-card">
+        <h2 className="fp-title">Forgot Password</h2>
+        <p className="fp-subtitle">
+          Enter your registered email to receive a reset link
         </p>
 
-        <div className="login-form">
+        <div className="fp-form">
           <input
-            className="form-input"
+            className="fp-input"
             type="email"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <button onClick={submit} className="login-button">
+          <button onClick={submit} className="fp-button">
             Send Reset Link
           </button>
 
-          {msg && <div className="info-message">{msg}</div>}
+          {msg && <div className="fp-info">{msg}</div>}
         </div>
 
-        <div className="auth-links">
-          <button onClick={() => navigate("/login")} className="link-btn">
+        <div className="fp-links">
+          <button onClick={() => navigate("/login")} className="fp-link-btn">
             ← Back to Login
           </button>
         </div>
