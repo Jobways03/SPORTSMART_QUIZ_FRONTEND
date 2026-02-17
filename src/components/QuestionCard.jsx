@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/questioncard.css"
+import "../styles/questioncard.css";
 
 export default function QuestionCard({
   question,
@@ -46,8 +46,6 @@ export default function QuestionCard({
       className="question-card"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="question-sport-icon">{getSportIcon()}</div>
-
       <div className="question-title">
         <span className="question-number">{index + 1}</span>
         <span className="question-text">{question.questionText}</span>
@@ -83,4 +81,3 @@ export default function QuestionCard({
     </div>
   );
 }
-
