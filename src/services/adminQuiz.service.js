@@ -21,3 +21,8 @@ export async function adminFetchQuizzes() {
   const res = await api.get("/api/admin/quizzes");
   return res.data; // expects array
 }
+
+export async function adminFetchQuizzesByMatch(matchId) {
+  const res = await api.get(`/api/admin/quizzes/match/${matchId}`);
+  return res.data; // array of quizzes for this match
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { adminFetchMatches } from "../../services/adminMatch.service";
+import { adminFetchQuizzesByMatch } from "../../services/adminQuiz.service";
 import { adminPublishResults } from "../../services/adminPublish.service";
 import "../../styles/admin-publish-results.css";
 
@@ -32,7 +33,11 @@ export default function AdminPublishResults() {
       const found = list.find((m) => (m._id || m.id) === matchId);
 
       setMatch(found || null);
-      setQuizId(sessionStorage.getItem(`quiz_${matchId}`));
+
+      const quizzes = await adminFetchQuizzesByMatch(matchId);
+      const quizList = Array.isArray(quizzes) ? quizzes : [];
+      const foundQuiz = quizList[0];
+      setQuizId(foundQuiz ? (foundQuiz._id || foundQuiz.id) : null);
     } catch {
       setErrorMsg("Failed to load match data.");
     } finally {

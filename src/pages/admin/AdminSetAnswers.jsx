@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { adminFetchMatches } from "../../services/adminMatch.service";
-import { adminFetchQuestionsByQuiz } from "../../services/adminQuiz.service";
+import { adminFetchQuestionsByQuiz, adminFetchQuizzesByMatch } from "../../services/adminQuiz.service";
 import { adminSetCorrectAnswers } from "../../services/adminAnswer.service";
 import "../../styles/admin-set-answers.css";
 
@@ -39,17 +39,21 @@ export default function AdminSetAnswers() {
       const found = list.find((m) => (m._id || m.id) === matchId);
       setMatch(found || null);
 
-      const storedQuizId = sessionStorage.getItem(`quiz_${matchId}`);
-      if (!storedQuizId) {
+      const quizzes = await adminFetchQuizzesByMatch(matchId);
+      const quizList = Array.isArray(quizzes) ? quizzes : [];
+      const foundQuiz = quizList[0]; // first (most recent) quiz for this match
+
+      if (!foundQuiz) {
         setQuizId(null);
         setQuestions([]);
         setAnswersMap({});
         return;
       }
 
-      setQuizId(storedQuizId);
+      const fetchedQuizId = foundQuiz._id || foundQuiz.id;
+      setQuizId(fetchedQuizId);
 
-      const qData = await adminFetchQuestionsByQuiz(storedQuizId);
+      const qData = await adminFetchQuestionsByQuiz(fetchedQuizId);
       const raw = Array.isArray(qData) ? qData : qData?.questions || [];
       const sorted = [...raw].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       setQuestions(sorted);

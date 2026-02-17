@@ -4,6 +4,7 @@ import {
   adminCreateQuiz,
   adminFetchQuestionsByQuiz,
   adminCreateQuestion,
+  adminFetchQuizzesByMatch,
 } from "../../services/adminQuiz.service";
 import "../../styles/admin-quiz.css";
 
@@ -26,11 +27,21 @@ export default function AdminQuizManager() {
 
   /* ---------------- LOAD EXISTING QUIZ ---------------- */
   useEffect(() => {
-    const storedQuizId = sessionStorage.getItem(`quiz_${matchId}`);
-    if (storedQuizId) {
-      setQuizId(storedQuizId);
-      loadQuestions(storedQuizId);
-    }
+    const loadExistingQuiz = async () => {
+      try {
+        const quizzes = await adminFetchQuizzesByMatch(matchId);
+        const quizList = Array.isArray(quizzes) ? quizzes : [];
+        const existingQuiz = quizList[0];
+        if (existingQuiz) {
+          const id = existingQuiz._id || existingQuiz.id;
+          setQuizId(id);
+          loadQuestions(id);
+        }
+      } catch {
+        // no existing quiz, user can create one
+      }
+    };
+    loadExistingQuiz();
   }, [matchId]);
 
   const loadQuestions = async (qid) => {
@@ -54,7 +65,6 @@ export default function AdminQuizManager() {
 
       const id = data._id || data.id;
       setQuizId(id);
-      sessionStorage.setItem(`quiz_${matchId}`, id);
       setQuizTitle("");
       setQuizDesc("");
     } catch {
