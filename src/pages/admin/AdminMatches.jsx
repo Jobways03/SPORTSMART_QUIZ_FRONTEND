@@ -47,6 +47,7 @@ export default function AdminMatches() {
 
   /* UI STATE */
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   /* LOAD MATCHES (same as your previous functionality) */
   const loadMatches = async () => {
@@ -134,10 +135,15 @@ export default function AdminMatches() {
     await loadMatches();
   };
 
-  /* DELETE MATCH (same as previous functionality) */
+  /* DELETE MATCH */
   const handleDeleteMatch = async (id) => {
-    await adminDeleteMatchStatus(id);
-    await loadMatches();
+    try {
+      await adminDeleteMatchStatus(id);
+      setDeleteConfirmId(null);
+      await loadMatches();
+    } catch (e) {
+      setErrorMsg(e?.response?.data?.message || "Failed to delete match");
+    }
   };
 
   const list = useMemo(() => {
@@ -307,7 +313,7 @@ export default function AdminMatches() {
 
                 return (
                   <div key={id} className="admin-match-card">
-                    {/* COVER (with backup placeholder) */}
+                    {/* COVER */}
                     <div className="admin-match-coverwrap">
                       {hasCover ? (
                         <img
@@ -339,12 +345,14 @@ export default function AdminMatches() {
                       </div>
                     </div>
 
-                    {/* ACTIONS (same behavior as previous) */}
+                    {/* ACTIONS */}
                     <div className="admin-match-actions">
                       <select
                         className="admin-select"
                         value={m.status}
-                        onChange={(e) => handleStatusChange(id, e.target.value)}
+                        onChange={(e) =>
+                          handleStatusChange(id, e.target.value)
+                        }
                       >
                         <option value="UPCOMING">UPCOMING</option>
                         <option value="LIVE">LIVE</option>
@@ -360,13 +368,32 @@ export default function AdminMatches() {
                         Manage Quiz
                       </button>
 
-                      <button
-                        type="button"
-                        className="admin-btn-danger"
-                        onClick={() => handleDeleteMatch(id)}
-                      >
-                        Delete
-                      </button>
+                      {deleteConfirmId === id ? (
+                        <>
+                          <button
+                            type="button"
+                            className="admin-btn-danger"
+                            onClick={() => handleDeleteMatch(id)}
+                          >
+                            Confirm Delete
+                          </button>
+                          <button
+                            type="button"
+                            className="admin-btn-secondary"
+                            onClick={() => setDeleteConfirmId(null)}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          className="admin-btn-danger"
+                          onClick={() => setDeleteConfirmId(id)}
+                        >
+                          Delete
+                        </button>
+                      )}
 
                       <div className="admin-action-menu">
                         <button
@@ -408,7 +435,6 @@ export default function AdminMatches() {
                               Publish Results
                             </button>
 
-                            {/* SAME AS YOUR PREVIOUS: no disabling */}
                             <button
                               type="button"
                               onClick={() =>

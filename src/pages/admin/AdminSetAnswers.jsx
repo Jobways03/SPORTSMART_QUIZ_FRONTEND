@@ -62,7 +62,7 @@ export default function AdminSetAnswers() {
       sorted.forEach((q) => {
         const qid = q._id || q.id;
         init[qid] = {
-          correctOptionIndex: undefined,
+          correctOptionIndex: q.correctOptionIndex != null ? q.correctOptionIndex : undefined,
           points: q.points ?? 0,
         };
       });

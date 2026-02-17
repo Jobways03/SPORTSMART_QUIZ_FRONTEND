@@ -5,6 +5,8 @@ import {
   adminFetchQuestionsByQuiz,
   adminCreateQuestion,
   adminFetchQuizzesByMatch,
+  adminUpdateQuestion,
+  adminDeleteQuestion,
 } from "../../services/adminQuiz.service";
 import "../../styles/admin-quiz.css";
 
@@ -24,6 +26,9 @@ export default function AdminQuizManager() {
   const [options, setOptions] = useState(Array(DEFAULT_OPTIONS_COUNT).fill(""));
   const [points, setPoints] = useState(DEFAULT_POINTS);
   const [order, setOrder] = useState(1);
+
+  const [editingId, setEditingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   /* ---------------- LOAD EXISTING QUIZ ---------------- */
   useEffect(() => {
@@ -98,6 +103,66 @@ export default function AdminQuizManager() {
     await loadQuestions(quizId);
   };
 
+  /* ---------------- START EDITING ---------------- */
+  const handleStartEdit = (q) => {
+    const id = q._id || q.id;
+    setEditingId(id);
+    setQuestionText(q.questionText);
+    setOptions([...q.options]);
+    setPoints(q.points);
+    setOrder(q.order);
+    setError("");
+  };
+
+  /* ---------------- CANCEL EDIT ---------------- */
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setQuestionText("");
+    setOptions(Array(DEFAULT_OPTIONS_COUNT).fill(""));
+    setPoints(DEFAULT_POINTS);
+    setOrder(questions.length + 1);
+  };
+
+  /* ---------------- UPDATE QUESTION ---------------- */
+  const handleUpdateQuestion = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!questionText.trim()) return setError("Question text is required");
+    if (options.some((o) => !o.trim()))
+      return setError("All 4 options are required");
+
+    try {
+      await adminUpdateQuestion(editingId, {
+        questionText: questionText.trim(),
+        options,
+        points: Number(points),
+        order: Number(order),
+      });
+
+      setEditingId(null);
+      setQuestionText("");
+      setOptions(Array(DEFAULT_OPTIONS_COUNT).fill(""));
+      setPoints(DEFAULT_POINTS);
+      setOrder(questions.length + 1);
+
+      await loadQuestions(quizId);
+    } catch {
+      setError("Failed to update question");
+    }
+  };
+
+  /* ---------------- DELETE QUESTION ---------------- */
+  const handleDeleteQuestion = async (questionId) => {
+    try {
+      await adminDeleteQuestion(questionId);
+      setDeleteConfirmId(null);
+      await loadQuestions(quizId);
+    } catch {
+      setError("Failed to delete question");
+    }
+  };
+
   return (
     <div className="admin-quiz-page">
       <div className="admin-quiz-container">
@@ -138,9 +203,12 @@ export default function AdminQuizManager() {
         {quizId && (
           <>
             <section className="admin-card">
-              <h2>Add Question</h2>
+              <h2>{editingId ? "Edit Question" : "Add Question"}</h2>
 
-              <form className="admin-form-stack" onSubmit={handleAddQuestion}>
+              <form
+                className="admin-form-stack"
+                onSubmit={editingId ? handleUpdateQuestion : handleAddQuestion}
+              >
                 <input
                   placeholder="Question text"
                   value={questionText}
@@ -182,7 +250,20 @@ export default function AdminQuizManager() {
                   </div>
                 </div>
 
-                <button className="admin-btn-primary">Add Question</button>
+                <div className="admin-inline-fields">
+                  <button type="submit" className="admin-btn-primary">
+                    {editingId ? "Update Question" : "Add Question"}
+                  </button>
+                  {editingId && (
+                    <button
+                      type="button"
+                      className="admin-btn-secondary"
+                      onClick={handleCancelEdit}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </form>
             </section>
 
@@ -195,17 +276,55 @@ export default function AdminQuizManager() {
               ) : (
                 questions
                   .sort((a, b) => a.order - b.order)
-                  .map((q) => (
-                    <div key={q._id || q.id} className="admin-question-row">
-                      <div className="admin-q-title">
-                        {q.order}. {q.questionText}
+                  .map((q) => {
+                    const id = q._id || q.id;
+                    return (
+                      <div key={id} className="admin-question-row">
+                        <div className="admin-q-title">
+                          {q.order}. {q.questionText}
+                        </div>
+                        <div className="admin-q-options">
+                          {q.options.join(" • ")}
+                        </div>
+                        <div className="admin-q-meta">
+                          <span className="admin-q-points">
+                            Points: {q.points}
+                          </span>
+                          <div className="admin-q-actions">
+                            <button
+                              className="admin-btn-edit"
+                              onClick={() => handleStartEdit(q)}
+                            >
+                              Edit
+                            </button>
+                            {deleteConfirmId === id ? (
+                              <>
+                                <button
+                                  className="admin-btn-danger"
+                                  onClick={() => handleDeleteQuestion(id)}
+                                >
+                                  Confirm
+                                </button>
+                                <button
+                                  className="admin-btn-secondary"
+                                  onClick={() => setDeleteConfirmId(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                className="admin-btn-danger"
+                                onClick={() => setDeleteConfirmId(id)}
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div className="admin-q-options">
-                        {q.options.join(" • ")}
-                      </div>
-                      <div className="admin-q-points">Points: {q.points}</div>
-                    </div>
-                  ))
+                    );
+                  })
               )}
             </section>
           </>

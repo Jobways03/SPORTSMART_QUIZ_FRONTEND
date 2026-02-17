@@ -26,3 +26,14 @@ export async function adminFetchQuizzesByMatch(matchId) {
   const res = await api.get(`/api/admin/quizzes/match/${matchId}`);
   return res.data; // array of quizzes for this match
 }
+
+export async function adminUpdateQuestion(questionId, payload) {
+  // payload can include: { questionText, options[], points, order }
+  const res = await api.patch(`/api/admin/questions/${questionId}`, payload);
+  return res.data;
+}
+
+export async function adminDeleteQuestion(questionId) {
+  const res = await api.delete(`/api/admin/questions/${questionId}`);
+  return res.data;
+}
