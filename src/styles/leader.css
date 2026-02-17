@@ -232,6 +232,18 @@
   color: rgba(255, 255, 255, 0.96);
 }
 
+.l-rankRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.l-rankScore {
+  font-size: 18px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.92);
+}
+
 .l-rankChip {
   display: inline-flex;
   align-items: center;
@@ -380,6 +392,14 @@
 .l-tr.is-me {
   background: rgba(37, 106, 244, 0.10);
   border-top-color: rgba(37, 106, 244, 0.18);
+}
+
+.l-tr--gap {
+  border-top: 1px dashed rgba(148, 163, 184, 0.15);
+  padding: 4px 14px;
+  color: rgba(148, 163, 184, 0.5);
+  font-weight: 800;
+  font-size: 14px;
 }
 
 .l-td {

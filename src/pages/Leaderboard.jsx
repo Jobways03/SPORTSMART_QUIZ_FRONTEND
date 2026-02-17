@@ -1,16 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import {
-  fetchLeaderboard,
-  fetchUserRank,
-} from "../services/leaderboard.service";
+import { fetchFullLeaderboard } from "../services/leaderboard.service";
 import { useUser } from "../context/UserContext";
 import "../styles/leader.css";
 
 const getMedalStyle = (rank) => {
-  if (rank === 1) return { emoji: "🥇", className: "rank-1" };
-  if (rank === 2) return { emoji: "🥈", className: "rank-2" };
-  if (rank === 3) return { emoji: "🥉", className: "rank-3" };
+  if (rank === 1) return { emoji: "\u{1F947}", className: "rank-1" };
+  if (rank === 2) return { emoji: "\u{1F948}", className: "rank-2" };
+  if (rank === 3) return { emoji: "\u{1F949}", className: "rank-3" };
   return { emoji: `#${rank}`, className: "" };
 };
 
@@ -21,7 +18,8 @@ export default function Leaderboard() {
 
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
-  const [rank, setRank] = useState(null);
+  const [myEntry, setMyEntry] = useState(null);
+  const [totalPlayers, setTotalPlayers] = useState(0);
   const [error, setError] = useState("");
 
   const load = async () => {
@@ -29,14 +27,15 @@ export default function Leaderboard() {
     setError("");
 
     try {
-      const [lb, ur] = await Promise.all([
-        fetchLeaderboard(quizId),
-        fetchUserRank({ quizId, userId: user.userId }),
-      ]);
+      const data = await fetchFullLeaderboard({
+        quizId,
+        userId: user.userId,
+      });
 
-      setList(lb.leaderboard || []);
-      setRank(ur.rank);
-    } catch (e) {
+      setList(data.leaderboard || []);
+      setMyEntry(data.myEntry || null);
+      setTotalPlayers(data.totalPlayers || 0);
+    } catch {
       setError("Leaderboard not available yet");
     } finally {
       setLoading(false);
@@ -49,6 +48,14 @@ export default function Leaderboard() {
   }, [quizId, user?.userId]);
 
   const topThree = useMemo(() => list.slice(0, 3), [list]);
+
+  // Check if user is already in the top 10 list
+  const isUserInTop10 = useMemo(() => {
+    if (!myEntry) return false;
+    return list.some(
+      (u) => String(u.userId) === String(myEntry.userId)
+    );
+  }, [list, myEntry]);
 
   return (
     <div className="l-page">
@@ -76,7 +83,9 @@ export default function Leaderboard() {
           <div className="l-topmeta">
             <div className="l-top-title">Leaderboard</div>
             <div className="l-top-sub">
-              {loading ? "Loading…" : `${list.length} players`}
+              {loading
+                ? "Loading\u2026"
+                : `Top 10 of ${totalPlayers} players`}
             </div>
           </div>
 
@@ -100,7 +109,7 @@ export default function Leaderboard() {
             <div className="l-alert-title">Loading</div>
             <div className="l-alert-text">
               <span className="l-spinner" aria-hidden="true" />
-              Loading leaderboard…
+              Loading leaderboard\u2026
             </div>
           </div>
         )}
@@ -114,23 +123,24 @@ export default function Leaderboard() {
         )}
 
         {/* Your rank */}
-        {!loading && !error && rank !== null && (
+        {!loading && !error && myEntry && (
           <div className="l-rankCard">
             <div className="l-rankLeft">
               <div className="l-rankLabel">Your Rank</div>
-              <div className="l-rankValue">#{rank ?? "-"}</div>
+              <div className="l-rankValue">#{myEntry.rank}</div>
             </div>
-            <div className="l-rankChip">
-              <span className="l-mi" aria-hidden="true">
-                emoji_events
-              </span>
-              {rank === 1
-                ? "Top 1"
-                : rank === 2
-                  ? "Top 2"
-                  : rank === 3
-                    ? "Top 3"
-                    : "Player"}
+            <div className="l-rankRight">
+              <div className="l-rankScore">{myEntry.score} pts</div>
+              <div className="l-rankChip">
+                <span className="l-mi" aria-hidden="true">
+                  emoji_events
+                </span>
+                {myEntry.rank <= 3
+                  ? `Top ${myEntry.rank}`
+                  : myEntry.rank <= 10
+                    ? "Top 10"
+                    : `of ${totalPlayers}`}
+              </div>
             </div>
           </div>
         )}
@@ -141,7 +151,7 @@ export default function Leaderboard() {
             <div className="l-podiumHead">
               <div className="l-podiumTitle">
                 <span className="l-trophy" aria-hidden="true">
-                  🏆
+                  {"\u{1F3C6}"}
                 </span>
                 Top Players
               </div>
@@ -151,6 +161,8 @@ export default function Leaderboard() {
             <div className="l-podiumGrid">
               {topThree.map((u, idx) => {
                 const medal = getMedalStyle(u.rank);
+                const isMe =
+                  myEntry && String(u.userId) === String(myEntry.userId);
                 return (
                   <div
                     key={u.rank || idx}
@@ -159,6 +171,7 @@ export default function Leaderboard() {
                     <div className="l-podiumBadge">{medal.emoji}</div>
                     <div className="l-podiumName" title={u.name}>
                       {u.name}
+                      {isMe && <span className="l-meTag">You</span>}
                     </div>
                     <div className="l-podiumScore">{u.score} pts</div>
                   </div>
@@ -179,7 +192,8 @@ export default function Leaderboard() {
 
             <div className="l-tb">
               {list.map((u, index) => {
-                const isMe = u.phone === user.phone;
+                const isMe =
+                  myEntry && String(u.userId) === String(myEntry.userId);
                 const medal = getMedalStyle(u.rank);
 
                 return (
@@ -203,6 +217,32 @@ export default function Leaderboard() {
                   </div>
                 );
               })}
+
+              {/* Show user's row separately if outside top 10 */}
+              {myEntry && !isUserInTop10 && (
+                <>
+                  <div className="l-tr l-tr--gap">
+                    <div className="l-td l-rank">...</div>
+                    <div className="l-td l-user" />
+                    <div className="l-td l-score l-right" />
+                  </div>
+                  <div
+                    className="l-tr is-me"
+                    style={{ animationDelay: "0.44s" }}
+                  >
+                    <div className="l-td l-rank">#{myEntry.rank}</div>
+                    <div className="l-td l-user">
+                      <div className="l-name">
+                        {myEntry.name}
+                        <span className="l-meTag">You</span>
+                      </div>
+                    </div>
+                    <div className="l-td l-score l-right">
+                      {myEntry.score}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </section>
         )}
@@ -212,7 +252,7 @@ export default function Leaderboard() {
           <div className="l-state">
             <div className="l-stateCard">
               <div className="l-stateIcon" aria-hidden="true">
-                📊
+                {"\u{1F4CA}"}
               </div>
               <h3 className="l-stateTitle">No Leaderboard Data</h3>
               <p className="l-stateText">

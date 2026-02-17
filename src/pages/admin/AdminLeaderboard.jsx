@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fetchLeaderboard } from "../../services/leaderboard.service";
+import { fetchAdminLeaderboard } from "../../services/leaderboard.service";
 import "../../styles/admin-leaderboard.css";
 
 const getRankLabel = (rank) => {
@@ -15,6 +15,7 @@ export default function AdminLeaderboard() {
 
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -27,8 +28,9 @@ export default function AdminLeaderboard() {
     setErrorMsg("");
 
     try {
-      const res = await fetchLeaderboard(quizId);
+      const res = await fetchAdminLeaderboard(quizId);
       setList(res?.leaderboard || []);
+      setTotal(res?.total || 0);
     } catch {
       setErrorMsg("Leaderboard not available yet.");
     } finally {
@@ -45,6 +47,9 @@ export default function AdminLeaderboard() {
 
         <header className="adm-lb-header">
           <h1 className="adm-lb-title">Leaderboard</h1>
+          {!loading && !errorMsg && total > 0 && (
+            <span className="adm-lb-count">{total} players</span>
+          )}
           <span className="adm-lb-trophy">🏆</span>
         </header>
 

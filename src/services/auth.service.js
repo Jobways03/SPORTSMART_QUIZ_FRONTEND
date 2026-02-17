@@ -37,3 +37,19 @@ export async function resetPassword(token, { password }) {
   });
   return res.data;
 }
+
+/**
+ * VERIFY GOOGLE TOKEN — exchange short-lived token for user data
+ */
+export async function verifyGoogleToken(token) {
+  const res = await api.get(`api/auth/user/google/verify?token=${token}`);
+  return res.data; // { userId, name, email, phone }
+}
+
+/**
+ * UPDATE PHONE — after Google login if phone is missing
+ */
+export async function updateUserPhone({ userId, phone }) {
+  const res = await api.post("api/auth/user/update-phone", { userId, phone });
+  return res.data; // { userId, name, email, phone }
+}
