@@ -131,6 +131,32 @@ export default function MatchCard({ match, onViewQuiz }) {
           </div>
         </div>
 
+        {/* Winner strip for completed matches */}
+        {uiStatus === "COMPLETED" && match.winner?.name && (
+          <div className="mc-winner">
+            {match.winner.photo ? (
+              <img
+                src={match.winner.photo}
+                alt={match.winner.name}
+                className="mc-winner-photo"
+              />
+            ) : (
+              <div className="mc-winner-photo mc-winner-photo--placeholder">
+                <span className="mc-mi" aria-hidden="true">emoji_events</span>
+              </div>
+            )}
+            <div className="mc-winner-info">
+              <div className="mc-winner-name">{match.winner.name}</div>
+              {match.winner.location && (
+                <div className="mc-winner-location">{match.winner.location}</div>
+              )}
+            </div>
+            <span className="mc-winner-icon mc-mi" aria-hidden="true">
+              emoji_events
+            </span>
+          </div>
+        )}
+
         <button
           className={`mc-btn ${isDisabled ? "is-disabled" : ""}`}
           onClick={onViewQuiz}

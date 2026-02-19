@@ -5,6 +5,7 @@ import {
   adminCreateMatch,
   adminUpdateMatchStatus,
   adminDeleteMatchStatus,
+  adminSetWinner,
 } from "../../services/adminMatch.service";
 import "../../styles/admin-matches.css";
 
@@ -48,6 +49,14 @@ export default function AdminMatches() {
   /* UI STATE */
   const [openMenuId, setOpenMenuId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+
+  /* SET WINNER STATE */
+  const [winnerMatchId, setWinnerMatchId] = useState(null);
+  const [winnerName, setWinnerName] = useState("");
+  const [winnerLocation, setWinnerLocation] = useState("");
+  const [winnerPhoto, setWinnerPhoto] = useState(null);
+  const [winnerPreview, setWinnerPreview] = useState(null);
+  const [savingWinner, setSavingWinner] = useState(false);
 
   /* LOAD MATCHES (same as your previous functionality) */
   const loadMatches = async () => {
@@ -143,6 +152,51 @@ export default function AdminMatches() {
       await loadMatches();
     } catch (e) {
       setErrorMsg(e?.response?.data?.message || "Failed to delete match");
+    }
+  };
+
+  /* OPEN SET WINNER FORM */
+  const openWinnerForm = (match) => {
+    const id = match._id || match.id;
+    setWinnerMatchId(id);
+    setWinnerName(match.winner?.name || "");
+    setWinnerLocation(match.winner?.location || "");
+    setWinnerPhoto(null);
+    if (winnerPreview) URL.revokeObjectURL(winnerPreview);
+    setWinnerPreview(match.winner?.photo || null);
+    setOpenMenuId(null);
+  };
+
+  const closeWinnerForm = () => {
+    setWinnerMatchId(null);
+    setWinnerName("");
+    setWinnerLocation("");
+    setWinnerPhoto(null);
+    if (winnerPreview && !winnerPreview.startsWith("http")) {
+      URL.revokeObjectURL(winnerPreview);
+    }
+    setWinnerPreview(null);
+  };
+
+  /* SAVE WINNER */
+  const handleSaveWinner = async (e) => {
+    e.preventDefault();
+    if (!winnerName.trim()) return setErrorMsg("Winner name is required");
+
+    try {
+      setSavingWinner(true);
+      const fd = new FormData();
+      fd.append("winnerName", winnerName.trim());
+      fd.append("winnerLocation", winnerLocation.trim());
+      if (winnerPhoto) fd.append("winnerPhoto", winnerPhoto);
+
+      await adminSetWinner(winnerMatchId, fd);
+      closeWinnerForm();
+      await loadMatches();
+    } catch (e2) {
+      setErrorMsg(e2?.response?.data?.message || "Failed to set winner");
+    } finally {
+      setSavingWinner(false);
     }
   };
 
@@ -443,6 +497,13 @@ export default function AdminMatches() {
                             >
                               View Leaderboard
                             </button>
+
+                            <button
+                              type="button"
+                              onClick={() => openWinnerForm(m)}
+                            >
+                              Set Winner
+                            </button>
                           </div>
                         )}
                       </div>
@@ -453,6 +514,84 @@ export default function AdminMatches() {
             </div>
           )}
         </div>
+
+        {/* SET WINNER MODAL */}
+        {winnerMatchId && (
+          <>
+            <div
+              className="admin-overlay"
+              onClick={closeWinnerForm}
+            />
+            <div className="admin-winner-modal">
+              <h3 className="admin-section-title">Set Winner</h3>
+              <form onSubmit={handleSaveWinner}>
+                <div className="admin-field">
+                  <label className="admin-label">Winner Name *</label>
+                  <input
+                    className="admin-input"
+                    placeholder="e.g. John Doe"
+                    value={winnerName}
+                    onChange={(e) => setWinnerName(e.target.value)}
+                    disabled={savingWinner}
+                    required
+                  />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-label">Winner Location</label>
+                  <input
+                    className="admin-input"
+                    placeholder="e.g. Mumbai, India"
+                    value={winnerLocation}
+                    onChange={(e) => setWinnerLocation(e.target.value)}
+                    disabled={savingWinner}
+                  />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-label">Winner Photo</label>
+                  <input
+                    className="admin-input-file"
+                    type="file"
+                    accept="image/*"
+                    disabled={savingWinner}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (winnerPreview && !winnerPreview.startsWith("http")) {
+                        URL.revokeObjectURL(winnerPreview);
+                      }
+                      setWinnerPhoto(file);
+                      setWinnerPreview(URL.createObjectURL(file));
+                    }}
+                  />
+                </div>
+                {winnerPreview && (
+                  <img
+                    src={winnerPreview}
+                    alt="Winner preview"
+                    className="admin-winner-preview"
+                  />
+                )}
+                <div className="admin-winner-actions">
+                  <button
+                    type="submit"
+                    className="admin-btn-primary"
+                    disabled={savingWinner}
+                  >
+                    {savingWinner ? "Saving…" : "Save Winner"}
+                  </button>
+                  <button
+                    type="button"
+                    className="admin-btn-secondary"
+                    onClick={closeWinnerForm}
+                    disabled={savingWinner}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

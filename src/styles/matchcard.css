@@ -322,6 +322,67 @@
   }
 }
 
+/* ===== Winner Strip ===== */
+.mc-winner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(250, 204, 21, 0.18);
+  background: rgba(250, 204, 21, 0.06);
+}
+
+.mc-winner-photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(250, 204, 21, 0.3);
+}
+
+.mc-winner-photo--placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(250, 204, 21, 0.12);
+}
+
+.mc-winner-photo--placeholder .mc-mi {
+  font-size: 18px;
+  color: rgba(250, 204, 21, 0.8);
+}
+
+.mc-winner-info {
+  min-width: 0;
+}
+
+.mc-winner-name {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(250, 204, 21, 0.95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mc-winner-location {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mc-winner-icon {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 22px;
+  color: rgba(250, 204, 21, 0.8);
+}
+
 /* ===== Badge (NEW) ===== */
 .mc-badge--open {
   /* similar to LIVE but slightly more “quiz open” tone */

@@ -23,3 +23,10 @@ export async function adminDeleteMatchStatus(matchId) {
   const res = await api.delete(`/api/admin/matches/${matchId}`);
   return res.data;
 }
+
+export async function adminSetWinner(matchId, formData) {
+  const res = await api.patch(`/api/admin/matches/${matchId}/winner`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+}

@@ -265,5 +265,6 @@ function normalizeMatch(m) {
     startTime: m.startTime,
     status: m.status,
     coverImage: m.coverImage,
+    winner: m.winner || null,
   };
 }
