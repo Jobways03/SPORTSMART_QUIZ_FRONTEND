@@ -1,0 +1,325 @@
+/* =========================================
+   Admin Winner Override Page — awo- prefix
+========================================= */
+
+.awo-page {
+  min-height: 100dvh;
+  background: #f0f2f5;
+  font-family: "Lexend", system-ui, sans-serif;
+  padding: 24px 16px 48px;
+}
+
+.awo-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* TOP BAR */
+.awo-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.awo-back-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: #5f6b7a;
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: color 0.15s;
+}
+.awo-back-link:hover {
+  color: #1a1a2e;
+}
+
+.awo-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.awo-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 4px 0 0;
+}
+
+/* CARD */
+.awo-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.awo-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-wrap: wrap;
+}
+
+.awo-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.awo-card-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 4px 0 0;
+}
+
+.awo-card-body {
+  padding: 24px;
+}
+
+/* CHIPS */
+.awo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #374151;
+}
+.awo-chip-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+.awo-chip-none {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ALERTS */
+.awo-alert {
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.awo-alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+.awo-alert-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+.awo-alert-warn {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+/* OVERRIDE ACTIVE CARD */
+.awo-override-active {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #6ee7b7;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.awo-override-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #059669;
+  margin-bottom: 12px;
+}
+
+.awo-override-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: #064e3b;
+  margin: 0 0 4px;
+}
+
+.awo-override-score {
+  font-size: 15px;
+  color: #047857;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.awo-override-meta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* FORM */
+.awo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.awo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.awo-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.awo-required {
+  color: #ef4444;
+}
+
+.awo-input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+  background: #fff;
+}
+.awo-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.awo-input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+}
+
+.awo-hint {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* DIVIDER */
+.awo-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 20px 0;
+}
+
+/* ACTIONS ROW */
+.awo-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* BUTTONS */
+.awo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+  font-family: inherit;
+}
+.awo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.awo-btn-primary {
+  background: #4f46e5;
+  color: #fff;
+}
+.awo-btn-primary:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.awo-btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+.awo-btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.awo-btn-ghost {
+  background: transparent;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+.awo-btn-ghost:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+/* LOADING */
+.awo-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.awo-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: awo-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes awo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* FOOT NOTE */
+.awo-foot {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .awo-card-head {
+    flex-direction: column;
+  }
+  .awo-actions {
+    flex-direction: column;
+  }
+  .awo-btn {
+    width: 100%;
+  }
+}

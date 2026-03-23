@@ -87,6 +87,8 @@ export default function Quiz() {
     }
   };
 
+  useEffect(() => { document.title = "Quiz | Sports Arena"; }, []);
+
   useEffect(() => {
     loadQuiz();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -169,7 +171,6 @@ export default function Quiz() {
             <span className="q-mi" aria-hidden="true">
               arrow_back
             </span>
-            Back
           </button>
 
           <div className="q-topmeta">
@@ -221,21 +222,34 @@ export default function Quiz() {
         {/* MATCH COMPLETED */}
         {!loading && !error && quiz?.completed && (
           <div className="q-state">
-            <div className="q-state-card">
-              <div className="q-state-icon" aria-hidden="true">
-                🏁
-              </div>
-              <h3 className="q-state-title">Match Completed</h3>
-              <p className="q-state-text">
-                Results are available for this match.
-              </p>
+            <div className="q-state-card q-state-card--with-cover">
+              {quiz.match?.coverImage && (
+                <div className="q-state-cover">
+                  <img src={quiz.match.coverImage} alt={quiz.match?.title} className="q-state-cover-img" />
+                  <div className="q-state-cover-overlay" />
+                </div>
+              )}
+              <div className="q-state-body">
+                <div className="q-state-badge q-state-badge--done">COMPLETED</div>
+                <h3 className="q-state-title">{quiz.match?.title || "Match"}</h3>
+                <p className="q-state-text">
+                  This match has ended. Check how you performed.
+                </p>
 
-              <Link to={`/results/${quiz.quizId}`} className="q-link-btn">
-                <span className="q-btn-mi" aria-hidden="true">
-                  bar_chart
-                </span>
-                View Results
-              </Link>
+                <Link to={`/results/${quiz.quizId}`} className="q-link-btn">
+                  <span className="q-btn-mi" aria-hidden="true">
+                    bar_chart
+                  </span>
+                  View Results
+                </Link>
+
+                <Link to={`/leaderboard/${quiz.quizId}`} className="q-link-btn q-link-btn--ghost">
+                  <span className="q-btn-mi" aria-hidden="true">
+                    leaderboard
+                  </span>
+                  Leaderboard
+                </Link>
+              </div>
             </div>
           </div>
         )}
@@ -244,11 +258,14 @@ export default function Quiz() {
         {!loading && !error && quiz?.isLocked && (
           <div className="q-state">
             <div className="q-state-card">
-              <div className="q-state-icon" aria-hidden="true">
-                🔒
-              </div>
-              <h3 className="q-state-title">Quiz Locked</h3>
-              <p className="q-state-text">Submissions are closed.</p>
+              <div className="q-state-badge q-state-badge--locked">LOCKED</div>
+              <h3 className="q-state-title">Submissions Closed</h3>
+              <p className="q-state-text">The match has started. No more entries allowed.</p>
+
+              <button className="q-link-btn q-link-btn--ghost" onClick={() => navigate("/matches")}>
+                <span className="q-btn-mi" aria-hidden="true">arrow_back</span>
+                Back to Matches
+              </button>
             </div>
           </div>
         )}
@@ -262,12 +279,12 @@ export default function Quiz() {
           submitted && (
             <div className="q-state">
               <div className="q-state-card">
-                <div className="q-state-icon" aria-hidden="true">
-                  ✅
-                </div>
-                <h3 className="q-state-title">Quiz Submitted</h3>
+                <div className="q-state-badge q-state-badge--success">SUBMITTED</div>
+                <h3 className="q-state-title">You're In!</h3>
 
                 {successMsg && <div className="q-success">{successMsg}</div>}
+
+                <p className="q-state-text">Your predictions are locked in. Good luck!</p>
 
                 <Link to={`/results/${quiz.quizId}`} className="q-link-btn">
                   <span className="q-btn-mi" aria-hidden="true">
@@ -277,7 +294,7 @@ export default function Quiz() {
                 </Link>
 
                 <p className="q-note">
-                  Results will be visible once published by admin
+                  Results visible once published by admin
                 </p>
               </div>
             </div>

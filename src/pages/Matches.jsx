@@ -28,7 +28,9 @@ export default function Matches() {
       const list = Array.isArray(data) ? data : data?.matches || [];
 
       const visible = [];
+      const completedWithQuiz = [];
 
+      // First pass: separate matches into completed (needing API check) vs others
       for (const raw of list) {
         const match = normalizeMatch(raw);
         const status = getMatchStatus(match);
@@ -46,21 +48,32 @@ export default function Matches() {
             visible.push(match);
             continue;
           }
-
-          try {
-            await fetchUserResults({
-              quizId: match.quizId,
-              userId: user.userId,
-            });
-            visible.push(match);
-          } catch (e) {
-            const msg = e?.response?.data?.message;
-            const published = e?.response?.data?.published;
-
-            if (msg === "You did not participate in this quiz") continue;
-            if (published === false) visible.push(match);
-          }
+          completedWithQuiz.push(match);
         }
+      }
+
+      // Fire all fetchUserResults calls in parallel
+      const results = await Promise.allSettled(
+        completedWithQuiz.map((match) =>
+          fetchUserResults({
+            quizId: match.quizId,
+            userId: user.userId,
+          }).then(() => ({ match, show: true }))
+           .catch((e) => {
+             const msg = e?.response?.data?.message;
+             const published = e?.response?.data?.published;
+
+             if (msg === "You did not participate in this quiz") return { match, show: false };
+             if (published === false) return { match, show: true };
+             return { match, show: false };
+           })
+        )
+      );
+
+      // Process results to determine visibility
+      for (const result of results) {
+        const val = result.status === "fulfilled" ? result.value : null;
+        if (val?.show) visible.push(val.match);
       }
 
       setMatches(visible);
@@ -79,6 +92,8 @@ export default function Matches() {
     if (user?.userId) load();
     // eslint-disable-next-line
   }, [user?.userId]);
+
+  useEffect(() => { document.title = "Matches | Sports Arena"; }, []);
 
   // Close on ESC
   useEffect(() => {
@@ -100,58 +115,98 @@ export default function Matches() {
     return (first + last).toUpperCase();
   };
 
+  const firstName = (user?.name || "Player").split(" ")[0];
+
   return (
     <div className="sm-matches">
       {/* Background */}
       <div className="sm-bg-pattern" aria-hidden="true" />
-      <div className="sm-glow sm-glow--tl" aria-hidden="true" />
-      <div className="sm-glow sm-glow--br" aria-hidden="true" />
 
       {/* App Shell */}
       <div className="sm-shell">
-        {/* Top Bar */}
-        <header className="sm-topbar">
-          <div className="sm-topbar-left">
-            <div className="sm-topbar-title">Matches</div>
-            <div className="sm-topbar-sub">
-              {loading ? "Loading…" : `${matches.length} available`}
+        {/* ── Navbar ── */}
+        <nav className="sm-nav">
+          <div className="sm-nav-brand">
+            <div className="sm-nav-logo">SA</div>
+            <div>
+              <div className="sm-nav-name">Sportsmart Quiz</div>
             </div>
           </div>
 
-          <div className="sm-topbar-right">
+          <div className="sm-nav-actions">
             <button
               type="button"
-              className="sm-icon-btn"
+              className="sm-nav-icon-btn"
               onClick={load}
               disabled={loading}
-              aria-label="Refresh matches"
-              title="Refresh"
+              aria-label="Refresh"
+              title="Refresh matches"
             >
-              <span className="sm-mi" aria-hidden="true">
-                refresh
-              </span>
+              <span className="sm-mi" aria-hidden="true">refresh</span>
             </button>
 
             <button
               type="button"
-              className="sm-avatar-btn"
+              className="sm-nav-avatar-btn"
               onClick={() => setProfileOpen(true)}
-              aria-label="Open profile"
+              aria-label="Profile"
             >
-              <span className="sm-avatar">{getInitials(user?.name)}</span>
+              <span className="sm-nav-avatar">{getInitials(user?.name)}</span>
             </button>
           </div>
-        </header>
+        </nav>
+
+        {/* ── Hero Section ── */}
+        <section className="sm-hero">
+          <div className="sm-hero-content">
+            <p className="sm-hero-tag">WELCOME BACK</p>
+            <h1 className="sm-hero-title">{firstName}</h1>
+            <p className="sm-hero-sub">
+              {loading
+                ? "Loading your matches..."
+                : matches.length > 0
+                  ? `${matches.length} match${matches.length > 1 ? "es" : ""} available to play`
+                  : "No matches available right now"}
+            </p>
+          </div>
+          <div className="sm-hero-stats">
+            <div className="sm-stat">
+              <span className="sm-stat-value">{matches.filter(m => getMatchStatus(m) === "LIVE" || getMatchStatus(m) === "UPCOMING").length}</span>
+              <span className="sm-stat-label">Active</span>
+            </div>
+            <div className="sm-stat-divider" />
+            <div className="sm-stat">
+              <span className="sm-stat-value">{matches.filter(m => getMatchStatus(m) === "COMPLETED").length}</span>
+              <span className="sm-stat-label">Completed</span>
+            </div>
+            <div className="sm-stat-divider" />
+            <div className="sm-stat">
+              <span className="sm-stat-value">{matches.length}</span>
+              <span className="sm-stat-label">Total</span>
+            </div>
+          </div>
+        </section>
 
         {/* Error */}
         {error && (
           <div className="sm-alert sm-alert--error" role="alert">
-            <div className="sm-alert-title">Error</div>
-            <div className="sm-alert-text">{error}</div>
+            <span className="sm-mi" style={{fontSize: 18, color: "#b91c1c"}} aria-hidden="true">error_outline</span>
+            <div>
+              <div className="sm-alert-title">Something went wrong</div>
+              <div className="sm-alert-text">{error}</div>
+            </div>
           </div>
         )}
 
-        {/* Content */}
+        {/* ── Section Header ── */}
+        {!loading && matches.length > 0 && (
+          <div className="sm-section-head">
+            <h2 className="sm-section-title">MATCHES</h2>
+            <span className="sm-section-count">{matches.length}</span>
+          </div>
+        )}
+
+        {/* ── Content ── */}
         <main className="sm-content">
           {loading ? (
             <div className="sm-skeleton-wrap">
@@ -163,11 +218,11 @@ export default function Matches() {
             <div className="sm-empty">
               <div className="sm-empty-card">
                 <div className="sm-empty-icon" aria-hidden="true">
-                  🏏
+                  🏟️
                 </div>
-                <div className="sm-empty-title">No matches available</div>
+                <div className="sm-empty-title">The Arena is Empty</div>
                 <div className="sm-empty-text">
-                  Matches will appear here when available. Try refreshing.
+                  No matches scheduled right now. Check back soon for upcoming contests.
                 </div>
 
                 <button
@@ -204,7 +259,7 @@ export default function Matches() {
           />
         )}
 
-        {/* Bottom Sheet */}
+        {/* ── Profile Sheet ── */}
         <div className={`sm-sheet ${profileOpen ? "open" : ""}`} ref={sheetRef}>
           <div className="sm-sheet-handle" />
 
@@ -248,7 +303,7 @@ export default function Matches() {
             <span className="sm-btn-mi" aria-hidden="true">
               logout
             </span>
-            Logout
+            Sign Out
           </button>
         </div>
       </div>

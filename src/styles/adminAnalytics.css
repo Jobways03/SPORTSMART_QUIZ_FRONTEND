@@ -1,6 +1,6 @@
 .admin-page {
   padding: 24px;
-  background: #f8fafc;
+  background: #e8ece9;
   min-height: 100vh;
 }
 
@@ -14,7 +14,7 @@
 
 .analytics-subtitle {
   margin: 6px 0 0;
-  color: #64748b;
+  color: #6b7c8f;
   font-size: 14px;
 }
 
@@ -25,7 +25,7 @@
 .admin-error {
   padding: 14px;
   border-radius: 12px;
-  background: #fee2e2;
+  background: rgba(254, 226, 226, 0.6);
   color: #991b1b;
   margin-bottom: 16px;
 }
@@ -40,35 +40,41 @@
 .stat-card {
   padding: 16px;
   border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.stat-card span { color: #64748b; font-size: 13px; }
-.stat-card h3 { margin: 6px 0 0; font-size: 26px; }
+.stat-card span { color: #6b7c8f; font-size: 13px; }
+.stat-card h3 { margin: 6px 0 0; font-size: 26px; color: #1a2638; }
 
 .chart-card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   padding: 18px;
   border-radius: 16px;
-  box-shadow: 0 10px 28px rgba(0,0,0,.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
   margin-bottom: 18px;
 }
 
 .empty-note {
-  color: #64748b;
+  color: #6b7c8f;
   font-size: 14px;
   padding: 10px 0;
 }
 
 table { width: 100%; border-collapse: collapse; }
-th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+th, td { padding: 12px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); text-align: left; color: #1a2332; }
+th { color: #6b7c8f; font-weight: 700; }
 
 .heat-good { color: #16a34a; font-weight: 800; }
-.heat-mid  { color: #f59e0b; font-weight: 800; }
+.heat-mid  { color: #d97706; font-weight: 800; }
 .heat-bad  { color: #dc2626; font-weight: 800; }
 
 .timing-list { list-style: none; padding: 0; margin: 0; }
-.timing-list li { margin: 8px 0; }
+.timing-list li { margin: 8px 0; color: #1a2332; }
 
 .two-col {
   display: grid;
@@ -87,8 +93,15 @@ th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
   max-width: 520px;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  color: #1a2332;
   outline: none;
+}
+
+.search-input:focus {
+  border-color: rgba(37, 99, 235, 0.5);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .quiz-grid {
@@ -98,14 +111,16 @@ th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
 }
 
 .quiz-card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   padding: 16px;
   border-radius: 16px;
-  box-shadow: 0 10px 28px rgba(0,0,0,.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
-.quiz-card-title { font-weight: 900; margin-bottom: 6px; }
-.quiz-card-sub { color: #64748b; font-size: 13px; margin-bottom: 12px; }
+.quiz-card-title { font-weight: 900; margin-bottom: 6px; color: #1a2638; }
+.quiz-card-sub { color: #6b7c8f; font-size: 13px; margin-bottom: 12px; }
 
 .quiz-chip-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
 .chip {
@@ -114,16 +129,16 @@ th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
   padding: 6px 10px;
   border-radius: 999px;
 }
-.chip-green { background: #dcfce7; color: #166534; }
-.chip-yellow { background: #fef9c3; color: #854d0e; }
-.chip-red { background: #fee2e2; color: #991b1b; }
+.chip-green { background: rgba(220, 252, 231, 0.7); color: #166534; }
+.chip-yellow { background: rgba(254, 249, 195, 0.7); color: #854d0e; }
+.chip-red { background: rgba(254, 226, 226, 0.7); color: #991b1b; }
 
 /* buttons (reuse your existing classes if you already have them) */
 .primary-action-btn {
   display: inline-block;
   padding: 12px 14px;
   border-radius: 12px;
-  background: #2563eb;
+  background: #1a2638;
   color: #fff;
   text-decoration: none;
   font-weight: 800;
@@ -132,7 +147,7 @@ th, td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
   display: inline-block;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #eef2ff;
+  background: rgba(219, 234, 254, 0.5);
   color: #1e40af;
   text-decoration: none;
   font-weight: 800;

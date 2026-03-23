@@ -9,7 +9,7 @@ export default function MatchCard({ match, onViewQuiz }) {
     () => new Date(match?.startTime),
     [match?.startTime],
   );
-  const now = useMemo(() => new Date(), []);
+  const now = new Date(); // Recomputed each render to stay current
 
   const hasValidStart =
     startDate instanceof Date && !isNaN(startDate.getTime());
@@ -49,13 +49,13 @@ export default function MatchCard({ match, onViewQuiz }) {
 
   const buttonText =
     uiStatus === "CANCELLED"
-      ? "Quiz Cancelled"
+      ? "Cancelled"
       : uiStatus === "UPCOMING"
-        ? "Starts Soon"
+        ? "Coming Soon"
         : uiStatus === "OPEN"
-          ? "Play Now"
+          ? "Enter Arena"
           : uiStatus === "LOCKED"
-            ? "Closed"
+            ? "Arena Closed"
             : uiStatus === "COMPLETED"
               ? "View Results"
               : "View Quiz";

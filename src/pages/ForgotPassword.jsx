@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../services/auth.service";
 import "../styles/login.css";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
+
+  useEffect(() => { document.title = "Forgot Password | Sports Arena"; }, []);
 
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
@@ -44,16 +46,11 @@ export default function ForgotPassword() {
         <div className="card">
           {/* Header */}
           <div className="header">
-            <div className="iconBox" aria-hidden="true">
-              <span className="mat-icon">help_outline</span>
-            </div>
-
-            <div className="titleWrap">
-              <h1 className="title">Forgot Password</h1>
-              <p className="subtitle">
-                Enter your registered email to receive a reset link
-              </p>
-            </div>
+            <p className="tagline">ACCOUNT RECOVERY</p>
+            <h1 className="title">Forgot Password</h1>
+            <p className="subtitle">
+              Enter your registered email to receive a reset link
+            </p>
           </div>
 
           {/* Form */}

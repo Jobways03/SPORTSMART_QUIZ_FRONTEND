@@ -3,69 +3,36 @@
    If you already have them elsewhere, keep only the .geometric-bg class. */
 
 :root {
-  --twc-primary: #256af4;
-  --twc-bg-light: #f5f6f8;
-  --twc-bg-dark: #101622;
-  --twc-midnight: #0a0e17;
+  --twc-primary: #1a2638;
+  --twc-bg-light: #e8ece9;
+  --twc-bg-dark: #e8ece9;
+  --twc-midnight: #e8ece9;
 }
 
-/* Background pattern from your reference */
+/* Background image (stadium) */
 .geometric-bg {
-  background-color: var(--twc-bg-dark);
-  background-image: linear-gradient(
-      30deg,
-      #161e2e 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #161e2e 87.5%,
-      #161e2e
-    ),
-    linear-gradient(
-      150deg,
-      #161e2e 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #161e2e 87.5%,
-      #161e2e
-    ),
-    linear-gradient(
-      30deg,
-      #161e2e 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #161e2e 87.5%,
-      #161e2e
-    ),
-    linear-gradient(
-      150deg,
-      #161e2e 12%,
-      transparent 12.5%,
-      transparent 87%,
-      #161e2e 87.5%,
-      #161e2e
-    ),
-    linear-gradient(
-      60deg,
-      #161e2e 25%,
-      transparent 25.5%,
-      transparent 75%,
-      #161e2e 75%,
-      #161e2e
-    ),
-    linear-gradient(
-      60deg,
-      #161e2e 25%,
-      transparent 25.5%,
-      transparent 75%,
-      #161e2e 75%,
-      #161e2e
-    );
-  background-size: 80px 140px;
-  background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
-  opacity: 0.15;
+  background-image: url("/background img.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
 }
 
 
 body{
   margin: 0;
+}
+
+/* Admin pages — let body background show through */
+.admin-dashboard-page,
+.admin-matches-page,
+.appr-page,
+.asq-page,
+.awo-page,
+.alb-page,
+.admin-quiz-page,
+.adm-sa-page,
+.admin-page,
+.admin-login-page {
+  background: transparent !important;
 }

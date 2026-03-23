@@ -54,7 +54,7 @@ export default function GoogleCallback() {
               <div className="loadingRow" style={{ justifyContent: "center", marginBottom: 12 }}>
                 <span className="spinner" aria-hidden="true" />
               </div>
-              <p style={{ color: "rgba(148,163,184,0.78)", fontSize: 14 }}>
+              <p style={{ color: "var(--muted)", fontSize: 13 }}>
                 Signing you in with Google...
               </p>
             </>

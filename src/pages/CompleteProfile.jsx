@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateUserPhone } from "../services/auth.service";
 import { useUser } from "../context/UserContext";
@@ -12,16 +12,16 @@ export default function CompleteProfile() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // If user already has phone or isn't logged in, redirect
-  if (!user) {
-    navigate("/login", { replace: true });
-    return null;
-  }
+  useEffect(() => { document.title = "Complete Profile | Sports Arena"; }, []);
 
-  if (user.phone) {
-    navigate("/matches", { replace: true });
-    return null;
-  }
+  // Redirect if not logged in or already has phone
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { replace: true });
+    } else if (user.phone) {
+      navigate("/matches", { replace: true });
+    }
+  }, [user, navigate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -52,6 +52,8 @@ export default function CompleteProfile() {
     }
   };
 
+  if (!user || user.phone) return null;
+
   return (
     <div className="sleek-login">
       <div className="bg-pattern" aria-hidden="true" />
@@ -60,40 +62,28 @@ export default function CompleteProfile() {
 
       <div className="container">
         <div className="card">
-          {/* Header */}
           <div className="header">
-            <div className="iconBox" aria-hidden="true">
-              <span className="mat-icon">phone_android</span>
-            </div>
-
-            <div className="titleWrap">
-              <h1 className="title">Almost There!</h1>
-              <p className="subtitle">
-                Add your phone number to complete your profile
-              </p>
-            </div>
+            <p className="tagline">ONE MORE STEP</p>
+            <h1 className="title">Add Your Phone</h1>
+            <p className="subtitle">
+              Complete your profile to start playing
+            </p>
           </div>
 
-          {/* Form */}
           <form className="form" onSubmit={onSubmit}>
             <div className="fields">
               <div className="field">
                 <label className="label" htmlFor="phone">
-                  Phone Number
+                  PHONE NUMBER
                 </label>
 
                 <div className="inputWrap">
-                  <span
-                    style={{
-                      position: "absolute",
-                      left: 14,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "rgba(148,163,184,0.7)",
-                    }}
-                  >
+                  <span className="leftIcon" style={{
+                    fontFamily: "Lexend, system-ui, sans-serif",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: "var(--muted)",
+                  }}>
                     +91
                   </span>
 
@@ -101,7 +91,7 @@ export default function CompleteProfile() {
                     id="phone"
                     className="input"
                     style={{ paddingLeft: 48 }}
-                    placeholder="Enter 10-digit phone number"
+                    placeholder="9876543210"
                     value={phone}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, "");
@@ -124,22 +114,17 @@ export default function CompleteProfile() {
                   Saving...
                 </span>
               ) : (
-                "Continue"
+                <>CONTINUE &nbsp;&rarr;</>
               )}
             </button>
           </form>
 
           <div className="footer">
             <p className="footerText">
-              Logged in as{" "}
-              <span style={{ color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>
-                {user.email}
-              </span>
+              Logged in as <strong>{user?.email}</strong>
             </p>
           </div>
         </div>
-
-        <div className="homeIndicator" aria-hidden="true" />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { resetPassword } from "../services/auth.service";
 import { getPasswordStrength } from "../utils/passwordStrength";
@@ -7,6 +7,8 @@ import "../styles/login.css";
 export default function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => { document.title = "Reset Password | Sports Arena"; }, []);
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -57,16 +59,11 @@ export default function ResetPassword() {
         <div className="card">
           {/* Header */}
           <div className="header">
-            <div className="iconBox" aria-hidden="true">
-              <span className="mat-icon">lock_reset</span>
-            </div>
-
-            <div className="titleWrap">
-              <h1 className="title">Reset Password</h1>
-              <p className="subtitle">
-                Create a new password to access your account
-              </p>
-            </div>
+            <p className="tagline">SET NEW PASSWORD</p>
+            <h1 className="title">Reset Password</h1>
+            <p className="subtitle">
+              Create a new password to access your account
+            </p>
           </div>
 
           {/* Form */}

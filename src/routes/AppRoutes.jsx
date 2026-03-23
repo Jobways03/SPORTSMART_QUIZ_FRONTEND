@@ -1,32 +1,35 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import ForgotPassword from "../pages/ForgotPassword";
-import ResetPassword from "../pages/ResetPassword";
-import GoogleCallback from "../pages/GoogleCallback";
-import CompleteProfile from "../pages/CompleteProfile";
-
-import Matches from "../pages/Matches";
-import Quiz from "../pages/Quiz";
-import Results from "../pages/Results";
-import Leaderboard from "../pages/Leaderboard";
-import HomePage from "../pages/HomePage";
-
-import AdminLogin from "../pages/admin/AdminLogin";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import AdminMatches from "../pages/admin/AdminMatches";
-import AdminQuizManager from "../pages/admin/AdminQuizManager";
-import AdminSetAnswers from "../pages/admin/AdminSetAnswers";
-import AdminScoreQuiz from "../pages/admin/AdminScoreQuiz";
-import AdminPublishResults from "../pages/admin/AdminPublishResults";
-import QuizAnalytics from "../pages/admin/QuizAnalytics";
-import AdminAnalyticsHome from "../pages/admin/AdminAnalyticsHome";
 
 import { useUser } from "../context/UserContext";
 import { useAdminAuth } from "../context/AdminAuthContext";
-import AdminLeaderboard from "../pages/admin/AdminLeaderboard";
+import AdminLayout from "../components/AdminLayout";
+
+// Lazy-loaded page components
+const Login = React.lazy(() => import("../pages/Login"));
+const Register = React.lazy(() => import("../pages/Register"));
+const ForgotPassword = React.lazy(() => import("../pages/ForgotPassword"));
+const ResetPassword = React.lazy(() => import("../pages/ResetPassword"));
+const GoogleCallback = React.lazy(() => import("../pages/GoogleCallback"));
+const CompleteProfile = React.lazy(() => import("../pages/CompleteProfile"));
+
+const Matches = React.lazy(() => import("../pages/Matches"));
+const Quiz = React.lazy(() => import("../pages/Quiz"));
+const Results = React.lazy(() => import("../pages/Results"));
+const Leaderboard = React.lazy(() => import("../pages/Leaderboard"));
+const HomePage = React.lazy(() => import("../pages/HomePage"));
+
+const AdminLogin = React.lazy(() => import("../pages/admin/AdminLogin"));
+const AdminDashboard = React.lazy(() => import("../pages/admin/AdminDashboard"));
+const AdminMatches = React.lazy(() => import("../pages/admin/AdminMatches"));
+const AdminQuizManager = React.lazy(() => import("../pages/admin/AdminQuizManager"));
+const AdminSetAnswers = React.lazy(() => import("../pages/admin/AdminSetAnswers"));
+const AdminScoreQuiz = React.lazy(() => import("../pages/admin/AdminScoreQuiz"));
+const AdminPublishResults = React.lazy(() => import("../pages/admin/AdminPublishResults"));
+const QuizAnalytics = React.lazy(() => import("../pages/admin/QuizAnalytics"));
+const AdminAnalyticsHome = React.lazy(() => import("../pages/admin/AdminAnalyticsHome"));
+const AdminLeaderboard = React.lazy(() => import("../pages/admin/AdminLeaderboard"));
+const AdminWinnerOverride = React.lazy(() => import("../pages/admin/AdminWinnerOverride"));
 
 /* =======================
    USER PROTECTED ROUTE
@@ -59,7 +62,7 @@ function AdminProtectedRoute({ children }) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  return children;
+  return <AdminLayout>{children}</AdminLayout>;
 }
 
 /* =======================
@@ -67,6 +70,7 @@ function AdminProtectedRoute({ children }) {
 ======================= */
 export default function AppRoutes() {
   return (
+    <Suspense fallback={<div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Lexend, system-ui, sans-serif", background: "#d5dbd7" }}>Loading...</div>}>
     <Routes>
       {/* ROOT */}
       <Route path="/" element={<Navigate to="/login" replace />} />
@@ -203,8 +207,18 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path="/admin/matches/:matchId/override"
+        element={
+          <AdminProtectedRoute>
+            <AdminWinnerOverride />
+          </AdminProtectedRoute>
+        }
+      />
+
       {/* FALLBACK */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
+  </Suspense>
   );
 }

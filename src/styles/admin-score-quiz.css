@@ -4,18 +4,8 @@
   padding: 28px 22px 60px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
-  background: radial-gradient(
-      1100px 700px at 20% -10%,
-      rgba(37, 106, 244, 0.22),
-      rgba(0, 0, 0, 0)
-    ),
-    radial-gradient(
-      900px 600px at 100% 30%,
-      rgba(37, 106, 244, 0.12),
-      rgba(0, 0, 0, 0)
-    ),
-    #0b1220;
-  color: rgba(255, 255, 255, 0.92);
+  background: #e8ece9;
+  color: #1a2332;
 }
 
 .asq-container {
@@ -39,14 +29,14 @@
 }
 
 .asq-back-link {
-  color: rgba(255, 255, 255, 0.78);
+  color: #2563eb;
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.2px;
 }
 
 .asq-back-link:hover {
-  color: rgba(255, 255, 255, 0.92);
+  color: #1e40af;
 }
 
 .asq-title-wrap {
@@ -60,11 +50,12 @@
   font-size: 34px;
   font-weight: 900;
   letter-spacing: 0.2px;
+  color: #1a2638;
 }
 
 .asq-subtitle {
   margin: 0;
-  color: rgba(255, 255, 255, 0.66);
+  color: #6b7c8f;
   font-weight: 500;
 }
 
@@ -76,15 +67,12 @@
 
 /* Card */
 .asq-card {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.03)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
 .asq-card-head {
@@ -93,18 +81,19 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .asq-card-title {
   margin: 0;
   font-size: 18px;
   font-weight: 900;
+  color: #1a2638;
 }
 
 .asq-card-desc {
   margin: 6px 0 0;
-  color: rgba(255, 255, 255, 0.64);
+  color: #6b7c8f;
   font-weight: 500;
   max-width: 560px;
 }
@@ -119,7 +108,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: rgba(255, 255, 255, 0.78);
+  color: #6b7c8f;
   font-weight: 700;
 }
 
@@ -127,8 +116,8 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.22);
-  border-top-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #2563eb;
   animation: asqspin 0.9s linear infinite;
 }
 
@@ -149,40 +138,46 @@
 .asq-chip {
   padding: 8px 10px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.26);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.84);
+  background: rgba(245, 247, 246, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #1a2332;
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.2px;
 }
 
 .asq-chip.ok {
-  border-color: rgba(34, 197, 94, 0.35);
-  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(22, 163, 74, 0.25);
+  background: rgba(220, 252, 231, 0.6);
+  color: #166534;
 }
 
 .asq-chip.bad {
-  border-color: rgba(239, 68, 68, 0.35);
-  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(220, 38, 38, 0.2);
+  background: rgba(254, 226, 226, 0.6);
+  color: #991b1b;
 }
 
 /* status colors */
 .asq-chip-upcoming {
-  border-color: rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(37, 99, 235, 0.2);
+  background: rgba(219, 234, 254, 0.5);
+  color: #1e40af;
 }
 .asq-chip-live {
-  border-color: rgba(245, 158, 11, 0.35);
-  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(254, 249, 195, 0.5);
+  color: #854d0e;
 }
 .asq-chip-completed {
-  border-color: rgba(34, 197, 94, 0.35);
-  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(22, 163, 74, 0.25);
+  background: rgba(220, 252, 231, 0.6);
+  color: #166534;
 }
 .asq-chip-cancelled {
-  border-color: rgba(239, 68, 68, 0.35);
-  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(220, 38, 38, 0.2);
+  background: rgba(254, 226, 226, 0.6);
+  color: #991b1b;
 }
 
 /* Messages */
@@ -196,24 +191,24 @@
   padding: 12px 12px;
   border-radius: 12px;
   font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .asq-alert-error {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.28);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(254, 226, 226, 0.6);
+  border-color: rgba(220, 38, 38, 0.2);
+  color: #991b1b;
 }
 
 .asq-alert-success {
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.28);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(220, 252, 231, 0.6);
+  border-color: rgba(22, 163, 74, 0.2);
+  color: #166534;
 }
 
 .asq-success-sub {
   margin-top: 6px;
-  color: rgba(255, 255, 255, 0.82);
+  color: #1a2332;
   font-weight: 700;
 }
 
@@ -225,15 +220,15 @@
 }
 
 .asq-meta-item {
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(245, 247, 246, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 14px;
   padding: 12px;
 }
 
 .asq-meta-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.62);
+  color: #6b7c8f;
   font-weight: 700;
   margin-bottom: 6px;
   letter-spacing: 0.2px;
@@ -242,19 +237,19 @@
 .asq-meta-value {
   font-size: 14px;
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.92);
+  color: #1a2638;
 }
 
 .asq-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.86);
+  color: #1a2332;
 }
 
 .asq-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.06);
   margin: 14px 0;
 }
 
@@ -267,8 +262,8 @@
 }
 
 .asq-warning {
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(245, 247, 246, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 14px;
   padding: 12px;
 }
@@ -276,26 +271,27 @@
 .asq-warning-title {
   font-weight: 900;
   margin-bottom: 8px;
+  color: #1a2638;
 }
 
 .asq-warning-list {
   margin: 0;
   padding-left: 18px;
-  color: rgba(255, 255, 255, 0.78);
+  color: #6b7c8f;
   font-weight: 600;
   line-height: 1.55;
 }
 
 .asq-action {
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(245, 247, 246, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 14px;
   padding: 12px;
 }
 
 .asq-note {
   margin-top: 10px;
-  color: rgba(255, 255, 255, 0.68);
+  color: #6b7c8f;
   font-weight: 600;
 }
 
@@ -308,7 +304,7 @@
   letter-spacing: 0.2px;
   cursor: pointer;
   transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
-  color: rgba(255, 255, 255, 0.92);
+  color: #1a2332;
 }
 
 .asq-btn:active {
@@ -326,30 +322,28 @@
 }
 
 .asq-btn-ghost {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .asq-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .asq-btn-secondary {
-  background: rgba(37, 106, 244, 0.12);
-  border: 1px solid rgba(37, 106, 244, 0.26);
+  background: rgba(219, 234, 254, 0.5);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+  color: #1e40af;
 }
 
 .asq-btn-secondary:hover {
-  background: rgba(37, 106, 244, 0.18);
+  background: rgba(219, 234, 254, 0.7);
 }
 
 .asq-btn-primary {
-  background: linear-gradient(
-    180deg,
-    rgba(37, 106, 244, 0.95),
-    rgba(37, 106, 244, 0.82)
-  );
-  box-shadow: 0 14px 34px rgba(37, 106, 244, 0.22);
+  background: #1a2638;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(26, 38, 56, 0.15);
 }
 
 .asq-btn-primary:hover {
@@ -359,6 +353,6 @@
 /* Footer note */
 .asq-foot {
   margin-top: 14px;
-  color: rgba(255, 255, 255, 0.62);
+  color: #6b7c8f;
   font-weight: 600;
 }

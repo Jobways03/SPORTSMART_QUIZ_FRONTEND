@@ -1,146 +1,116 @@
 /* ======================================================
-   QUESTION CARD (Mobile First)
-   Premium dark UI • Single accent • Consistent with Quiz page
+   QUESTION CARD — Premium light sports UI
 ====================================================== */
 
 :root {
-  --panel: #151a21;
-  --panel-2: #1b2230;
-  --stroke: #232b3b;
-
-  --text: #f5f7fb;
-  --muted: #b6c0d1;
-
-  --accent: #2f80ff;
-  --accent-hover: #256ee8;
-
-  --radius: 14px;
-  --radius-lg: 18px;
+  --panel: transparent;
+  --stroke: transparent;
+  --text: #1a2332;
+  --muted: #6b7c8f;
+  --accent: #2563eb;
+  --radius: 10px;
+  --radius-lg: 14px;
 }
 
-/* -------------------------------------------------
-   CARD
--------------------------------------------------- */
-
+/* Card */
 .question-card {
   background: var(--panel);
-  border: 1px solid var(--stroke);
+  border: none;
   border-radius: var(--radius-lg);
-  padding: 16px 14px;
+  padding: 4px 0;
   position: relative;
-  animation: fadeUp 0.35s ease forwards;
+  animation: fadeUp 0.3s ease forwards;
   opacity: 0;
 }
 
-/* subtle entrance */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* -------------------------------------------------
-   SPORT ICON
--------------------------------------------------- */
-
+/* Sport icon */
 .question-sport-icon {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 22px;
-  opacity: 0.85;
+  top: 8px;
+  right: 8px;
+  font-size: 18px;
+  opacity: 0.7;
 }
 
-/* -------------------------------------------------
-   QUESTION HEADER
--------------------------------------------------- */
-
+/* Question header */
 .question-title {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   margin-bottom: 12px;
-  padding-right: 28px; /* space for icon */
+  padding-right: 24px;
 }
 
 .question-number {
-  min-width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: rgba(47, 128, 255, 0.14);
-  border: 1px solid rgba(47, 128, 255, 0.28);
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 13px;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 12px;
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .question-text {
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text);
-  line-height: 1.45;
-  letter-spacing: 0.1px;
+  line-height: 1.5;
 }
 
-/* -------------------------------------------------
-   OPTIONS CONTAINER
--------------------------------------------------- */
-
+/* Options */
 .options-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* option wrapper */
 .option-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 10px;
+  padding: 10px 12px;
   border-radius: var(--radius);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+  transition: all 150ms ease;
 }
 
 .option-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 /* selected */
 .option-selected {
-  background: rgba(47, 128, 255, 0.10);
-  border-color: rgba(47, 128, 255, 0.30);
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
 }
 
 /* disabled */
 .option-disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
 }
 
-/* -------------------------------------------------
-   CUSTOM RADIO
--------------------------------------------------- */
-
+/* Radio */
 .custom-radio {
   position: relative;
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
 }
 
 .custom-radio input {
@@ -151,43 +121,39 @@
 }
 
 .radio-circle {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(0, 0, 0, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 160ms ease, background 160ms ease;
+  transition: border-color 150ms ease, background 150ms ease;
 }
 
-/* checked */
 .option-selected .radio-circle {
-  border-color: rgba(47, 128, 255, 0.9);
-  background: rgba(47, 128, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .option-selected .radio-circle::after {
   content: "";
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
-  background: #ffffff;
+  background: #fff;
 }
 
-/* -------------------------------------------------
-   OPTION LETTER + TEXT
--------------------------------------------------- */
-
+/* Letter + text */
 .option-letter {
   min-width: 22px;
   height: 22px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  font-size: 12px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  font-size: 11px;
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,46 +161,26 @@
 }
 
 .option-selected .option-letter {
-  background: rgba(47, 128, 255, 0.9);
-  border-color: rgba(47, 128, 255, 0.9);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 .option-text {
-  font-size: 13.5px;
-  color: var(--muted);
+  font-size: 13px;
+  color: var(--text);
   line-height: 1.45;
+  font-weight: 500;
 }
 
-/* Make text brighter when selected */
 .option-selected .option-text {
-  color: rgba(255, 255, 255, 0.92);
+  color: #fff;
+  font-weight: 600;
 }
 
-/* -------------------------------------------------
-   RESPONSIVE
--------------------------------------------------- */
-
+/* Responsive */
 @media (min-width: 640px) {
-  .question-card {
-    padding: 18px 16px;
-  }
-
-  .question-text {
-    font-size: 15px;
-  }
-
-  .option-text {
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .question-card {
-    padding: 20px 18px;
-  }
-
-  .options-container {
-    gap: 12px;
-  }
+  .question-card { padding: 6px 0; }
+  .question-text { font-size: 15px; }
+  .option-text { font-size: 14px; }
+  .option-item { padding: 11px 14px; }
 }

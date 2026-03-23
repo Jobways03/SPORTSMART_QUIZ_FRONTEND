@@ -12,10 +12,13 @@ export const api = axios.create({
 // "http://localhost:8000",
   api.interceptors.request.use(
     (config) => {
-      // 1. Handle Admin Token
-      const token = localStorage.getItem("cricketquiz_admin_token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      // 1. Handle Admin Token — only attach to admin API routes
+      const isAdminRoute = config.url && config.url.includes("/api/admin/");
+      if (isAdminRoute) {
+        const token = localStorage.getItem("cricketquiz_admin_token");
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       }
 
       // 2. Handle User Data (shiva@gmail.com, etc.)

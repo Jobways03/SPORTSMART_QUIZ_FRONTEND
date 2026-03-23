@@ -492,6 +492,15 @@ export default function AdminMatches() {
                             <button
                               type="button"
                               onClick={() =>
+                                navigate(`/admin/matches/${id}/override`)
+                              }
+                            >
+                              Override Winner
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() =>
                                 navigate(`/admin/leaderboard/${m.quizId}`)
                               }
                             >

@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { adminFetchMatches } from "../../services/adminMatch.service";
 import { adminFetchQuizzesByMatch } from "../../services/adminQuiz.service";
 import { adminPublishResults } from "../../services/adminPublish.service";
+import { getWinnerOverride } from "../../services/adminOverride.service";
 import "../../styles/admin-publish-results.css";
 
 export default function AdminPublishResults() {
@@ -11,6 +12,7 @@ export default function AdminPublishResults() {
 
   const [quizId, setQuizId] = useState(null);
   const [match, setMatch] = useState(null);
+  const [override, setOverride] = useState(undefined); // undefined=loading, null=none, obj=exists
 
   const [loading, setLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
@@ -37,7 +39,19 @@ export default function AdminPublishResults() {
       const quizzes = await adminFetchQuizzesByMatch(matchId);
       const quizList = Array.isArray(quizzes) ? quizzes : [];
       const foundQuiz = quizList[0];
-      setQuizId(foundQuiz ? (foundQuiz._id || foundQuiz.id) : null);
+      const qId = foundQuiz ? (foundQuiz._id || foundQuiz.id) : null;
+      setQuizId(qId);
+
+      if (qId) {
+        try {
+          const overrideData = await getWinnerOverride(qId);
+          setOverride(overrideData?.override || null);
+        } catch {
+          setOverride(null);
+        }
+      } else {
+        setOverride(null);
+      }
     } catch {
       setErrorMsg("Failed to load match data.");
     } finally {
@@ -178,6 +192,62 @@ export default function AdminPublishResults() {
                       {quizId || "-"}
                     </div>
                   </div>
+                </div>
+
+                <div className="appr-divider" />
+
+                {/* OVERRIDE STATUS */}
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 8 }}>
+                    Winner Override
+                  </div>
+                  {override === undefined ? (
+                    <div style={{ fontSize: 13, color: "#9ca3af" }}>Checking…</div>
+                  ) : override ? (
+                    <div style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      gap: 12, background: "#f0fdf4", border: "1px solid #6ee7b7",
+                      borderRadius: 8, padding: "10px 14px", flexWrap: "wrap"
+                    }}>
+                      <div>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#059669", marginRight: 8 }}>
+                          🏆 ACTIVE
+                        </span>
+                        <span style={{ fontSize: 13, color: "#064e3b", fontWeight: 600 }}>
+                          {override.displayName}
+                        </span>
+                        <span style={{ fontSize: 13, color: "#047857", marginLeft: 8 }}>
+                          — {override.score} pts → Rank #1
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="appr-btn appr-btn-ghost"
+                        style={{ fontSize: 12, padding: "4px 12px" }}
+                        onClick={() => navigate(`/admin/matches/${matchId}/override`)}
+                      >
+                        Manage Override →
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      gap: 12, background: "#fafafa", border: "1px solid #e5e7eb",
+                      borderRadius: 8, padding: "10px 14px", flexWrap: "wrap"
+                    }}>
+                      <span style={{ fontSize: 13, color: "#6b7280" }}>
+                        No override set — normal ranking will apply.
+                      </span>
+                      <button
+                        type="button"
+                        className="appr-btn appr-btn-ghost"
+                        style={{ fontSize: 12, padding: "4px 12px" }}
+                        onClick={() => navigate(`/admin/matches/${matchId}/override`)}
+                      >
+                        Set Override →
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="appr-divider" />

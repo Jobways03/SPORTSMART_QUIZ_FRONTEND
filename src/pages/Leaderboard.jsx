@@ -4,13 +4,6 @@ import { fetchFullLeaderboard } from "../services/leaderboard.service";
 import { useUser } from "../context/UserContext";
 import "../styles/leader.css";
 
-const getMedalStyle = (rank) => {
-  if (rank === 1) return { emoji: "\u{1F947}", className: "rank-1" };
-  if (rank === 2) return { emoji: "\u{1F948}", className: "rank-2" };
-  if (rank === 3) return { emoji: "\u{1F949}", className: "rank-3" };
-  return { emoji: `#${rank}`, className: "" };
-};
-
 export default function Leaderboard() {
   const { quizId } = useParams();
   const { user } = useUser();
@@ -23,249 +16,148 @@ export default function Leaderboard() {
   const [error, setError] = useState("");
 
   const load = async () => {
-    setLoading(true);
-    setError("");
-
+    setLoading(true); setError("");
     try {
-      const data = await fetchFullLeaderboard({
-        quizId,
-        userId: user.userId,
-      });
-
+      const data = await fetchFullLeaderboard({ quizId, userId: user.userId });
       setList(data.leaderboard || []);
       setMyEntry(data.myEntry || null);
       setTotalPlayers(data.totalPlayers || 0);
-    } catch {
-      setError("Leaderboard not available yet");
-    } finally {
-      setLoading(false);
-    }
+    } catch { setError("Leaderboard not available yet"); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    if (user?.userId) load();
-    // eslint-disable-next-line
-  }, [quizId, user?.userId]);
+  useEffect(() => { document.title = "Leaderboard | Sports Arena"; }, []);
 
-  const topThree = useMemo(() => list.slice(0, 3), [list]);
+  useEffect(() => { if (user?.userId) load(); }, [quizId, user?.userId]);
 
-  // Check if user is already in the top 10 list
   const isUserInTop10 = useMemo(() => {
     if (!myEntry) return false;
-    return list.some(
-      (u) => String(u.userId) === String(myEntry.userId)
-    );
+    return list.some(u => String(u.userId) === String(myEntry.userId));
   }, [list, myEntry]);
+
+  const getInitial = (name = "") => (name.charAt(0) || "?").toUpperCase();
+
+  const top3 = list.slice(0, 3);
+  const restList = list.slice(3);
 
   return (
     <div className="l-page">
-      {/* Background */}
-      <div className="l-bg-pattern" aria-hidden="true" />
-      <div className="l-glow l-glow--tl" aria-hidden="true" />
-      <div className="l-glow l-glow--br" aria-hidden="true" />
-
+      <div className="l-bg" aria-hidden="true" />
       <div className="l-shell">
-        {/* Topbar */}
-        <header className="l-topbar">
-          <button
-            type="button"
-            className="l-back"
-            onClick={() => navigate("/matches")}
-            aria-label="Back to Matches"
-            title="Back"
-          >
-            <span className="l-mi" aria-hidden="true">
-              arrow_back
-            </span>
-            Back
-          </button>
-
-          <div className="l-topmeta">
-            <div className="l-top-title">Leaderboard</div>
-            <div className="l-top-sub">
-              {loading
-                ? "Loading\u2026"
-                : `Top 10 of ${totalPlayers} players`}
-            </div>
+        {/* Nav */}
+        <header className="l-nav">
+          <button className="l-nav-btn" onClick={() => navigate(-1)}><span className="l-mi">arrow_back</span></button>
+          <div className="l-nav-center">
+            <div className="l-nav-title">Leaderboard</div>
           </div>
-
-          <button
-            type="button"
-            className="l-icon-btn"
-            onClick={load}
-            disabled={loading}
-            aria-label="Refresh leaderboard"
-            title="Refresh"
-          >
-            <span className="l-mi" aria-hidden="true">
-              refresh
-            </span>
-          </button>
+          <button className="l-nav-btn" onClick={load} disabled={loading}><span className="l-mi">refresh</span></button>
         </header>
 
-        {/* Loading */}
-        {loading && (
-          <div className="l-alert l-alert--info">
-            <div className="l-alert-title">Loading</div>
-            <div className="l-alert-text">
-              <span className="l-spinner" aria-hidden="true" />
-              Loading leaderboard\u2026
-            </div>
-          </div>
-        )}
+        {loading && <div className="l-loading"><div className="l-spinner" />Loading...</div>}
+        {!loading && error && <div className="l-error"><span className="l-mi" style={{fontSize:16}}>error_outline</span>{error}</div>}
 
-        {/* Error */}
-        {!loading && error && (
-          <div className="l-alert l-alert--error">
-            <div className="l-alert-title">Error</div>
-            <div className="l-alert-text">{error}</div>
-          </div>
-        )}
-
-        {/* Your rank */}
-        {!loading && !error && myEntry && (
-          <div className="l-rankCard">
-            <div className="l-rankLeft">
-              <div className="l-rankLabel">Your Rank</div>
-              <div className="l-rankValue">#{myEntry.rank}</div>
-            </div>
-            <div className="l-rankRight">
-              <div className="l-rankScore">{myEntry.score} pts</div>
-              <div className="l-rankChip">
-                <span className="l-mi" aria-hidden="true">
-                  emoji_events
-                </span>
-                {myEntry.rank <= 3
-                  ? `Top ${myEntry.rank}`
-                  : myEntry.rank <= 10
-                    ? "Top 10"
-                    : `of ${totalPlayers}`}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Podium */}
-        {!loading && !error && topThree.length > 0 && (
-          <section className="l-podium">
-            <div className="l-podiumHead">
-              <div className="l-podiumTitle">
-                <span className="l-trophy" aria-hidden="true">
-                  {"\u{1F3C6}"}
-                </span>
-                Top Players
-              </div>
-              <div className="l-podiumSub">Podium (Top 3)</div>
-            </div>
-
-            <div className="l-podiumGrid">
-              {topThree.map((u, idx) => {
-                const medal = getMedalStyle(u.rank);
-                const isMe =
-                  myEntry && String(u.userId) === String(myEntry.userId);
-                return (
-                  <div
-                    key={u.rank || idx}
-                    className={`l-podiumCard p-${idx + 1}`}
-                  >
-                    <div className="l-podiumBadge">{medal.emoji}</div>
-                    <div className="l-podiumName" title={u.name}>
-                      {u.name}
-                      {isMe && <span className="l-meTag">You</span>}
-                    </div>
-                    <div className="l-podiumScore">{u.score} pts</div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* Table */}
         {!loading && !error && list.length > 0 && (
-          <section className="l-table">
-            <div className="l-th">
-              <div>Rank</div>
-              <div>Player</div>
-              <div className="l-right">Score</div>
-            </div>
+          <>
+            {/* ── Dark Podium Hero ── */}
+            <div className="l-podium-hero">
+              <div className="l-podium-top-label">{totalPlayers} Players</div>
 
-            <div className="l-tb">
-              {list.map((u, index) => {
-                const isMe =
-                  myEntry && String(u.userId) === String(myEntry.userId);
-                const medal = getMedalStyle(u.rank);
-
-                return (
-                  <div
-                    key={u.rank || index}
-                    className={`l-tr ${isMe ? "is-me" : ""}`}
-                    style={{ animationDelay: `${index * 0.04}s` }}
-                  >
-                    <div className={`l-td l-rank ${medal.className}`}>
-                      {medal.emoji}
+              <div className="l-podium-row">
+                {/* 2nd */}
+                {top3[1] && (
+                  <div className="l-p-item l-p-2">
+                    <div className="l-p-avatar l-p-avatar-2">
+                      {getInitial(top3[1].name)}
                     </div>
-
-                    <div className="l-td l-user">
-                      <div className="l-name">
-                        {u.name}
-                        {isMe && <span className="l-meTag">You</span>}
-                      </div>
-                    </div>
-
-                    <div className="l-td l-score l-right">{u.score}</div>
+                    <div className="l-p-medal">🥈</div>
+                    <div className="l-p-name">{top3[1].name}</div>
+                    <div className="l-p-score">{top3[1].score} pts</div>
                   </div>
-                );
-              })}
+                )}
 
-              {/* Show user's row separately if outside top 10 */}
-              {myEntry && !isUserInTop10 && (
-                <>
-                  <div className="l-tr l-tr--gap">
-                    <div className="l-td l-rank">...</div>
-                    <div className="l-td l-user" />
-                    <div className="l-td l-score l-right" />
-                  </div>
-                  <div
-                    className="l-tr is-me"
-                    style={{ animationDelay: "0.44s" }}
-                  >
-                    <div className="l-td l-rank">#{myEntry.rank}</div>
-                    <div className="l-td l-user">
-                      <div className="l-name">
-                        {myEntry.name}
-                        <span className="l-meTag">You</span>
-                      </div>
+                {/* 1st */}
+                {top3[0] && (
+                  <div className="l-p-item l-p-1">
+                    <div className="l-p-crown">👑</div>
+                    <div className="l-p-avatar l-p-avatar-1">
+                      {getInitial(top3[0].name)}
                     </div>
-                    <div className="l-td l-score l-right">
-                      {myEntry.score}
-                    </div>
+                    <div className="l-p-medal">🥇</div>
+                    <div className="l-p-name">{top3[0].name}</div>
+                    <div className="l-p-score">{top3[0].score} pts</div>
                   </div>
-                </>
+                )}
+
+                {/* 3rd */}
+                {top3[2] && (
+                  <div className="l-p-item l-p-3">
+                    <div className="l-p-avatar l-p-avatar-3">
+                      {getInitial(top3[2].name)}
+                    </div>
+                    <div className="l-p-medal">🥉</div>
+                    <div className="l-p-name">{top3[2].name}</div>
+                    <div className="l-p-score">{top3[2].score} pts</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Your rank inside podium */}
+              {myEntry && (
+                <div className="l-podium-myrank">
+                  <span>Your Rank</span>
+                  <span className="l-podium-myrank-val">#{myEntry.rank} · {myEntry.score} pts</span>
+                </div>
               )}
             </div>
-          </section>
+
+            {/* ── Rankings ── */}
+            {list.length > 0 && (
+              <div className="l-rankings">
+                <div className="l-rankings-head">
+                  <span>#</span>
+                  <span>Player</span>
+                  <span>Score</span>
+                </div>
+
+                {list.map((u, idx) => {
+                  const isMe = myEntry && String(u.userId) === String(myEntry.userId);
+                  return (
+                    <div key={u.rank || idx} className={`l-rank-row ${isMe ? "l-rank-row--me" : ""}`} style={{animationDelay:`${idx*0.03}s`}}>
+                      <span className="l-rank-pos">
+                        {u.rank <= 3 ? ["🥇","🥈","🥉"][u.rank-1] : u.rank}
+                      </span>
+                      <span className="l-rank-name">
+                        {u.name}
+                        {isMe && <span className="l-you">You</span>}
+                      </span>
+                      <span className="l-rank-score">{u.score}</span>
+                    </div>
+                  );
+                })}
+
+                {myEntry && !isUserInTop10 && (
+                  <>
+                    <div className="l-rank-row l-rank-gap">
+                      <span>···</span><span /><span />
+                    </div>
+                    <div className="l-rank-row l-rank-row--me" style={{animationDelay:"0.4s"}}>
+                      <span className="l-rank-pos">{myEntry.rank}</span>
+                      <span className="l-rank-name">{myEntry.name}<span className="l-you">You</span></span>
+                      <span className="l-rank-score">{myEntry.score}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </>
         )}
 
-        {/* Empty */}
         {!loading && !error && list.length === 0 && (
-          <div className="l-state">
-            <div className="l-stateCard">
-              <div className="l-stateIcon" aria-hidden="true">
-                {"\u{1F4CA}"}
-              </div>
-              <h3 className="l-stateTitle">No Leaderboard Data</h3>
-              <p className="l-stateText">
-                Be the first to participate in the quiz!
-              </p>
-
-              <Link to="/matches" className="l-btn">
-                <span className="l-btn-mi" aria-hidden="true">
-                  sports_cricket
-                </span>
-                Browse Matches
-              </Link>
-            </div>
+          <div className="l-empty">
+            <div style={{fontSize:32,marginBottom:8}}>📊</div>
+            <h3>No Data Yet</h3>
+            <p>Be the first to play!</p>
+            <Link to="/matches" className="l-primary-btn"><span className="l-mi">sports_cricket</span> Browse Matches</Link>
           </div>
         )}
       </div>
