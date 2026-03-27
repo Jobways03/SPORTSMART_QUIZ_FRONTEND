@@ -267,6 +267,19 @@ export default function AdminQuizManager() {
               </form>
             </section>
 
+            {/* ================= NEXT STEP ================= */}
+            {questions.length > 0 && (
+              <section className="admin-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "#1a2638" }}>Ready to set correct answers?</div>
+                  <div style={{ fontSize: 12, color: "#6b7c8f", marginTop: 2 }}>Mark the correct option for each question after the match.</div>
+                </div>
+                <Link to={`/admin/matches/${matchId}/answers`} className="admin-btn-primary" style={{ whiteSpace: "nowrap", textDecoration: "none" }}>
+                  Set Answers →
+                </Link>
+              </section>
+            )}
+
             {/* ================= QUESTIONS LIST ================= */}
             <section className="admin-card">
               <h2>Questions</h2>

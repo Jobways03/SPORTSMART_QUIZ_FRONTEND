@@ -196,7 +196,7 @@
 
 .alb-table-head {
   display: grid;
-  grid-template-columns: 52px 1fr 70px;
+  grid-template-columns: 52px 1fr 120px 70px;
   gap: 8px; padding: 10px 16px;
   font-size: 10px; font-weight: 700;
   color: #6b7c8f; text-transform: uppercase; letter-spacing: 0.08em;
@@ -206,7 +206,7 @@
 
 .alb-row {
   display: grid;
-  grid-template-columns: 52px 1fr 70px;
+  grid-template-columns: 52px 1fr 120px 70px;
   gap: 8px; padding: 12px 16px;
   align-items: center;
   border-top: 1px solid rgba(0,0,0,0.04);
@@ -229,13 +229,28 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
 
+.alb-row-phone {
+  font-size: 12px; font-weight: 500; color: #4b5563;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+
 .alb-row-score {
   font-size: 13px; font-weight: 800; color: #1a2638;
+}
+
+.alb-p-phone {
+  font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 1px; font-weight: 500;
 }
 
 .alb-right { text-align: right; }
 
 /* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .alb-table-head, .alb-row { grid-template-columns: 44px 1fr 60px; }
+  .alb-row-phone { display: none; }
+  .alb-table-head span:nth-child(3) { display: none; }
+}
+
 @media (max-width: 480px) {
   .alb-shell { padding: 0 12px 40px; }
   .alb-nav   { margin: 0 -12px; padding: 8px 14px; }

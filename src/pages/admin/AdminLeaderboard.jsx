@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchAdminLeaderboard } from "../../services/leaderboard.service";
+import { adminFetchQuizzesByMatch } from "../../services/adminQuiz.service";
 import "../../styles/admin-leaderboard.css";
 
 const getInitial = (name = "") => (name.charAt(0) || "?").toUpperCase();
 
 export default function AdminLeaderboard() {
-  const { quizId } = useParams();
+  const { matchId } = useParams();
 
   const [loading, setLoading] = useState(true);
   const [list, setList]       = useState([]);
@@ -17,6 +18,12 @@ export default function AdminLeaderboard() {
     setLoading(true);
     setErrorMsg("");
     try {
+      const quizzes = await adminFetchQuizzesByMatch(matchId);
+      const quizList = Array.isArray(quizzes) ? quizzes : [];
+      const quiz = quizList[0];
+      if (!quiz) throw new Error("NO_QUIZ");
+      const quizId = quiz._id || quiz.id;
+
       const res = await fetchAdminLeaderboard(quizId);
       setList(res?.leaderboard || []);
       setTotal(res?.total || 0);
@@ -27,10 +34,9 @@ export default function AdminLeaderboard() {
     }
   };
 
-  useEffect(() => { loadLeaderboard(); }, [quizId]);
+  useEffect(() => { loadLeaderboard(); }, [matchId]);
 
   const top3    = list.slice(0, 3);
-  const restList = list.slice(3);
 
   const podiumOrder = [top3[1], top3[0], top3[2]]; // 2nd · 1st · 3rd
 
@@ -44,9 +50,6 @@ export default function AdminLeaderboard() {
 
   return (
     <div className="alb-page">
-      {/* background blur layer */}
-      <div className="alb-bg" />
-
       <div className="alb-shell">
 
         {/* ── NAV ── */}
@@ -74,8 +77,8 @@ export default function AdminLeaderboard() {
         {!loading && !errorMsg && list.length === 0 && (
           <div className="alb-empty">
             <div className="alb-empty-icon">📊</div>
-            <h3>No Data Yet</h3>
-            <p>No responses have been scored yet.</p>
+            <h3>No Participants Yet</h3>
+            <p>No one has submitted a response for this quiz.</p>
           </div>
         )}
 
@@ -100,6 +103,7 @@ export default function AdminLeaderboard() {
                       </div>
                       <div className="alb-p-medal">{medalOf(u.rank)}</div>
                       <div className="alb-p-name">{u.name}</div>
+                      {u.phone && <div className="alb-p-phone">{u.phone}</div>}
                       <div className="alb-p-score">{u.score} pts</div>
                     </div>
                   );
@@ -118,6 +122,7 @@ export default function AdminLeaderboard() {
               <div className="alb-table-head">
                 <span>#</span>
                 <span>Player</span>
+                <span>Phone</span>
                 <span className="alb-right">Score</span>
               </div>
 
@@ -132,6 +137,8 @@ export default function AdminLeaderboard() {
                   </span>
 
                   <span className="alb-row-name">{u.name}</span>
+
+                  <span className="alb-row-phone">{u.phone || "—"}</span>
 
                   <span className="alb-row-score alb-right">{u.score}</span>
                 </div>

@@ -106,12 +106,25 @@ export default function Register() {
       <div className="bg-pattern" aria-hidden="true" />
       <div className="glow glow--tl" aria-hidden="true" />
       <div className="glow glow--br" aria-hidden="true" />
+      <img src="/sportsicon.png/cricket.png"        alt="" className="bg-sport bg-sport--1"  aria-hidden="true" />
+      <img src="/sportsicon.png/volleyball.png"    alt="" className="bg-sport bg-sport--2"  aria-hidden="true" />
+      <img src="/sportsicon.png/FootBall.png"      alt="" className="bg-sport bg-sport--3"  aria-hidden="true" />
+      <img src="/sportsicon.png/Baseball.png"      alt="" className="bg-sport bg-sport--4"  aria-hidden="true" />
+      <img src="/sportsicon.png/Hockey.png"        alt="" className="bg-sport bg-sport--5"  aria-hidden="true" />
+      <img src="/sportsicon.png/Badminton.png"     alt="" className="bg-sport bg-sport--6"  aria-hidden="true" />
+      <img src="/sportsicon.png/running.png"       alt="" className="bg-sport bg-sport--7"  aria-hidden="true" />
+      <img src="/sportsicon.png/cricket (1).png"   alt="" className="bg-sport bg-sport--8"  aria-hidden="true" />
+      <img src="/sportsicon.png/cricket-ball.png"  alt="" className="bg-sport bg-sport--9"  aria-hidden="true" />
+      <img src="/sportsicon.png/football1.png"     alt="" className="bg-sport bg-sport--10" aria-hidden="true" />
+      <img src="/sportsicon.png/helmet.png"        alt="" className="bg-sport bg-sport--11" aria-hidden="true" />
+      <img src="/sportsicon.png/pitch.png"         alt="" className="bg-sport bg-sport--12" aria-hidden="true" />
+      <img src="/sportsicon.png/sports.png"        alt="" className="bg-sport bg-sport--13" aria-hidden="true" />
+      <img src="/sportsicon.png/volleyball (1).png" alt="" className="bg-sport bg-sport--14" aria-hidden="true" />
 
       <div className="container">
         <div className="card">
           {/* Header */}
           <div className="header">
-            <p className="tagline">PREMIUM SPORTS EXPERIENCE</p>
             <h1 className="title">Establish Profile</h1>
             <p className="subtitle">Create your arena identity to get started.</p>
           </div>

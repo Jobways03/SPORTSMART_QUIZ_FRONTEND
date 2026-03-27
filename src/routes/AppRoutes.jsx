@@ -73,7 +73,7 @@ export default function AppRoutes() {
     <Suspense fallback={<div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Lexend, system-ui, sans-serif", background: "#d5dbd7" }}>Loading...</div>}>
     <Routes>
       {/* ROOT */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/home" replace />} />
 
       {/* ================= USER AUTH ================= */}
       <Route path="/login" element={<Login />} />
@@ -199,7 +199,7 @@ export default function AppRoutes() {
       />
 
       <Route
-        path="/admin/leaderboard/:quizId"
+        path="/admin/matches/:matchId/leaderboard"
         element={
           <AdminProtectedRoute>
             <AdminLeaderboard />

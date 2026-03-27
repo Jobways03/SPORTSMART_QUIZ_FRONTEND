@@ -132,6 +132,9 @@ export default function Quiz() {
       const res = await submitQuiz(payload);
       setSubmitted(true);
       setSuccessMsg(res?.message || "Responses recorded successfully");
+      setTimeout(() => {
+        window.open("https://sportsmart.com/", "_blank");
+      }, 2000);
     } catch (err) {
       const msg =
         err?.response?.data?.message || err?.message || "Submission failed.";

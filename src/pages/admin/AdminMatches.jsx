@@ -501,7 +501,7 @@ export default function AdminMatches() {
                             <button
                               type="button"
                               onClick={() =>
-                                navigate(`/admin/leaderboard/${m.quizId}`)
+                                navigate(`/admin/matches/${m._id || m.id}/leaderboard`)
                               }
                             >
                               View Leaderboard

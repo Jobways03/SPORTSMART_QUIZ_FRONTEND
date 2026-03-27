@@ -136,7 +136,12 @@ export default function AdminSetAnswers() {
         {loading && <div className="adm-sa-info">Loading…</div>}
         {!loading && errorMsg && <div className="adm-sa-error">{errorMsg}</div>}
         {!loading && successMsg && (
-          <div className="adm-sa-success">{successMsg}</div>
+          <div className="adm-sa-success" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <span>{successMsg}</span>
+            <Link to={`/admin/matches/${matchId}/score`} style={{ fontWeight: 700, fontSize: 13, color: "#059669", whiteSpace: "nowrap", textDecoration: "none" }}>
+              Score Quiz →
+            </Link>
+          </div>
         )}
 
         {!loading && !quizId && (

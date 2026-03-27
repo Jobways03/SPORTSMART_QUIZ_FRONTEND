@@ -141,8 +141,8 @@ export default function MatchCard({ match, onViewQuiz }) {
                 className="mc-winner-photo"
               />
             ) : (
-              <div className="mc-winner-photo mc-winner-photo--placeholder">
-                <span className="mc-mi" aria-hidden="true">emoji_events</span>
+              <div className="mc-winner-photo mc-winner-initials">
+                {match.winner.name.charAt(0).toUpperCase()}
               </div>
             )}
             <div className="mc-winner-info">
@@ -151,9 +151,7 @@ export default function MatchCard({ match, onViewQuiz }) {
                 <div className="mc-winner-location">{match.winner.location}</div>
               )}
             </div>
-            <span className="mc-winner-icon mc-mi" aria-hidden="true">
-              emoji_events
-            </span>
+            <span className="mc-winner-trophy" aria-hidden="true">🏆</span>
           </div>
         )}
 

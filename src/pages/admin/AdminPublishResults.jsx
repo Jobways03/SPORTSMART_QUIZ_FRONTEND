@@ -121,6 +121,16 @@ export default function AdminPublishResults() {
             >
               Go to Scoring
             </button>
+
+            <button
+              type="button"
+              className="appr-btn appr-btn-secondary"
+              onClick={() => navigate(`/admin/matches/${matchId}/leaderboard`)}
+              disabled={loading || !quizId}
+              title="Preview leaderboard before publishing"
+            >
+              Preview Leaderboard →
+            </button>
           </div>
         </div>
 
@@ -160,8 +170,15 @@ export default function AdminPublishResults() {
                     </div>
                   )}
                   {successMsg && (
-                    <div className="appr-alert appr-alert-success">
-                      {successMsg}
+                    <div className="appr-alert appr-alert-success" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                      <span>{successMsg}</span>
+                      <button
+                        type="button"
+                        className="appr-btn appr-btn-secondary"
+                        onClick={() => navigate(`/admin/matches/${matchId}/leaderboard`)}
+                      >
+                        View Leaderboard →
+                      </button>
                     </div>
                   )}
                 </div>

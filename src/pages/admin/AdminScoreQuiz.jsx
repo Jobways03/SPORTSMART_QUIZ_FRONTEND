@@ -144,9 +144,29 @@ export default function AdminScoreQuiz() {
 
                 {result && (
                   <div className="asq-alert asq-alert-success">
-                    <b>{result.message}</b>
-                    <div className="asq-success-sub">
-                      Responses scored: <b>{result.scoredCount}</b>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                      <div>
+                        <b>{result.message}</b>
+                        <div className="asq-success-sub">
+                          Responses scored: <b>{result.scoredCount}</b>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <button
+                          type="button"
+                          className="asq-btn asq-btn-ghost"
+                          onClick={() => navigate(`/admin/matches/${matchId}/leaderboard`)}
+                        >
+                          Preview Leaderboard
+                        </button>
+                        <button
+                          type="button"
+                          className="asq-btn asq-btn-secondary"
+                          onClick={() => navigate(`/admin/matches/${matchId}/publish`)}
+                        >
+                          Publish Results →
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
