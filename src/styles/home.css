@@ -13,7 +13,9 @@
 }
 
 .h-page {
-  min-height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   position: relative;
   background: var(--bg-page);
   color: var(--text);
@@ -32,6 +34,19 @@
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.85;
+}
+.h-bg-pattern::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 30, 48, 0.25) 0%,
+    rgba(20, 30, 48, 0.35) 40%,
+    rgba(20, 30, 48, 0.55) 70%,
+    rgba(20, 30, 48, 0.75) 100%
+  );
+  pointer-events: none;
 }
 
 /* Glows */
@@ -77,13 +92,13 @@
   gap: 10px;
 
   margin: 10px 10px 0;
-  padding: 12px 12px;
+  padding: 12px 16px;
 
   border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 30, 48, 0.75);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .h-brand {
@@ -113,7 +128,7 @@
 .h-brand-name {
   font-weight: 900;
   font-size: 13px;
-  color: #1a2638;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -121,7 +136,7 @@
 
 .h-brand-tag {
   font-size: 11px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.55);
   margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -151,9 +166,9 @@
 
 .h-btn--primary,
 .h-nav-btn--primary {
-  background: var(--primary);
+  background: var(--accent);
   color: #fff;
-  box-shadow: 0 8px 24px rgba(26, 38, 56, 0.18);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
 }
 
 .h-btn--primary:hover,
@@ -161,16 +176,22 @@
   filter: brightness(0.96);
 }
 
-.h-btn--ghost,
-.h-nav-btn--ghost {
+.h-btn--ghost {
   background: rgba(245, 247, 246, 0.8);
   border: 1px solid rgba(0, 0, 0, 0.08);
   color: #1a2332;
 }
-
-.h-btn--ghost:hover,
-.h-nav-btn--ghost:hover {
+.h-btn--ghost:hover {
   background: rgba(0, 0, 0, 0.06);
+}
+
+.h-nav-btn--ghost {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+.h-nav-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .h-btn:active,
@@ -217,11 +238,11 @@
 
 .h-hero-content {
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow);
-  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  padding: 24px 20px;
 }
 
 .h-badge {
@@ -305,11 +326,11 @@
 .h-preview {
   position: relative;
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow);
-  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  padding: 18px;
   overflow: hidden;
 }
 
@@ -419,7 +440,7 @@
    SECTIONS
 ========================= */
 .h-section {
-  padding: 18px 0;
+  padding: 28px 0;
 }
 
 .h-section-head {
@@ -429,15 +450,17 @@
 
 .h-h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 900;
-  color: #1a2638;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .h-sub {
   margin: 6px 0 0;
   font-size: 13px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Steps */
@@ -449,11 +472,11 @@
 
 .h-step {
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: 20px;
 }
 
 .h-step-no {
@@ -491,11 +514,11 @@
 
 .h-card {
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  padding: 20px;
 }
 
 .h-icon {
@@ -525,43 +548,48 @@
 
 /* Final CTA */
 .h-final {
-  padding: 10px 0 22px;
+  padding: 16px 0 28px;
 }
 
 .h-final-card {
   border-radius: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow);
-  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 30, 48, 0.85);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  padding: 32px 24px;
   text-align: center;
 }
 
 .h-final-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 900;
-  color: #1a2638;
+  color: #ffffff;
 }
 
 .h-final-sub {
-  margin: 8px 0 14px;
-  font-size: 13px;
-  color: var(--muted);
+  margin: 10px 0 18px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
   line-height: 1.55;
 }
 
 .h-final-note {
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 12px;
-  color: #6b7c8f;
+  color: rgba(255, 255, 255, 0.5);
   font-weight: 800;
 }
 
 /* Footer */
 .h-footer {
-  padding: 16px 0 24px;
+  margin-top: auto;
+  padding: 18px 0 24px;
+  position: relative;
+  z-index: 2;
+  background: rgba(20, 30, 48, 0.6);
+  backdrop-filter: blur(12px);
 }
 
 .h-footer-inner {
@@ -570,13 +598,13 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 14px;
 }
 
 .h-footer-left {
   font-size: 12px;
-  color: #6b7c8f;
+  color: rgba(255, 255, 255, 0.5);
   font-weight: 800;
 }
 
@@ -589,9 +617,10 @@
   text-decoration: none;
   font-size: 12px;
   font-weight: 900;
-  color: #2563eb;
+  color: rgba(255, 255, 255, 0.7);
 }
 .h-footer-link:hover {
+  color: #fff;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
