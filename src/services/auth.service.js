@@ -1,55 +1,19 @@
 import { api } from "./api";
 
 /**
- * LOGIN
- * identifier = email OR phone
+ * Phone login — check if user exists
+ * Returns { isNewUser: true } or { isNewUser: false, userId, name, phone }
  */
-export async function userLogin({ identifier, password }) {
-  const res = await api.post("/api/auth/user/login", {
-    identifier,
-    password,
-  });
-  return res.data; // { userId, name, email, phone }
-}
-
-/**
- * REGISTER
- */
-export async function registerUser(data) {
-  const res = await api.post("/api/auth/user/register", data);
+export async function phoneLogin({ phone }) {
+  const res = await api.post("/api/auth/user/login", { phone });
   return res.data;
 }
 
 /**
- * FORGOT PASSWORD
+ * Phone register — create new user with phone + name
+ * Returns { isNewUser: false, userId, name, phone }
  */
-export async function forgotPassword({ email }) {
-  const res = await api.post("/api/auth/user/forgot-password", { email });
+export async function phoneRegister({ phone, name }) {
+  const res = await api.post("/api/auth/user/register", { phone, name });
   return res.data;
-}
-
-/**
- * RESET PASSWORD
- */
-export async function resetPassword(token, { password }) {
-  const res = await api.post(`api/auth/user/reset-password/${token}`, {
-    password,
-  });
-  return res.data;
-}
-
-/**
- * VERIFY GOOGLE TOKEN — exchange short-lived token for user data
- */
-export async function verifyGoogleToken(token) {
-  const res = await api.get(`/api/auth/user/google/verify?token=${token}`);
-  return res.data; // { userId, name, email, phone }
-}
-
-/**
- * UPDATE PHONE — after Google login if phone is missing
- */
-export async function updateUserPhone({ userId, phone }) {
-  const res = await api.post("/api/auth/user/update-phone", { userId, phone });
-  return res.data; // { userId, name, email, phone }
 }

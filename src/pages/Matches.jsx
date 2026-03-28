@@ -268,7 +268,7 @@ export default function Matches() {
 
             <div className="sm-sheet-meta">
               <div className="sm-sheet-name">{user?.name || "User"}</div>
-              <div className="sm-sheet-email">{user?.email || "-"}</div>
+              <div className="sm-sheet-email">{user?.phone || "-"}</div>
             </div>
 
             <button

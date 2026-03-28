@@ -7,11 +7,6 @@ import AdminLayout from "../components/AdminLayout";
 
 // Lazy-loaded page components
 const Login = React.lazy(() => import("../pages/Login"));
-const Register = React.lazy(() => import("../pages/Register"));
-const ForgotPassword = React.lazy(() => import("../pages/ForgotPassword"));
-const ResetPassword = React.lazy(() => import("../pages/ResetPassword"));
-const GoogleCallback = React.lazy(() => import("../pages/GoogleCallback"));
-const CompleteProfile = React.lazy(() => import("../pages/CompleteProfile"));
 
 const Matches = React.lazy(() => import("../pages/Matches"));
 const Quiz = React.lazy(() => import("../pages/Quiz"));
@@ -77,11 +72,6 @@ export default function AppRoutes() {
 
       {/* ================= USER AUTH ================= */}
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/auth/google/callback" element={<GoogleCallback />} />
-      <Route path="/complete-profile" element={<CompleteProfile />} />
 
       {/* ================= USER APP ================= */}
       <Route

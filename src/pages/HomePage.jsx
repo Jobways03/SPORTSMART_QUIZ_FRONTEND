@@ -27,11 +27,8 @@ export default function HomePage() {
         </div>
 
         <div className="h-nav-right">
-          <Link to="/login" className="h-nav-btn h-nav-btn--ghost">
+          <Link to="/login" className="h-nav-btn h-nav-btn--primary">
             Login
-          </Link>
-          <Link to="/register" className="h-nav-btn h-nav-btn--primary">
-            Register
           </Link>
         </div>
       </header>
@@ -127,7 +124,7 @@ export default function HomePage() {
             <div className="h-step">
               <div className="h-step-no">1</div>
               <div className="h-step-title">Sign In</div>
-              <div className="h-step-text">Create your account or login.</div>
+              <div className="h-step-text">Enter your phone number to get started.</div>
             </div>
 
             <div className="h-step">
@@ -224,9 +221,6 @@ export default function HomePage() {
           <div className="h-footer-right">
             <Link to="/login" className="h-footer-link">
               Login
-            </Link>
-            <Link to="/register" className="h-footer-link">
-              Register
             </Link>
           </div>
         </div>

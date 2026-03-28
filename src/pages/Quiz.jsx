@@ -297,7 +297,7 @@ export default function Quiz() {
                 </Link>
 
                 <p className="q-note">
-                  Results visible once published by admin
+                  Results will be published after the match
                 </p>
               </div>
             </div>

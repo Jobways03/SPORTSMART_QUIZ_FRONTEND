@@ -71,7 +71,7 @@ export default function Results() {
           <div className="r-state"><div className="r-state-card">
             <div style={{fontSize:32,marginBottom:8}}>⏳</div>
             <h3 className="r-state-title">Results Pending</h3>
-            <p className="r-state-text">Check back once the admin publishes results.</p>
+            <p className="r-state-text">Check back once results are published.</p>
             <button className="r-ghost-btn" onClick={() => navigate("/matches")}><span className="r-mi">arrow_back</span>Back to Matches</button>
           </div></div>
         )}
