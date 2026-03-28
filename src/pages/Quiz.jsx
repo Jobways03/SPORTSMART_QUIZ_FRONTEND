@@ -134,7 +134,7 @@ export default function Quiz() {
       setSuccessMsg(res?.message || "Responses recorded successfully");
       setTimeout(() => {
         window.open("https://sportsmart.com/", "_blank");
-      }, 2000);
+      }, 0);
     } catch (err) {
       const msg =
         err?.response?.data?.message || err?.message || "Submission failed.";
