@@ -6,6 +6,7 @@ import {
   adminUpdateMatchStatus,
   adminDeleteMatchStatus,
   adminSetWinner,
+  adminUpdateCoverImage,
 } from "../../services/adminMatch.service";
 import "../../styles/admin-matches.css";
 
@@ -57,6 +58,12 @@ export default function AdminMatches() {
   const [winnerPhoto, setWinnerPhoto] = useState(null);
   const [winnerPreview, setWinnerPreview] = useState(null);
   const [savingWinner, setSavingWinner] = useState(false);
+
+  /* UPDATE COVER IMAGE STATE */
+  const [coverMatchId, setCoverMatchId] = useState(null);
+  const [newCoverFile, setNewCoverFile] = useState(null);
+  const [newCoverPreview, setNewCoverPreview] = useState(null);
+  const [savingCover, setSavingCover] = useState(false);
 
   /* LOAD MATCHES (same as your previous functionality) */
   const loadMatches = async () => {
@@ -197,6 +204,42 @@ export default function AdminMatches() {
       setErrorMsg(e2?.response?.data?.message || "Failed to set winner");
     } finally {
       setSavingWinner(false);
+    }
+  };
+
+  /* OPEN UPDATE COVER FORM */
+  const openCoverForm = (match) => {
+    const id = match._id || match.id;
+    setCoverMatchId(id);
+    setNewCoverFile(null);
+    setNewCoverPreview(match.coverImage || null);
+    setOpenMenuId(null);
+  };
+
+  const closeCoverForm = () => {
+    setCoverMatchId(null);
+    setNewCoverFile(null);
+    if (newCoverPreview && !newCoverPreview.startsWith("http")) {
+      URL.revokeObjectURL(newCoverPreview);
+    }
+    setNewCoverPreview(null);
+  };
+
+  /* SAVE UPDATED COVER */
+  const handleSaveCover = async (e) => {
+    e.preventDefault();
+    if (!newCoverFile) return setErrorMsg("Please select an image to upload");
+    try {
+      setSavingCover(true);
+      const fd = new FormData();
+      fd.append("coverImage", newCoverFile);
+      await adminUpdateCoverImage(coverMatchId, fd);
+      closeCoverForm();
+      await loadMatches();
+    } catch (e2) {
+      setErrorMsg(e2?.response?.data?.message || "Failed to update cover image");
+    } finally {
+      setSavingCover(false);
     }
   };
 
@@ -513,6 +556,13 @@ export default function AdminMatches() {
                             >
                               Set Winner
                             </button>
+
+                            <button
+                              type="button"
+                              onClick={() => openCoverForm(m)}
+                            >
+                              Update Cover Image
+                            </button>
                           </div>
                         )}
                       </div>
@@ -523,6 +573,62 @@ export default function AdminMatches() {
             </div>
           )}
         </div>
+
+        {/* UPDATE COVER IMAGE MODAL */}
+        {coverMatchId && (
+          <>
+            <div className="admin-overlay" onClick={closeCoverForm} />
+            <div className="admin-winner-modal">
+              <h3 className="admin-section-title">Update Cover Image</h3>
+              <form onSubmit={handleSaveCover}>
+                <div className="admin-field">
+                  <label className="admin-label">New Cover Image *</label>
+                  <input
+                    className="admin-input-file"
+                    type="file"
+                    accept="image/*"
+                    disabled={savingCover}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (newCoverPreview && !newCoverPreview.startsWith("http")) {
+                        URL.revokeObjectURL(newCoverPreview);
+                      }
+                      setNewCoverFile(file);
+                      setNewCoverPreview(URL.createObjectURL(file));
+                    }}
+                  />
+                </div>
+
+                {newCoverPreview && (
+                  <img
+                    src={newCoverPreview}
+                    alt="Cover preview"
+                    className="admin-winner-preview"
+                  />
+                )}
+
+                <div className="admin-winner-actions">
+                  <button
+                    type="submit"
+                    className="admin-btn-primary"
+                    disabled={savingCover || !newCoverFile}
+                  >
+                    {savingCover ? "Uploading…" : "Save Cover"}
+                  </button>
+                  <button
+                    type="button"
+                    className="admin-btn-secondary"
+                    onClick={closeCoverForm}
+                    disabled={savingCover}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </>
+        )}
 
         {/* SET WINNER MODAL */}
         {winnerMatchId && (

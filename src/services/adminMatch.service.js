@@ -24,6 +24,13 @@ export async function adminDeleteMatchStatus(matchId) {
   return res.data;
 }
 
+export async function adminUpdateCoverImage(matchId, formData) {
+  const res = await api.patch(`/api/admin/matches/${matchId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+}
+
 export async function adminSetWinner(matchId, formData) {
   const res = await api.patch(`/api/admin/matches/${matchId}/winner`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
