@@ -557,12 +557,14 @@ export default function AdminMatches() {
                               Set Winner
                             </button>
 
-                            <button
-                              type="button"
-                              onClick={() => openCoverForm(m)}
-                            >
-                              Update Cover Image
-                            </button>
+                            {m.status !== "COMPLETED" && m.status !== "CANCELLED" && (
+                              <button
+                                type="button"
+                                onClick={() => openCoverForm(m)}
+                              >
+                                Update Cover Image
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
