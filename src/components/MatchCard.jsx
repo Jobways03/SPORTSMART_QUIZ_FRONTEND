@@ -46,7 +46,15 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
   };
 
   const badgeText =
-    uiStatus === "OPEN" ? "OPEN" : uiStatus === "LOCKED" ? "CLOSED" : uiStatus; // UPCOMING / COMPLETED / CANCELLED
+    uiStatus === "OPEN" ? "OPEN"
+    : uiStatus === "LOCKED" ? "CLOSED"
+    : (uiStatus === "COMPLETED" && !participated) ? "CLOSED"
+    : uiStatus; // UPCOMING / COMPLETED / CANCELLED
+
+  const badgeClass =
+    uiStatus === "COMPLETED" && !participated
+      ? "mc-badge mc-badge--locked"
+      : `mc-badge mc-badge--${uiStatus.toLowerCase()}`;
 
   const buttonText =
     uiStatus === "CANCELLED"
@@ -58,14 +66,14 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
           : uiStatus === "LOCKED"
             ? "Arena Closed"
             : uiStatus === "COMPLETED"
-              ? (participated ? "View Results" : "Not Participated")
+              ? (participated ? "View Results" : "Arena Closed")
               : "View Quiz";
 
   const buttonIcon =
     uiStatus === "OPEN"
       ? "play_arrow"
       : uiStatus === "COMPLETED"
-        ? (participated ? "fact_check" : "block")
+        ? (participated ? "fact_check" : "lock")
         : uiStatus === "UPCOMING"
           ? "schedule"
           : uiStatus === "LOCKED"
@@ -121,7 +129,7 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
-            <span className={`mc-badge mc-badge--${uiStatus.toLowerCase()}`}>
+            <span className={badgeClass}>
               {badgeText}
             </span>
             {participated && (

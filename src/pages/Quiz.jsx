@@ -184,7 +184,7 @@ export default function Quiz() {
               {loading
                 ? "Loading…"
                 : quiz?.completed
-                  ? "Completed"
+                  ? (submitted ? "Completed" : "Closed")
                   : quiz?.isLocked
                     ? "Locked"
                     : "Active"}
@@ -222,8 +222,8 @@ export default function Quiz() {
           </div>
         )}
 
-        {/* MATCH COMPLETED */}
-        {!loading && !error && quiz?.completed && (
+        {/* MATCH COMPLETED — PARTICIPATED */}
+        {!loading && !error && quiz?.completed && submitted && (
           <div className="q-state">
             <div className="q-state-card q-state-card--with-cover">
               {quiz.match?.coverImage && (
@@ -252,6 +252,32 @@ export default function Quiz() {
                   </span>
                   Leaderboard
                 </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MATCH COMPLETED — NOT PARTICIPATED */}
+        {!loading && !error && quiz?.completed && !submitted && (
+          <div className="q-state">
+            <div className="q-state-card q-state-card--with-cover">
+              {quiz.match?.coverImage && (
+                <div className="q-state-cover">
+                  <img src={quiz.match.coverImage} alt={quiz.match?.title} className="q-state-cover-img" />
+                  <div className="q-state-cover-overlay" />
+                </div>
+              )}
+              <div className="q-state-body">
+                <div className="q-state-badge q-state-badge--locked">CLOSED</div>
+                <h3 className="q-state-title">{quiz.match?.title || "Match"}</h3>
+                <p className="q-state-text">
+                  You didn't participate in this quiz. Access to results is restricted.
+                </p>
+
+                <button className="q-link-btn q-link-btn--ghost" onClick={() => navigate("/matches")}>
+                  <span className="q-btn-mi" aria-hidden="true">arrow_back</span>
+                  Back to Matches
+                </button>
               </div>
             </div>
           </div>
