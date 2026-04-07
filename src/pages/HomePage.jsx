@@ -87,9 +87,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="h-preview-match">
-                  <div className="h-team">MI</div>
+                  <div className="h-team">Mumbai Indians</div>
                   <div className="h-vs">vs</div>
-                  <div className="h-team">CSK</div>
+                  <div className="h-team">Chennai Super Kings</div>
                 </div>
 
                 <div className="h-preview-qs">
