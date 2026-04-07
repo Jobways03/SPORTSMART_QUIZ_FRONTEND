@@ -82,20 +82,20 @@ export default function HomePage() {
             <div className="h-hero-visual">
               <div className="h-preview">
                 <div className="h-preview-top">
-                  <div className="h-pill">⚽ Football</div>
+                  <div className="h-pill">🏏 Cricket</div>
                   <div className="h-pill h-pill--muted">Starts in 2h</div>
                 </div>
 
                 <div className="h-preview-match">
-                  <div className="h-team">Manchester City</div>
+                  <div className="h-team">MI</div>
                   <div className="h-vs">vs</div>
-                  <div className="h-team">Liverpool</div>
+                  <div className="h-team">CSK</div>
                 </div>
 
                 <div className="h-preview-qs">
                   <div className="h-q">Who will win?</div>
-                  <div className="h-q">Total goals?</div>
-                  <div className="h-q">First scorer?</div>
+                  <div className="h-q">Total score by both team?</div>
+                  <div className="h-q">First team batting score?</div>
                 </div>
 
                 <div className="h-preview-foot">
