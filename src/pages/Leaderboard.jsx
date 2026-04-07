@@ -56,7 +56,16 @@ export default function Leaderboard() {
         {loading && <div className="l-loading"><div className="l-spinner" />Loading...</div>}
         {!loading && error && <div className="l-error"><span className="l-mi" style={{fontSize:16}}>error_outline</span>{error}</div>}
 
-        {!loading && !error && list.length > 0 && (
+        {!loading && !error && list.length > 0 && !myEntry && (
+          <div className="l-empty">
+            <div style={{fontSize:32,marginBottom:8}}>🚫</div>
+            <h3>Not Participated</h3>
+            <p>You didn't submit predictions for this quiz.</p>
+            <Link to="/matches" className="l-primary-btn"><span className="l-mi">arrow_back</span> Back to Matches</Link>
+          </div>
+        )}
+
+        {!loading && !error && list.length > 0 && myEntry && (
           <>
             {/* ── Dark Podium Hero ── */}
             <div className="l-podium-hero">

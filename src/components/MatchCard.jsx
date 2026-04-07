@@ -29,7 +29,8 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
   const isDisabled =
     uiStatus === "UPCOMING" ||
     uiStatus === "LOCKED" ||
-    uiStatus === "CANCELLED";
+    uiStatus === "CANCELLED" ||
+    (uiStatus === "COMPLETED" && !participated);
 
   const formatDateTime12 = (dateInput) => {
     const d = new Date(dateInput);
@@ -57,14 +58,14 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
           : uiStatus === "LOCKED"
             ? "Arena Closed"
             : uiStatus === "COMPLETED"
-              ? "View Results"
+              ? (participated ? "View Results" : "Not Participated")
               : "View Quiz";
 
   const buttonIcon =
     uiStatus === "OPEN"
       ? "play_arrow"
       : uiStatus === "COMPLETED"
-        ? "fact_check"
+        ? (participated ? "fact_check" : "block")
         : uiStatus === "UPCOMING"
           ? "schedule"
           : uiStatus === "LOCKED"
