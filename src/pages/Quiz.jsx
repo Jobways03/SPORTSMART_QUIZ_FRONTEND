@@ -117,6 +117,9 @@ export default function Quiz() {
     if (!allAnswered)
       return setError("Please answer all questions before submitting.");
 
+    // Open before any await — browser allows it because we're still in the click event
+    window.open("https://sportsmart.com/", "_blank");
+
     const payload = {
       quizId: quiz.quizId,
       matchId,
@@ -132,9 +135,6 @@ export default function Quiz() {
       const res = await submitQuiz(payload);
       setSubmitted(true);
       setSuccessMsg(res?.message || "Responses recorded successfully");
-      setTimeout(() => {
-        window.open("https://sportsmart.com/", "_blank");
-      }, 0);
     } catch (err) {
       const msg =
         err?.response?.data?.message || err?.message || "Submission failed.";

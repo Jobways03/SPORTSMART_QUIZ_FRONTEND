@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fetchMatches } from "../services/match.service";
-import { fetchUserResults } from "../services/result.service";
 import MatchCard from "../components/MatchCard";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
@@ -27,54 +26,9 @@ export default function Matches() {
       const data = await fetchMatches();
       const list = Array.isArray(data) ? data : data?.matches || [];
 
-      const visible = [];
-      const completedWithQuiz = [];
-
-      // First pass: separate matches into completed (needing API check) vs others
-      for (const raw of list) {
-        const match = normalizeMatch(raw);
-        const status = getMatchStatus(match);
-
-        if (status === "CANCELLED") continue;
-
-        if (status === "UPCOMING" || status === "LIVE") {
-          visible.push(match);
-          continue;
-        }
-
-        if (status === "COMPLETED") {
-          if (!match.quizId) {
-            console.warn("Missing quizId for match", match.id);
-            visible.push(match);
-            continue;
-          }
-          completedWithQuiz.push(match);
-        }
-      }
-
-      // Fire all fetchUserResults calls in parallel
-      const results = await Promise.allSettled(
-        completedWithQuiz.map((match) =>
-          fetchUserResults({
-            quizId: match.quizId,
-            userId: user.userId,
-          }).then(() => ({ match, show: true }))
-           .catch((e) => {
-             const msg = e?.response?.data?.message;
-             const published = e?.response?.data?.published;
-
-             if (msg === "You did not participate in this quiz") return { match, show: false };
-             if (published === false) return { match, show: true };
-             return { match, show: false };
-           })
-        )
-      );
-
-      // Process results to determine visibility
-      for (const result of results) {
-        const val = result.status === "fulfilled" ? result.value : null;
-        if (val?.show) visible.push(val.match);
-      }
+      const visible = list
+        .map(normalizeMatch)
+        .filter((m) => getMatchStatus(m) !== "CANCELLED");
 
       setMatches(visible);
     } catch (err) {
@@ -243,6 +197,7 @@ export default function Matches() {
                 <MatchCard
                   key={m.id}
                   match={m}
+                  participated={m.participated}
                   onViewQuiz={() => navigate(`/quiz/${m.id}`)}
                 />
               ))}
@@ -321,5 +276,6 @@ function normalizeMatch(m) {
     status: m.status,
     coverImage: m.coverImage,
     winner: m.winner || null,
+    participated: m.participated || false,
   };
 }

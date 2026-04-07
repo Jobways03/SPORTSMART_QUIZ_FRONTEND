@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { getMatchStatus } from "../utils/time";
 import "../styles/matchcard.css";
 
-export default function MatchCard({ match, onViewQuiz }) {
+export default function MatchCard({ match, onViewQuiz, participated }) {
   const baseStatus = getMatchStatus(match); // expected: UPCOMING | LIVE | COMPLETED | CANCELLED
 
   const startDate = useMemo(
@@ -45,7 +45,7 @@ export default function MatchCard({ match, onViewQuiz }) {
   };
 
   const badgeText =
-    uiStatus === "OPEN" ? "OPEN" : uiStatus === "LOCKED" ? "LOCKED" : uiStatus; // UPCOMING / COMPLETED / CANCELLED
+    uiStatus === "OPEN" ? "OPEN" : uiStatus === "LOCKED" ? "CLOSED" : uiStatus; // UPCOMING / COMPLETED / CANCELLED
 
   const buttonText =
     uiStatus === "CANCELLED"
@@ -119,9 +119,16 @@ export default function MatchCard({ match, onViewQuiz }) {
             </div>
           </div>
 
-          <span className={`mc-badge mc-badge--${uiStatus.toLowerCase()}`}>
-            {badgeText}
-          </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
+            <span className={`mc-badge mc-badge--${uiStatus.toLowerCase()}`}>
+              {badgeText}
+            </span>
+            {participated && (
+              <span className="mc-badge mc-badge--participated">
+                Participated
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="mc-meta">

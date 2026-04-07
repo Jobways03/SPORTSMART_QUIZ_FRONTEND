@@ -116,6 +116,7 @@
 .mc-badge--completed { background: #f1f5f9; color: #475569; }
 .mc-badge--cancelled { background: #fef2f2; color: #b91c1c; }
 .mc-badge--locked { background: #fef9c3; color: #854d0e; }
+.mc-badge--participated { background: #d1fae5; color: #065f46; }
 
 /* ═══ Meta ═══ */
 .mc-meta {
