@@ -227,17 +227,17 @@
 
 .sm-section-title {
   margin: 0;
-  font-size: 10px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.12em;
-  color: rgba(107, 124, 143, 0.6);
+  color: black;
 }
 
 .sm-section-count {
   min-width: 18px; height: 18px; padding: 0 5px;
-  border-radius: 5px; font-size: 10px; font-weight: 700;
+  border-radius: 5px; font-size: 15px; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(0, 0, 0, 0.05); color: var(--muted);
+  background: rgba(0, 0, 0, 0.05); color: black;
 }
 
 /* ═══════════════════════════════════

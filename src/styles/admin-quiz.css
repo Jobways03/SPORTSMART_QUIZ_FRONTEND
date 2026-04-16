@@ -1,228 +1,490 @@
-/* ================= BASE ================= */
-* {
-  box-sizing: border-box;
-}
+/* ===================================================
+   QUIZ MANAGEMENT  –  qm-* namespace
+   =================================================== */
 
-.admin-quiz-page {
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+.qm-page {
   min-height: 100vh;
-  background: #e8ece9;
+  background: linear-gradient(135deg, #e8f0eb 0%, #dce8e0 100%);
+  padding: 28px 20px 60px;
+  font-family: "Lexend", "Segoe UI", system-ui, sans-serif;
   color: #1a2332;
-  padding: 24px 16px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
 }
 
-.admin-quiz-container {
-  max-width: 900px;
-  margin: 0 auto;
+/* ── Header ── */
+.qm-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 780px;
+  margin: 0 auto 24px;
+  flex-wrap: wrap;
 }
 
-/* ================= HEADER ================= */
-.admin-back-link {
-  color: #2563eb;
-  font-weight: 600;
-  text-decoration: none;
-}
+.qm-header-left { flex: 1; }
 
-.admin-quiz-header {
-  margin: 20px 0 30px;
-}
-
-.admin-quiz-header h1 {
-  margin: 0;
-  font-size: 26px;
+.qm-title {
+  font-size: 22px;
+  font-weight: 700;
   color: #1a2638;
+  letter-spacing: -0.3px;
 }
 
-.admin-quiz-header span {
+.qm-sub {
+  margin-top: 4px;
   font-size: 13px;
   color: #6b7c8f;
 }
 
-/* ================= CARD ================= */
-.admin-card {
+.qm-id-badge {
+  display: inline-block;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.qm-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.qm-count-badge {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0d9488;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.qm-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  color: #1a2638;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.qm-back-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Error Banner ── */
+.qm-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  max-width: 780px;
+  margin: 0 auto 16px;
+  padding: 12px 16px;
+  background: rgba(254, 226, 226, 0.8);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 10px;
+  color: #991b1b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.qm-error-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #991b1b;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.qm-error-close:hover { opacity: 1; }
+
+/* ── Card ── */
+.qm-card {
+  max-width: 780px;
+  margin: 0 auto 20px;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  padding: 22px 24px;
 }
 
-.admin-card h2 {
-  margin: 0 0 14px;
+.qm-card--editing {
+  border-color: rgba(234, 179, 8, 0.4);
+  background: rgba(255, 251, 235, 0.9);
+  box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.1);
+}
+
+.qm-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.qm-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1a2638, #2d3f55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 18px;
+  flex-shrink: 0;
+}
+
+.qm-card--editing .qm-card-icon {
+  background: linear-gradient(135deg, #b45309, #d97706);
+}
+
+.qm-card-title {
+  font-size: 15px;
+  font-weight: 700;
   color: #1a2638;
 }
 
-/* ================= FORMS ================= */
-.admin-form-stack {
-  display: grid;
-  gap: 12px;
+.qm-card-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6b7c8f;
 }
 
-.admin-form-stack input,
-.admin-form-stack textarea {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 12px;
-  color: #1a2332;
-  font-size: 14px;
-}
-
-.admin-form-stack textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* ================= OPTIONS ================= */
-.admin-options-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-/* ================= INLINE FIELDS ================= */
-.admin-inline-fields {
+/* ── Form ── */
+.qm-form {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.admin-field {
-  flex: 1;
+.qm-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.admin-field label {
+.qm-label {
   font-size: 12px;
-  color: #6b7c8f;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.2px;
 }
 
-/* ================= BUTTONS ================= */
-.admin-btn-primary {
-  height: 44px;
+.qm-req { color: #ef4444; margin-left: 2px; }
+.qm-opt { color: #9ca3af; font-weight: 400; }
+
+.qm-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 10px;
-  border: none;
-  background: #1a2638;
-  color: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
+  color: #1a2332;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-/* ================= STATES ================= */
-.admin-error-box {
-  background: rgba(254, 226, 226, 0.6);
-  border: 1px solid rgba(220, 38, 38, 0.2);
-  color: #991b1b;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 14px;
+.qm-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.admin-info-box {
-  background: rgba(245, 247, 246, 0.8);
-  border: 1px dashed rgba(0, 0, 0, 0.12);
-  padding: 14px;
-  border-radius: 10px;
-  color: #6b7c8f;
+.qm-input--question {
+  font-size: 15px;
+  padding: 12px 14px;
 }
 
-/* ================= QUESTIONS LIST ================= */
-.admin-question-row {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.6);
+.qm-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
 }
 
-.admin-q-title {
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #1a2638;
+/* ── Options 2×2 ── */
+.qm-options-label { margin-bottom: 2px; }
+
+.qm-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.admin-q-options {
-  font-size: 13px;
-  color: #6b7c8f;
-  margin-bottom: 6px;
-}
-
-.admin-q-meta {
+.qm-option-wrap {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.admin-q-points {
-  font-size: 13px;
-  font-weight: 600;
-  color: #2563eb;
-}
-
-.admin-q-actions {
-  display: flex;
   gap: 8px;
 }
 
-.admin-btn-edit {
-  padding: 5px 14px;
-  border-radius: 8px;
-  border: 1px solid #2563eb;
-  background: transparent;
-  color: #2563eb;
+.qm-option-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #1a2638;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.qm-option-input { flex: 1; }
+
+/* ── Points + Order Row ── */
+.qm-meta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── Form Buttons ── */
+.qm-form-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Buttons ── */
+.qm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.1s;
 }
+.qm-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.qm-btn:not(:disabled):active { transform: scale(0.97); }
 
-.admin-btn-edit:hover {
-  background: #2563eb;
-  color: #ffffff;
+.qm-btn--primary {
+  background: #1a2638;
+  color: #fff;
 }
+.qm-btn--primary:not(:disabled):hover { background: #2d3f55; }
 
-.admin-btn-danger {
-  padding: 5px 14px;
-  border-radius: 8px;
-  border: 1px solid #dc2626;
-  background: transparent;
-  color: #dc2626;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.admin-btn-danger:hover {
-  background: #dc2626;
-  color: #ffffff;
-}
-
-.admin-btn-secondary {
-  padding: 5px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: transparent;
-  color: #6b7c8f;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.admin-btn-secondary:hover {
+.qm-btn--ghost {
   background: rgba(0, 0, 0, 0.05);
-  color: #1a2332;
+  color: #6b7c8f;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.qm-btn--ghost:hover { background: rgba(0, 0, 0, 0.09); color: #1a2332; }
+
+.qm-btn--edit {
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  padding: 7px 14px;
+  font-size: 12px;
+}
+.qm-btn--edit:hover { background: #2563eb; color: #fff; }
+
+.qm-btn--danger {
+  background: rgba(220, 38, 38, 0.07);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 7px 14px;
+  font-size: 12px;
+}
+.qm-btn--danger:hover { background: #dc2626; color: #fff; }
+
+.qm-btn--danger-confirm {
+  background: #dc2626;
+  color: #fff;
+  padding: 7px 14px;
+  font-size: 12px;
+}
+.qm-btn--danger-confirm:hover { background: #b91c1c; }
+
+.qm-btn--answers {
+  background: #0d9488;
+  color: #fff;
+  white-space: nowrap;
+}
+.qm-btn--answers:hover { background: #0f766e; }
+
+/* ── Set Answers Banner ── */
+.qm-answers-banner {
+  max-width: 780px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.1), rgba(5, 150, 105, 0.08));
+  border: 1px solid rgba(13, 148, 136, 0.25);
+  border-radius: 14px;
+  flex-wrap: wrap;
 }
 
-/* ================= MOBILE ================= */
-@media (max-width: 640px) {
-  .admin-options-grid {
-    grid-template-columns: 1fr;
-  }
+.qm-answers-banner-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
 
-  .admin-inline-fields {
-    flex-direction: column;
-  }
+.qm-answers-banner-text { flex: 1; min-width: 160px; }
+
+.qm-answers-banner-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.qm-answers-banner-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #0d9488;
+}
+
+/* ── Question List ── */
+.qm-list-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.qm-empty {
+  padding: 32px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  border: 1px dashed rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+}
+
+.qm-question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qm-question-card {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  transition: border-color 0.15s;
+}
+
+.qm-question-card--active {
+  border-color: rgba(234, 179, 8, 0.45);
+  background: rgba(255, 251, 235, 0.8);
+}
+
+/* Question top row: number + text + points */
+.qm-q-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.qm-q-num {
+  flex-shrink: 0;
+  min-width: 32px;
+  height: 24px;
+  background: #1a2638;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.qm-q-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a2638;
+  line-height: 1.45;
+}
+
+.qm-q-points {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #d97706;
+  background: rgba(234, 179, 8, 0.1);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* Options pills */
+.qm-q-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.qm-q-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  font-size: 12px;
+  color: #374151;
+}
+
+.qm-q-option-letter {
+  font-weight: 700;
+  color: #6b7c8f;
+  font-size: 11px;
+}
+
+/* Actions */
+.qm-q-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .qm-page { padding: 18px 12px 48px; }
+
+  .qm-header { flex-direction: column; align-items: flex-start; }
+
+  .qm-options-grid,
+  .qm-meta-row { grid-template-columns: 1fr; }
+
+  .qm-answers-banner { flex-direction: column; align-items: flex-start; }
+
+  .qm-card { padding: 16px; }
 }

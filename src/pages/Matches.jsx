@@ -276,6 +276,7 @@ function normalizeMatch(m) {
     status: m.status,
     coverImage: m.coverImage,
     winner: m.winner || null,
+    isResultPublished: m.isResultPublished || false,
     participated: m.participated || false,
   };
 }

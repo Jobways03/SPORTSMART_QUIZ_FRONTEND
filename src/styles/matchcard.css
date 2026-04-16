@@ -194,24 +194,94 @@
   .mc-fallback-title { font-size: 14px; }
 }
 
-/* ═══ Winner Strip ═══ */
-.mc-winner {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: 10px;
-  background: linear-gradient(135deg, rgba(253, 224, 71, 0.12), rgba(234, 179, 8, 0.06));
-  border: 1px solid rgba(234, 179, 8, 0.12);
+/* ═══ Winner Reveal Card ═══ */
+.mc-card--winner {
+  border: 2px solid rgba(234, 179, 8, 0.5);
+  box-shadow: 0 8px 40px rgba(234, 179, 8, 0.25), 0 2px 8px rgba(0,0,0,0.1);
 }
-.mc-winner-photo {
-  width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
-  border: 2px solid rgba(234, 179, 8, 0.4);
+
+.mc-cover--winner {
+  aspect-ratio: 2.1 / 1;
+  position: relative;
 }
-.mc-winner-initials {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #fde68a, #f59e0b);
-  color: #7c2d12; font-size: 16px; font-weight: 800;
+.mc-cover--winner .mc-cover-img {
+  object-position: center center;
 }
-.mc-winner-info { min-width: 0; flex: 1; }
-.mc-winner-name { font-size: 12px; font-weight: 700; color: #78350f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mc-winner-location { font-size: 10px; color: #a16207; font-weight: 500; }
-.mc-winner-trophy { margin-left: auto; flex-shrink: 0; font-size: 22px; }
-.mc-winner-icon { margin-left: auto; flex-shrink: 0; font-size: 20px; color: #ca8a04; }
+.mc-card--winner:hover .mc-cover-img {
+  transform: scale(1.03);
+}
+
+/* Right-side dark gradient so text is readable */
+.mc-winner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    transparent 25%,
+    rgba(10, 5, 0, 0.55) 55%,
+    rgba(15, 8, 0, 0.88) 100%
+  );
+}
+
+/* Top-left: WINNER badge */
+.mc-winner-left-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1a2638, #2d3f55);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
+/* Top-right: winner name */
+.mc-winner-top-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f59e0b, #b45309);
+  box-shadow: 0 2px 12px rgba(234, 179, 8, 0.55);
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.mc-winner-top-badge span {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Bottom prize badge */
+.mc-winner-prize-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  white-space: nowrap;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  color: #fde047;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Body for winner card */
+.mc-body--winner {
+  gap: 8px;
+  padding: 10px 14px 12px;
+}

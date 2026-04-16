@@ -25,6 +25,10 @@ const QuizAnalytics = React.lazy(() => import("../pages/admin/QuizAnalytics"));
 const AdminAnalyticsHome = React.lazy(() => import("../pages/admin/AdminAnalyticsHome"));
 const AdminLeaderboard = React.lazy(() => import("../pages/admin/AdminLeaderboard"));
 const AdminWinnerOverride = React.lazy(() => import("../pages/admin/AdminWinnerOverride"));
+const AdminUsers = React.lazy(() => import("../pages/admin/AdminUsers"));
+const AdminScorePublishHub = React.lazy(() => import("../pages/admin/AdminScorePublishHub"));
+const AdminQuizHub = React.lazy(() => import("../pages/admin/AdminQuizHub"));
+const AdminSetWinner = React.lazy(() => import("../pages/admin/AdminSetWinner"));
 
 /* =======================
    USER PROTECTED ROUTE
@@ -202,6 +206,42 @@ export default function AppRoutes() {
         element={
           <AdminProtectedRoute>
             <AdminWinnerOverride />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/users"
+        element={
+          <AdminProtectedRoute>
+            <AdminUsers />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/score-publish"
+        element={
+          <AdminProtectedRoute>
+            <AdminScorePublishHub />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/quiz-hub"
+        element={
+          <AdminProtectedRoute>
+            <AdminQuizHub />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/matches/:matchId/set-winner"
+        element={
+          <AdminProtectedRoute>
+            <AdminSetWinner />
           </AdminProtectedRoute>
         }
       />

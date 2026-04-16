@@ -19,7 +19,6 @@ export default function QuizAnalytics() {
   const [heatmap, setHeatmap] = useState([]);
   const [leaders, setLeaders] = useState([]);
   const [timing, setTiming] = useState(null);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -28,13 +27,11 @@ export default function QuizAnalytics() {
       try {
         setLoading(true);
         setError("");
-
         const [hm, top, t] = await Promise.all([
           fetchQuizHeatmap(quizId),
           fetchTopUsersByQuiz(quizId, 10),
           fetchSubmissionTiming(quizId),
         ]);
-
         setHeatmap(Array.isArray(hm) ? hm : []);
         setLeaders(Array.isArray(top) ? top : []);
         setTiming(t || null);
@@ -44,41 +41,50 @@ export default function QuizAnalytics() {
         setLoading(false);
       }
     }
-
     if (quizId) load();
   }, [quizId]);
 
   return (
-    <div className="admin-page">
-      <div className="admin-analytics-header">
-        <div>
-          <h2>Quiz Analytics</h2>
-          <p className="analytics-subtitle">Quiz ID: {quizId}</p>
+    <div className="qa-page">
+      {/* ── HEADER ── */}
+      <div className="qa-header">
+        <div className="qa-header-left">
+          <div className="qa-page-title">Quiz Analytics</div>
+          <div className="qa-page-sub">
+            <span className="qa-id-badge">ID: {quizId}</span>
+          </div>
         </div>
-
-        <Link to="/admin/analytics" className="secondary-action-btn">
-          ← Back
+        <Link to="/admin/analytics" className="qa-back-btn">
+          ← Back to Analytics
         </Link>
       </div>
 
-      {loading && <div className="admin-loading">Loading…</div>}
-      {error && <div className="admin-error">{error}</div>}
+      {/* ── STATES ── */}
+      {loading && (
+        <div className="qa-loading-wrap">
+          {[1, 2, 3].map((i) => <div key={i} className="qa-skeleton" />)}
+        </div>
+      )}
+      {error && <div className="qa-error">{error}</div>}
 
+      {/* ── CONTENT ── */}
       {!loading && !error && (
-        <>
+        <div className="qa-body">
+          {/* Heatmap — full width */}
           <HeatmapTable data={heatmap} />
 
-          <div className="two-col">
+          {/* Two columns: leaderboard + timing buckets */}
+          <div className="qa-two-col">
             <LeaderboardTable data={leaders} />
-            {timing ? (
-              <TimingBuckets data={timing} />
-            ) : (
-              <div className="chart-card">No timing data.</div>
-            )}
+            {timing
+              ? <TimingBuckets data={timing} />
+              : <div className="qa-card qa-empty">No timing data available.</div>
+            }
           </div>
 
+          {/* Bar chart — full width */}
           {timing && <BarChartBlock data={timing} />}
-        </>
+        </div>
       )}
     </div>
   );

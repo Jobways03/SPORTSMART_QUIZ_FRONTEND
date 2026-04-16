@@ -6,12 +6,7 @@ export async function adminFetchMatches() {
 }
 
 export async function adminCreateMatch(formData) {
-  const res = await api.post("/api/admin/matches", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
+  const res = await api.post("/api/admin/matches", formData);
   return res.data;
 }
 export async function adminUpdateMatchStatus(matchId, status) {
@@ -25,15 +20,11 @@ export async function adminDeleteMatchStatus(matchId) {
 }
 
 export async function adminUpdateCoverImage(matchId, formData) {
-  const res = await api.patch(`/api/admin/matches/${matchId}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res = await api.patch(`/api/admin/matches/${matchId}`, formData);
   return res.data;
 }
 
 export async function adminSetWinner(matchId, formData) {
-  const res = await api.patch(`/api/admin/matches/${matchId}/winner`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res = await api.patch(`/api/admin/matches/${matchId}/winner`, formData);
   return res.data;
 }

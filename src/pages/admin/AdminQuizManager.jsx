@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   adminCreateQuiz,
@@ -11,42 +11,41 @@ import {
 import "../../styles/admin-quiz.css";
 
 const DEFAULT_POINTS = 5;
-const DEFAULT_OPTIONS_COUNT = 4;
+const OPTION_LABELS = ["A", "B", "C", "D"];
 
 export default function AdminQuizManager() {
   const { matchId } = useParams();
 
-  const [quizId, setQuizId] = useState(null);
+  const [quizId, setQuizId]       = useState(null);
   const [quizTitle, setQuizTitle] = useState("");
-  const [quizDesc, setQuizDesc] = useState("");
+  const [quizDesc, setQuizDesc]   = useState("");
   const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError]         = useState("");
 
   const [questionText, setQuestionText] = useState("");
-  const [options, setOptions] = useState(Array(DEFAULT_OPTIONS_COUNT).fill(""));
-  const [points, setPoints] = useState(DEFAULT_POINTS);
-  const [order, setOrder] = useState(1);
+  const [options, setOptions]           = useState(["", "", "", ""]);
+  const [points, setPoints]             = useState(DEFAULT_POINTS);
+  const [order, setOrder]               = useState(1);
 
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId]           = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [saving, setSaving]                 = useState(false);
 
-  /* ---------------- LOAD EXISTING QUIZ ---------------- */
+  /* ── Load ── */
   useEffect(() => {
-    const loadExistingQuiz = async () => {
+    const load = async () => {
       try {
         const quizzes = await adminFetchQuizzesByMatch(matchId);
-        const quizList = Array.isArray(quizzes) ? quizzes : [];
-        const existingQuiz = quizList[0];
-        if (existingQuiz) {
-          const id = existingQuiz._id || existingQuiz.id;
+        const list = Array.isArray(quizzes) ? quizzes : [];
+        const existing = list[0];
+        if (existing) {
+          const id = existing._id || existing.id;
           setQuizId(id);
           loadQuestions(id);
         }
-      } catch {
-        // no existing quiz, user can create one
-      }
+      } catch { /* no quiz yet */ }
     };
-    loadExistingQuiz();
+    load();
   }, [matchId]);
 
   const loadQuestions = async (qid) => {
@@ -54,172 +53,168 @@ export default function AdminQuizManager() {
     setQuestions(Array.isArray(data) ? data : data.questions || []);
   };
 
-  /* ---------------- CREATE QUIZ ---------------- */
+  const resetForm = (nextOrder = 1) => {
+    setEditingId(null);
+    setQuestionText("");
+    setOptions(["", "", "", ""]);
+    setPoints(DEFAULT_POINTS);
+    setOrder(nextOrder);
+    setError("");
+  };
+
+  /* ── Create Quiz ── */
   const handleCreateQuiz = async (e) => {
     e.preventDefault();
     setError("");
-
     if (!quizTitle.trim()) return setError("Quiz title is required");
-
     try {
-      const data = await adminCreateQuiz({
-        matchId,
-        title: quizTitle.trim(),
-        description: quizDesc.trim(),
-      });
-
-      const id = data._id || data.id;
-      setQuizId(id);
-      setQuizTitle("");
-      setQuizDesc("");
+      const data = await adminCreateQuiz({ matchId, title: quizTitle.trim(), description: quizDesc.trim() });
+      setQuizId(data._id || data.id);
+      setQuizTitle(""); setQuizDesc("");
     } catch {
       setError("Quiz already exists for this match");
     }
   };
 
-  /* ---------------- ADD QUESTION ---------------- */
+  /* ── Add Question ── */
   const handleAddQuestion = async (e) => {
     e.preventDefault();
     setError("");
-
     if (!questionText.trim()) return setError("Question text is required");
-
-    if (options.some((o) => !o.trim()))
-      return setError("All 4 options are required");
-
-    await adminCreateQuestion({
-      quizId,
-      questionText: questionText.trim(),
-      options,
-      points: Number(points),
-      order: Number(order),
-    });
-
-    setQuestionText("");
-    setOptions(Array(DEFAULT_OPTIONS_COUNT).fill(""));
-    setPoints(DEFAULT_POINTS);
-    setOrder(order + 1);
-
-    await loadQuestions(quizId);
+    if (options.some((o) => !o.trim())) return setError("All 4 options are required");
+    try {
+      setSaving(true);
+      await adminCreateQuestion({ quizId, questionText: questionText.trim(), options, points: Number(points), order: Number(order) });
+      resetForm(order + 1);
+      await loadQuestions(quizId);
+    } catch { setError("Failed to add question"); }
+    finally { setSaving(false); }
   };
 
-  /* ---------------- START EDITING ---------------- */
+  /* ── Edit ── */
   const handleStartEdit = (q) => {
-    const id = q._id || q.id;
-    setEditingId(id);
+    setEditingId(q._id || q.id);
     setQuestionText(q.questionText);
     setOptions([...q.options]);
     setPoints(q.points);
     setOrder(q.order);
     setError("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* ---------------- CANCEL EDIT ---------------- */
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setQuestionText("");
-    setOptions(Array(DEFAULT_OPTIONS_COUNT).fill(""));
-    setPoints(DEFAULT_POINTS);
-    setOrder(questions.length + 1);
-  };
-
-  /* ---------------- UPDATE QUESTION ---------------- */
+  /* ── Update ── */
   const handleUpdateQuestion = async (e) => {
     e.preventDefault();
     setError("");
-
     if (!questionText.trim()) return setError("Question text is required");
-    if (options.some((o) => !o.trim()))
-      return setError("All 4 options are required");
-
+    if (options.some((o) => !o.trim())) return setError("All 4 options are required");
     try {
-      await adminUpdateQuestion(editingId, {
-        questionText: questionText.trim(),
-        options,
-        points: Number(points),
-        order: Number(order),
-      });
-
-      setEditingId(null);
-      setQuestionText("");
-      setOptions(Array(DEFAULT_OPTIONS_COUNT).fill(""));
-      setPoints(DEFAULT_POINTS);
-      setOrder(questions.length + 1);
-
+      setSaving(true);
+      await adminUpdateQuestion(editingId, { questionText: questionText.trim(), options, points: Number(points), order: Number(order) });
+      resetForm(questions.length + 1);
       await loadQuestions(quizId);
-    } catch {
-      setError("Failed to update question");
-    }
+    } catch { setError("Failed to update question"); }
+    finally { setSaving(false); }
   };
 
-  /* ---------------- DELETE QUESTION ---------------- */
+  /* ── Delete ── */
   const handleDeleteQuestion = async (questionId) => {
     try {
       await adminDeleteQuestion(questionId);
       setDeleteConfirmId(null);
       await loadQuestions(quizId);
-    } catch {
-      setError("Failed to delete question");
-    }
+    } catch { setError("Failed to delete question"); }
   };
 
+  const sorted = [...questions].sort((a, b) => a.order - b.order);
+
   return (
-    <div className="admin-quiz-page">
-      <div className="admin-quiz-container">
-        <Link to="/admin/matches" className="admin-back-link">
-          ← Back to Matches
-        </Link>
+    <div className="qm-page">
 
-        <header className="admin-quiz-header">
-          <h1>Quiz Management</h1>
-          <span>
-            Match ID: <code>{matchId}</code>
-          </span>
-        </header>
+      {/* ── HEADER ── */}
+      <div className="qm-header">
+        <div className="qm-header-left">
+          <div className="qm-title">Quiz Management</div>
+          <div className="qm-sub">
+            Match ID: <span className="qm-id-badge">{matchId}</span>
+          </div>
+        </div>
+        <div className="qm-header-right">
+          {quizId && (
+            <div className="qm-count-badge">{questions.length} question{questions.length !== 1 ? "s" : ""}</div>
+          )}
+          <Link to="/admin/matches" className="qm-back-btn">← Matches</Link>
+        </div>
+      </div>
 
-        {error && <div className="admin-error-box">{error}</div>}
+      {/* ── ERROR ── */}
+      {error && (
+        <div className="qm-error">
+          ⚠ {error}
+          <button className="qm-error-close" onClick={() => setError("")}>✕</button>
+        </div>
+      )}
 
-        {/* ================= CREATE QUIZ ================= */}
-        {!quizId && (
-          <section className="admin-card">
-            <h2>Create Quiz</h2>
-            <form className="admin-form-stack" onSubmit={handleCreateQuiz}>
-              <input
-                placeholder="Quiz title"
-                value={quizTitle}
-                onChange={(e) => setQuizTitle(e.target.value)}
-              />
-              <textarea
-                placeholder="Quiz description (optional)"
-                value={quizDesc}
-                onChange={(e) => setQuizDesc(e.target.value)}
-              />
-              <button className="admin-btn-primary">Create Quiz</button>
-            </form>
-          </section>
-        )}
+      {/* ── CREATE QUIZ (no quiz yet) ── */}
+      {!quizId && (
+        <div className="qm-card">
+          <div className="qm-card-head">
+            <div className="qm-card-icon">📋</div>
+            <div>
+              <div className="qm-card-title">Create Quiz</div>
+              <div className="qm-card-sub">Set up a quiz for this match</div>
+            </div>
+          </div>
+          <form className="qm-form" onSubmit={handleCreateQuiz}>
+            <div className="qm-field">
+              <label className="qm-label">Quiz Title <span className="qm-req">*</span></label>
+              <input className="qm-input" placeholder="e.g. Match Prediction Quiz" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} required />
+            </div>
+            <div className="qm-field">
+              <label className="qm-label">Description <span className="qm-opt">(optional)</span></label>
+              <textarea className="qm-input qm-textarea" placeholder="Brief description of the quiz..." value={quizDesc} onChange={(e) => setQuizDesc(e.target.value)} />
+            </div>
+            <button type="submit" className="qm-btn qm-btn--primary">✚ Create Quiz</button>
+          </form>
+        </div>
+      )}
 
-        {/* ================= ADD QUESTIONS ================= */}
-        {quizId && (
-          <>
-            <section className="admin-card">
-              <h2>{editingId ? "Edit Question" : "Add Question"}</h2>
+      {/* ── ADD / EDIT QUESTION ── */}
+      {quizId && (
+        <>
+          <div className={`qm-card${editingId ? " qm-card--editing" : ""}`}>
+            <div className="qm-card-head">
+              <div className="qm-card-icon">{editingId ? "✏️" : "+"}</div>
+              <div>
+                <div className="qm-card-title">{editingId ? "Edit Question" : "Add Question"}</div>
+                <div className="qm-card-sub">{editingId ? "Update the question details below" : "Fill in the question and all 4 options"}</div>
+              </div>
+            </div>
 
-              <form
-                className="admin-form-stack"
-                onSubmit={editingId ? handleUpdateQuestion : handleAddQuestion}
-              >
+            <form className="qm-form" onSubmit={editingId ? handleUpdateQuestion : handleAddQuestion}>
+              {/* Question text */}
+              <div className="qm-field">
+                <label className="qm-label">Question <span className="qm-req">*</span></label>
                 <input
-                  placeholder="Question text"
+                  className="qm-input qm-input--question"
+                  placeholder="Type your question here…"
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
+                  required
                 />
+              </div>
 
-                <div className="admin-options-grid">
-                  {options.map((opt, i) => (
+              {/* Options 2×2 */}
+              <div className="qm-options-label">
+                <label className="qm-label">Options <span className="qm-req">*</span></label>
+              </div>
+              <div className="qm-options-grid">
+                {options.map((opt, i) => (
+                  <div key={i} className="qm-option-wrap">
+                    <span className="qm-option-letter">{OPTION_LABELS[i]}</span>
                     <input
-                      key={i}
-                      placeholder={`Option ${i + 1}`}
+                      className="qm-input qm-option-input"
+                      placeholder={`Option ${OPTION_LABELS[i]}`}
                       value={opt}
                       onChange={(e) => {
                         const copy = [...options];
@@ -227,122 +222,111 @@ export default function AdminQuizManager() {
                         setOptions(copy);
                       }}
                     />
-                  ))}
-                </div>
-
-                <div className="admin-inline-fields">
-                  <div className="admin-field">
-                    <label>Points</label>
-                    <input
-                      type="number"
-                      value={points}
-                      onChange={(e) => setPoints(e.target.value)}
-                    />
                   </div>
+                ))}
+              </div>
 
-                  <div className="admin-field">
-                    <label>Order</label>
-                    <input
-                      type="number"
-                      value={order}
-                      onChange={(e) => setOrder(e.target.value)}
-                    />
-                  </div>
+              {/* Points + Order */}
+              <div className="qm-meta-row">
+                <div className="qm-field">
+                  <label className="qm-label">Points</label>
+                  <input className="qm-input" type="number" min="1" value={points} onChange={(e) => setPoints(e.target.value)} />
                 </div>
+                <div className="qm-field">
+                  <label className="qm-label">Order</label>
+                  <input className="qm-input" type="number" min="1" value={order} onChange={(e) => setOrder(e.target.value)} />
+                </div>
+              </div>
 
-                <div className="admin-inline-fields">
-                  <button type="submit" className="admin-btn-primary">
-                    {editingId ? "Update Question" : "Add Question"}
+              {/* Buttons */}
+              <div className="qm-form-btns">
+                <button type="submit" className="qm-btn qm-btn--primary" disabled={saving}>
+                  {saving ? "Saving…" : editingId ? "✔ Update Question" : "✚ Add Question"}
+                </button>
+                {editingId && (
+                  <button type="button" className="qm-btn qm-btn--ghost" onClick={() => resetForm(questions.length + 1)}>
+                    Cancel
                   </button>
-                  {editingId && (
-                    <button
-                      type="button"
-                      className="admin-btn-secondary"
-                      onClick={handleCancelEdit}
-                    >
-                      Cancel
-                    </button>
-                  )}
-                </div>
-              </form>
-            </section>
+                )}
+              </div>
+            </form>
+          </div>
 
-            {/* ================= NEXT STEP ================= */}
-            {questions.length > 0 && (
-              <section className="admin-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "#1a2638" }}>Ready to set correct answers?</div>
-                  <div style={{ fontSize: 12, color: "#6b7c8f", marginTop: 2 }}>Mark the correct option for each question after the match.</div>
-                </div>
-                <Link to={`/admin/matches/${matchId}/answers`} className="admin-btn-primary" style={{ whiteSpace: "nowrap", textDecoration: "none" }}>
-                  Set Answers →
-                </Link>
-              </section>
-            )}
+          {/* ── SET ANSWERS BANNER ── */}
+          {questions.length > 0 && (
+            <div className="qm-answers-banner">
+              <div className="qm-answers-banner-icon">✅</div>
+              <div className="qm-answers-banner-text">
+                <div className="qm-answers-banner-title">Ready to set correct answers?</div>
+                <div className="qm-answers-banner-sub">Mark the correct option for each question after the match ends.</div>
+              </div>
+              <Link to={`/admin/matches/${matchId}/answers`} className="qm-btn qm-btn--answers">
+                Set Answers →
+              </Link>
+            </div>
+          )}
 
-            {/* ================= QUESTIONS LIST ================= */}
-            <section className="admin-card">
-              <h2>Questions</h2>
+          {/* ── QUESTIONS LIST ── */}
+          <div className="qm-card">
+            <div className="qm-list-header">
+              <div className="qm-card-title">Questions</div>
+              <div className="qm-count-badge">{questions.length}</div>
+            </div>
 
-              {questions.length === 0 ? (
-                <div className="admin-info-box">No questions added</div>
-              ) : (
-                questions
-                  .sort((a, b) => a.order - b.order)
-                  .map((q) => {
-                    const id = q._id || q.id;
-                    return (
-                      <div key={id} className="admin-question-row">
-                        <div className="admin-q-title">
-                          {q.order}. {q.questionText}
-                        </div>
-                        <div className="admin-q-options">
-                          {q.options.join(" • ")}
-                        </div>
-                        <div className="admin-q-meta">
-                          <span className="admin-q-points">
-                            Points: {q.points}
-                          </span>
-                          <div className="admin-q-actions">
-                            <button
-                              className="admin-btn-edit"
-                              onClick={() => handleStartEdit(q)}
-                            >
-                              Edit
-                            </button>
-                            {deleteConfirmId === id ? (
-                              <>
-                                <button
-                                  className="admin-btn-danger"
-                                  onClick={() => handleDeleteQuestion(id)}
-                                >
-                                  Confirm
-                                </button>
-                                <button
-                                  className="admin-btn-secondary"
-                                  onClick={() => setDeleteConfirmId(null)}
-                                >
-                                  Cancel
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                className="admin-btn-danger"
-                                onClick={() => setDeleteConfirmId(id)}
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </div>
-                        </div>
+            {questions.length === 0 ? (
+              <div className="qm-empty">No questions yet. Add your first question above ↑</div>
+            ) : (
+              <div className="qm-question-list">
+                {sorted.map((q) => {
+                  const id = q._id || q.id;
+                  const isEditing = editingId === id;
+                  return (
+                    <div key={id} className={`qm-question-card${isEditing ? " qm-question-card--active" : ""}`}>
+                      {/* Question number + text */}
+                      <div className="qm-q-top">
+                        <span className="qm-q-num">Q{q.order}</span>
+                        <span className="qm-q-text">{q.questionText}</span>
+                        <span className="qm-q-points">⭐ {q.points} pts</span>
                       </div>
-                    );
-                  })
-              )}
-            </section>
-          </>
-        )}
-      </div>
+
+                      {/* Options */}
+                      <div className="qm-q-options">
+                        {q.options.map((opt, i) => (
+                          <span key={i} className="qm-q-option">
+                            <span className="qm-q-option-letter">{OPTION_LABELS[i]}</span>
+                            {opt}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="qm-q-actions">
+                        <button className="qm-btn qm-btn--edit" onClick={() => handleStartEdit(q)}>
+                          ✏ Edit
+                        </button>
+                        {deleteConfirmId === id ? (
+                          <>
+                            <button className="qm-btn qm-btn--danger-confirm" onClick={() => handleDeleteQuestion(id)}>
+                              Confirm Delete
+                            </button>
+                            <button className="qm-btn qm-btn--ghost" onClick={() => setDeleteConfirmId(null)}>
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button className="qm-btn qm-btn--danger" onClick={() => setDeleteConfirmId(id)}>
+                            🗑 Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

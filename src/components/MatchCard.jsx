@@ -95,6 +95,79 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
               ? "View results"
               : "";
 
+  /* ── Winner reveal card: only after results are published AND winner photo set ── */
+  const isWinnerCard = !!match.isResultPublished && !!match.winner?.photo;
+
+  if (isWinnerCard) {
+    const w = match.winner;
+    return (
+      <article className="mc-card mc-card--winner">
+        {/* Winner photo as full cover background */}
+        <div className="mc-cover mc-cover--winner">
+          <img
+            src={w.photo}
+            alt={w.name}
+            className="mc-cover-img"
+            loading="lazy"
+          />
+          {/* Dark gradient overlay */}
+          <div className="mc-winner-overlay" />
+
+          {/* Top-left: WINNER badge */}
+          <div className="mc-winner-left-badge">🏆 WINNER</div>
+
+          {/* Top-right: winner name */}
+          <div className="mc-winner-top-badge">
+            <span>{w.name}</span>
+          </div>
+
+          {/* Bottom: won product */}
+          {w.prize && (
+            <div className="mc-winner-prize-badge">
+              🎁 Won {w.prize}
+            </div>
+          )}
+        </div>
+
+        {/* Body: same structure as normal card */}
+        <div className="mc-body mc-body--winner">
+          <div className="mc-top">
+            <div className="mc-titleWrap">
+              <h3 className="mc-title" title={match.title}>{match.title}</h3>
+              {match.tournament && (
+                <div className="mc-sub">
+                  <span className="mc-mi" aria-hidden="true">emoji_events</span>
+                  <span className="mc-tournament">{match.tournament}</span>
+                </div>
+              )}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
+              <span className={badgeClass}>{badgeText}</span>
+              {participated && (
+                <span className="mc-badge mc-badge--participated">Participated</span>
+              )}
+            </div>
+          </div>
+          <div className="mc-meta">
+            <div className="mc-row">
+              <span className="mc-k">Start Time</span>
+              <span className="mc-v">{formatDateTime12(match.startTime)}</span>
+            </div>
+          </div>
+          <button
+            className={`mc-btn ${isDisabled ? "is-disabled" : ""}`}
+            onClick={onViewQuiz}
+            disabled={isDisabled}
+            title={buttonTitle}
+          >
+            <span className="mc-btn-mi" aria-hidden="true">{buttonIcon}</span>
+            {buttonText}
+          </button>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article className="mc-card">
       {match.coverImage ? (
@@ -146,30 +219,6 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
             <span className="mc-v">{formatDateTime12(match.startTime)}</span>
           </div>
         </div>
-
-        {/* Winner strip for completed matches */}
-        {uiStatus === "COMPLETED" && match.winner?.name && (
-          <div className="mc-winner">
-            {match.winner.photo ? (
-              <img
-                src={match.winner.photo}
-                alt={match.winner.name}
-                className="mc-winner-photo"
-              />
-            ) : (
-              <div className="mc-winner-photo mc-winner-initials">
-                {match.winner.name.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div className="mc-winner-info">
-              <div className="mc-winner-name">{match.winner.name}</div>
-              {match.winner.location && (
-                <div className="mc-winner-location">{match.winner.location}</div>
-              )}
-            </div>
-            <span className="mc-winner-trophy" aria-hidden="true">🏆</span>
-          </div>
-        )}
 
         <button
           className={`mc-btn ${isDisabled ? "is-disabled" : ""}`}

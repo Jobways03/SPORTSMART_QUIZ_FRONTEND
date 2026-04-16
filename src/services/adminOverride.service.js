@@ -1,11 +1,13 @@
 import { api } from "./api";
 
-export async function createWinnerOverride(quizId, { displayName, phone, score }) {
-  const res = await api.post(`/api/admin/quizzes/${quizId}/override`, {
-    displayName,
-    ...(phone ? { phone } : {}),
-    score,
-  });
+export async function createWinnerOverride(quizId, { displayName, phone, score, photo }) {
+  const formData = new FormData();
+  formData.append("displayName", displayName);
+  formData.append("score", score);
+  if (phone) formData.append("phone", phone);
+  if (photo) formData.append("photo", photo);
+
+  const res = await api.post(`/api/admin/quizzes/${quizId}/override`, formData);
   return res.data;
 }
 

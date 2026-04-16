@@ -88,8 +88,11 @@ export default function Leaderboard() {
                 {top3[0] && (
                   <div className="l-p-item l-p-1">
                     <div className="l-p-crown">👑</div>
-                    <div className="l-p-avatar l-p-avatar-1">
-                      {getInitial(top3[0].name)}
+                    <div className="l-p-avatar l-p-avatar-1" style={top3[0].photo ? { padding: 0, overflow: "hidden" } : {}}>
+                      {top3[0].photo
+                        ? <img src={top3[0].photo} alt={top3[0].name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                        : getInitial(top3[0].name)
+                      }
                     </div>
                     <div className="l-p-medal">🥇</div>
                     <div className="l-p-name">{top3[0].name}</div>

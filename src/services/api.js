@@ -4,14 +4,16 @@ export const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL
     : "http://localhost:8000",
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
-// "http://localhost:8000",
   api.interceptors.request.use(
     (config) => {
+      // Set JSON content-type for all requests except FormData
+      // (for FormData, let the browser set it automatically with the correct boundary)
+      if (!(config.data instanceof FormData)) {
+        config.headers["Content-Type"] = "application/json";
+      }
+
       // 1. Handle Admin Token — only attach to admin API routes
       const isAdminRoute = config.url && config.url.includes("/api/admin/");
       if (isAdminRoute) {

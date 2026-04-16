@@ -36,6 +36,8 @@ export default function AdminWinnerOverride() {
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
   const [score, setScore] = useState("");
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   /* ─── LOAD ─── */
   const loadData = async () => {
@@ -92,12 +94,15 @@ export default function AdminWinnerOverride() {
         displayName: displayName.trim(),
         phone: phone.trim() || undefined,
         score: parsedScore,
+        photo: photo || undefined,
       });
       setOverride(res.override);
       setSuccessMsg("Winner override set successfully! This user will appear as Rank #1.");
       setDisplayName("");
       setPhone("");
       setScore("");
+      setPhoto(null);
+      setPhotoPreview(null);
     } catch (e) {
       setErrorMsg(
         e?.response?.data?.message || "Failed to create override."
@@ -208,6 +213,13 @@ export default function AdminWinnerOverride() {
                       <div className="awo-override-badge">
                         🏆 Active Override — Rank #1
                       </div>
+                      {override.photo && (
+                        <img
+                          src={override.photo}
+                          alt={override.displayName}
+                          style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", margin: "8px auto", display: "block", border: "2px solid #e5e7eb" }}
+                        />
+                      )}
                       <div className="awo-override-name">{override.displayName}</div>
                       <div className="awo-override-score">{override.score} points</div>
                       {override.phone && (
@@ -292,6 +304,37 @@ export default function AdminWinnerOverride() {
                         <span className="awo-hint">
                           Can be any value — this user is always ranked #1 regardless.
                         </span>
+                      </div>
+
+                      <div className="awo-field">
+                        <label className="awo-label" htmlFor="photo">
+                          Winner Photo <span style={{ color: "#9ca3af", fontWeight: 400 }}>(optional)</span>
+                        </label>
+                        {photoPreview && (
+                          <img
+                            src={photoPreview}
+                            alt="Preview"
+                            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", marginBottom: 8, display: "block", border: "2px solid #e5e7eb" }}
+                          />
+                        )}
+                        <input
+                          id="photo"
+                          className="awo-input"
+                          type="file"
+                          accept="image/*"
+                          disabled={saving}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setPhoto(file);
+                              setPhotoPreview(URL.createObjectURL(file));
+                            } else {
+                              setPhoto(null);
+                              setPhotoPreview(null);
+                            }
+                          }}
+                        />
+                        <span className="awo-hint">This photo will replace the avatar on the leaderboard (max 5MB).</span>
                       </div>
 
                       <div className="awo-divider" />
