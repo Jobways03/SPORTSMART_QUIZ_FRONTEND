@@ -215,12 +215,12 @@
 .mc-winner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
+  /* background: linear-gradient(
     to right,
     transparent 25%,
     rgba(10, 5, 0, 0.55) 55%,
     rgba(15, 8, 0, 0.88) 100%
-  );
+  ); */
 }
 
 /* Top-left: WINNER badge */
