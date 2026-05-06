@@ -105,6 +105,7 @@ export default function MatchCard({ match, onViewQuiz, participated }) {
         {/* Winner photo as full cover background */}
         <div className="mc-cover mc-cover--winner">
           <img
+            key={w.photo}
             src={w.photo}
             alt={w.name}
             className="mc-cover-img"

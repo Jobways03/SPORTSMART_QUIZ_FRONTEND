@@ -49,6 +49,20 @@ export default function Matches() {
 
   useEffect(() => { document.title = "Matches | Sports Arena"; }, []);
 
+  // Refetch when user returns to tab (so admin updates show up without a hard reload)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && user?.userId) load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+    // eslint-disable-next-line
+  }, [user?.userId]);
+
   // Close on ESC
   useEffect(() => {
     const onEsc = (e) => e.key === "Escape" && setProfileOpen(false);
